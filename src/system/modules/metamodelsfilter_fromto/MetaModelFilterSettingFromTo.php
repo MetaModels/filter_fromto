@@ -54,54 +54,41 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 		$objMetaModel = $this->getMetaModel();
 		$objAttribute = $objMetaModel->getAttributeById($this->get('attr_id'));
 		$strParamName = $this->getParamName();
-		$arrParamValue = $arrFilterUrl[$strParamName];
 		$strColname = $objAttribute->getColName();
 
-		if ($objAttribute && $strParamName && $arrParamValue)
+		$arrParamValue = NULL;
+		if (array_key_exists($strParamName, $arrFilterUrl) && !empty($arrFilterUrl[$strParamName]))
+		{
+			if (is_array($arrFilterUrl[$strParamName]))
+			{
+				$arrParamValue = $arrFilterUrl[$strParamName];
+			} else {
+				// TODO: still unsure if double underscore is such a wise idea.
+				$arrParamValue = explode('__', $arrFilterUrl[$strParamName]);
+			}
+		}
+
+		if ($objAttribute && $strParamName && $arrParamValue && ($arrParamValue[0] || $arrParamValue[1]))
 		{
 			$strMore = $this->get('moreequal') ? '>=' : '>';
 			$strLess = $this->get('lessequal') ? '<=' : '<';
 
-			if($arrParamValue[0] > 0 && $arrParamValue[1] > 0)
+			$arrQuery = array();
+			$arrParams = array();
+			if ($arrParamValue[0])
 			{
-				// from to
-				$strWhere = $strColname.' '.$strMore.'? AND '.$strColname.' '.$strLess.'?';
-				$arrSearch = array($arrParamValue[0], $arrParamValue[1]);
+				$arrQuery[] = sprintf('(%s%s?)', $objAttribute->getColName(), $strMore);
+				$arrParams[] = $arrParamValue[0];
 			}
-			elseif($arrParamValue[0] > 0)
+			if ($arrParamValue[1])
 			{
-				// from
-				$strWhere = $strColname.' '.$strMore.'?';
-				$arrSearch = array($arrParamValue[0]);
-			}
-			elseif($arrParamValue[1] > 0)
-			{
-				// to
-				$strWhere = $strColname.' '.$strLess.'?';
-				$arrSearch = array($arrParamValue[1]);
-			}
-			else
-			{
-				// nothing
-				$strWhere = '';
+				$arrQuery[] = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
+				$arrParams[] = $arrParamValue[1];
 			}
 
-			if($strWhere)
-			{
-				$objQuery = Database::getInstance()->prepare(sprintf(
-					'SELECT id FROM %s WHERE (%s)',
-					$this->getMetaModel()->getTableName(),
-					$strWhere
-					))
-					->execute($arrSearch);
-
-				$arrIds = $objQuery->fetchEach('id');
-
-				$objFilter->addFilterRule(new MetaModelFilterRuleStaticIdList($arrIds));
-				return;
-			}
-
-			$objFilter->addFilterRule(new MetaModelFilterRuleStaticIdList(NULL));
+			$objFilter->addFilterRule(new MetaModelFilterRuleSimpleQuery(
+				sprintf('SELECT id FROM %s WHERE ', $this->getMetaModel()->getTableName()) . implode(' AND ', $arrQuery), $arrParams));
+			return;
 		}
 
 		$objFilter->addFilterRule(new MetaModelFilterRuleStaticIdList(NULL));
@@ -120,11 +107,22 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getParameterDCA()
+	public function getParameterFilterNames()
+	{
+		return array(
+			$this->getParamName() => ($this->get('label') ? $this->get('label') : $this->getMetaModel()->getAttributeById($this->get('attr_id'))->getName())
+		);
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getParameterFilterWidgets($arrIds, $arrFilterUrl, $arrJumpTo, $blnAutoSubmit)
 	{
 		$objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
 
-		$arrOptions = $objAttribute->getFilterOptions();
+		$arrOptions = $objAttribute->getFilterOptions(($this->get('onlypossible') ? $arrIds : NULL), (bool)$this->get('onlyused'));
 
 		$arrLabel = array(
 			($this->get('label') ? $this->get('label') : $objAttribute->getName()),
@@ -144,18 +142,53 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 			$arrLabel[0] .= ' '.$GLOBALS['TL_LANG']['metamodels_frontendfilter']['to'];
 		}
 
+		$arrUrlValue = $arrFilterUrl[$this->getParamName()];
+
+		// split up our param so the widgets can use it again.
+		$strParamName = $this->getParamName();
+		$arrMyFilterUrl = $arrFilterUrl;
+		// if we have a value, we have to explode it by double underscore to have a valid value which the active checks may cope with.
+		if (array_key_exists($strParamName, $arrFilterUrl) && !empty($arrFilterUrl[$strParamName]))
+		{
+			if (is_array($arrFilterUrl[$strParamName]))
+			{
+				$arrParamValue = $arrFilterUrl[$strParamName];
+			} else {
+				// TODO: still unsure if double underscore is such a wise idea.
+				$arrParamValue = explode('__', $arrFilterUrl[$strParamName], 2);
+			}
+
+			if ($arrParamValue && ($arrParamValue[0] || $arrParamValue[1]))
+			{
+				$arrMyFilterUrl[$strParamName] = $arrParamValue;
+			} else {
+				// no values given, clear the array.
+				$arrParamValue = NULL;
+			}
+		}
+
 		return array(
-			$this->getParamName() => array
-			(
-				'label'     => $arrLabel,
-				'inputType' => 'multitext',
-				'eval'      => array(
-					'multiple'  => true,
-					'size'      => 2,
-					'urlparam'  => $this->get('urlparam'),
-					'fromfield' => ($this->get('fromfield')? true:false), 
-					'tofield'   => ($this->get('tofield')? true:false)),
-					'template'  => $this->get('template')
+			$this->getParamName() => $this->prepareFrontendFilterWidget(
+				array
+				(
+					'label'     => $arrLabel,
+					'inputType' => 'multitext',
+					'eval'      => array
+					(
+						'multiple'  => true,
+						'size'      => 2,
+						'urlparam'  => $this->get('urlparam'),
+						'fromfield' => ($this->get('fromfield')? true:false),
+						'tofield'   => ($this->get('tofield')? true:false)
+					),
+					'template'  => $this->get('template'),
+					// we need to implode to have it transported correctly in the frontend filter.
+					// TODO: still unsure if double underscore is such a wise idea.
+					'urlvalue' => !empty($arrParamValue) ? implode('__', $arrParamValue) : ''
+				),
+				$arrMyFilterUrl,
+				$arrJumpTo,
+				$blnAutoSubmit
 			)
 		);
 	}
