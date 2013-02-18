@@ -22,14 +22,14 @@ if (!defined('TL_ROOT'))
 /**
  * Frontend filter
  */
- 
+
 // value from x to y
 $GLOBALS['METAMODELS']['filters']['fromto'] = array
 (
 	'class' => 'MetaModelFilterSettingFromTo',
 	'attr_filter' => array('numeric','decimal'),
 	'image' => 'system/modules/metamodels_frontendfilter/html/filter_frontend.png',
-	'info_callback' => array('MetaModelFrontendFilterBackend','infoCallback'),
+	'info_callback' => array('TableMetaModelFilterSetting','infoCallback'),
 );
 
 ?>
