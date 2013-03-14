@@ -75,15 +75,27 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 
 			$arrQuery = array();
 			$arrParams = array();
-			if ($arrParamValue[0])
+
+			if($this->get('fromfield'))
 			{
-				$arrQuery[] = sprintf('(%s%s?)', $objAttribute->getColName(), $strMore);
-				$arrParams[] = $arrParamValue[0];
+				if ($arrParamValue[0])
+				{
+					$arrQuery[] = sprintf('(%s%s?)', $objAttribute->getColName(), $strMore);
+					$arrParams[] = $arrParamValue[0];
+				}
+				if ($arrParamValue[1])
+				{
+					$arrQuery[] = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
+					$arrParams[] = $arrParamValue[1];
+				}
 			}
-			if ($arrParamValue[1])
+			else
 			{
-				$arrQuery[] = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
-				$arrParams[] = $arrParamValue[1];
+				if ($arrParamValue[0])
+				{
+					$arrQuery[] = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
+					$arrParams[] = $arrParamValue[0];
+				}
 			}
 
 			$objFilter->addFilterRule(new MetaModelFilterRuleSimpleQuery(
@@ -176,10 +188,8 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 					'eval'      => array
 					(
 						'multiple'  => true,
-						'size'      => 2,
-						'urlparam'  => $this->get('urlparam'),
-						'fromfield' => ($this->get('fromfield')? true:false),
-						'tofield'   => ($this->get('tofield')? true:false)
+						'size'      => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
+						'urlparam'  => $this->get('urlparam')
 					),
 					'template'  => $this->get('template'),
 					// we need to implode to have it transported correctly in the frontend filter.
