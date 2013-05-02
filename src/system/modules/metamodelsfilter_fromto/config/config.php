@@ -24,6 +24,6 @@ $GLOBALS['METAMODELS']['filters']['fromto'] = array
 (
 	'class' => 'MetaModelFilterSettingFromTo',
 	'attr_filter' => array('numeric','decimal'),
-	'image' => 'system/modules/metamodelsfilter_fromto/html/filter_frontend.png',
+	'image' => 'system/modules/metamodelsfilter_fromto/html/filter_fromto.png',
 	'info_callback' => array('TableMetaModelFilterSetting','infoCallback'),
 );
