@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The MetaModels extension allows the creation of multiple collections of custom items,
  * each with its own unique set of selectable attributes, with attribute extendability.
@@ -7,23 +8,18 @@
  *
  * PHP version 5
  * @package    MetaModels
- * @subpackage FrontendFilter
+ * @subpackage FilterFromTo
  * @author     Christian de la Haye <service@delahaye.de>
  * @copyright  The MetaModels team.
  * @license    LGPL.
  * @filesource
  */
-if (!defined('TL_ROOT'))
-{
-	die('You cannot access this file directly!');
-}
-
 
 /**
  * Filter "value from x to y" for FE-filtering, based on filters by the meta models team.
  *
  * @package	   MetaModels
- * @subpackage FrontendFilter
+ * @subpackage FilterFromTo
  * @author     Christian de la Haye <service@delahaye.de>
  */
 class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
@@ -203,5 +199,3 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 		);
 	}
 }
-
-?>

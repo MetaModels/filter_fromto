@@ -10,20 +10,16 @@
  * @package    MetaModels
  * @subpackage FilterFromTo
  * @author     Christian de la Haye <service@delahaye.de>
+ * @author     Andreas Isaak <info@andreas-isaak.de>
  * @copyright  The MetaModels team.
  * @license    LGPL.
  * @filesource
  */
 
 /**
- * Frontend filter
+ * Register the classes
  */
-
-// value from x to y
-$GLOBALS['METAMODELS']['filters']['fromto'] = array
+ClassLoader::addClasses(array
 (
-	'class' => 'MetaModelFilterSettingFromTo',
-	'attr_filter' => array('numeric','decimal'),
-	'image' => 'system/modules/metamodelsfilter_fromto/html/filter_frontend.png',
-	'info_callback' => array('TableMetaModelFilterSetting','infoCallback'),
-);
+	'MetaModelFilterSettingFromTo'         => 'system/modules/metamodelsfilter_fromto/MetaModelFilterSettingFromTo.php',
+));
