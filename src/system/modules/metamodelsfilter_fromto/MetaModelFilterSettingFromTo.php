@@ -131,6 +131,15 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 		$objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
 
 		$arrOptions = $objAttribute->getFilterOptions(($this->get('onlypossible') ? $arrIds : NULL), (bool)$this->get('onlyused'));
+			
+		// Remove empty values from list.
+		foreach ($arrOptions as $mixKeyOption => $mixOption)
+		{
+			if($mixOption === '' || $mixOption === null)
+			{
+				unset($arrOptions[$mixKeyOption]);
+			}
+		}
 
 		$arrLabel = array(
 			($this->get('label') ? $this->get('label') : $objAttribute->getName()),
