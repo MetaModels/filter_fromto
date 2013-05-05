@@ -135,6 +135,10 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 		// Remove empty values from list.
 		foreach ($arrOptions as $mixKeyOption => $mixOption)
 		{
+			// Remove html/php tags.
+			$mixOption = strip_tags($mixOption);
+			$mixOption = trim($mixOption);
+			
 			if($mixOption === '' || $mixOption === null)
 			{
 				unset($arrOptions[$mixKeyOption]);
