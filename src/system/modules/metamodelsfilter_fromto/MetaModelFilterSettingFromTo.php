@@ -187,6 +187,8 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 				$arrParamValue = NULL;
 			}
 		}
+		
+		$GLOBALS['MM_FILTER_PARAMS'][] = $this->getParamName();
 
 		return array(
 			$this->getParamName() => $this->prepareFrontendFilterWidget(
