@@ -57,9 +57,9 @@
 				"prefix": "filter_fromto-",
 				"languages_cto": "src/system/modules/metamodelsfilter_fromto/languages",
 				"languages_tx": ".tx"
-		},
-		"branch-alias": {
-			"dev-master": "1.0.x-dev"
+			},
+			"branch-alias": {
+				"dev-master": "1.0.x-dev"
 			}
 		}
 	}
