@@ -126,7 +126,7 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getParameterFilterWidgets($arrIds, $arrFilterUrl, $arrJumpTo, $blnAutoSubmit, $blnHideClearFilter)
+	public function getParameterFilterWidgets($arrIds, $arrFilterUrl, $arrJumpTo, MetaModelFrontendFilterOptions $objFrontendFilterOptions)
 	{
 		$objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
 
@@ -209,7 +209,7 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 				),
 				$arrMyFilterUrl,
 				$arrJumpTo,
-				$blnAutoSubmit
+				$objFrontendFilterOptions
 			)
 		);
 	}
