@@ -131,14 +131,14 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 		$objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
 
 		$arrOptions = $objAttribute->getFilterOptions(($this->get('onlypossible') ? $arrIds : NULL), (bool)$this->get('onlyused'));
-			
+
 		// Remove empty values from list.
 		foreach ($arrOptions as $mixKeyOption => $mixOption)
 		{
 			// Remove html/php tags.
 			$mixOption = strip_tags($mixOption);
 			$mixOption = trim($mixOption);
-			
+
 			if($mixOption === '' || $mixOption === null)
 			{
 				unset($arrOptions[$mixKeyOption]);
@@ -187,7 +187,7 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 				$arrParamValue = NULL;
 			}
 		}
-		
+
 		$GLOBALS['MM_FILTER_PARAMS'][] = $this->getParamName();
 
 		return array(
@@ -212,5 +212,20 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 				$objFrontendFilterOptions
 			)
 		);
+	}
+
+	/**
+	 * Retrieve the attribute name that is referenced in this filter setting.
+	 *
+	 * @return array
+	 */
+	public function getReferencedAttributes()
+	{
+		if (!($this->get('attr_id') && ($objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id')))))
+		{
+			return array();
+		}
+
+		return array($objAttribute->getColName());
 	}
 }
