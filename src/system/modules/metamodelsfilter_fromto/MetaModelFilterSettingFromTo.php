@@ -200,9 +200,9 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 					(
 						'multiple'  => true,
 						'size'      => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
-						'urlparam'  => $this->get('urlparam')
+						'urlparam'  => $this->get('urlparam'),
+						'template'  => $this->get('template'),
 					),
-					'template'  => $this->get('template'),
 					// we need to implode to have it transported correctly in the frontend filter.
 					// TODO: still unsure if double underscore is such a wise idea.
 					'urlvalue' => !empty($arrParamValue) ? implode('__', $arrParamValue) : ''
