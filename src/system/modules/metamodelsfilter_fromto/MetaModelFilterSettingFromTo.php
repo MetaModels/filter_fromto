@@ -130,7 +130,7 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 	{
 		$objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
 
-		$arrOptions = $objAttribute->getFilterOptions(($this->get('onlypossible') ? $arrIds : NULL), (bool)$this->get('onlyused'));
+		$arrOptions = $objAttribute->getFilterOptions(null, (bool)$this->get('onlyused'));
 
 		// Remove empty values from list.
 		foreach ($arrOptions as $mixKeyOption => $mixOption)
@@ -143,6 +143,16 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 			{
 				unset($arrOptions[$mixKeyOption]);
 			}
+		}
+
+		if($arrOptions)
+		{
+			$arrSortedOptions = $arrOptions;
+			ksort($arrSortedOptions, SORT_NUMERIC);
+			reset($arrSortedOptions);
+			$varMin = key($arrSortedOptions);
+			end($arrSortedOptions);
+			$varMax = key($arrSortedOptions);
 		}
 
 		$arrLabel = array(
@@ -202,6 +212,8 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 						'size'      => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
 						'urlparam'  => $this->get('urlparam'),
 						'template'  => $this->get('template'),
+						'min'       => $varMin,
+						'max'       => $varMax,
 					),
 					// we need to implode to have it transported correctly in the frontend filter.
 					// TODO: still unsure if double underscore is such a wise idea.
