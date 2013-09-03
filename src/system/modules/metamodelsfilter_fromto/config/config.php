@@ -18,12 +18,8 @@
 /**
  * Frontend filter
  */
-
-// value from x to y
-$GLOBALS['METAMODELS']['filters']['fromto'] = array
-(
-	'class' => 'MetaModelFilterSettingFromTo',
-	'attr_filter' => array('numeric','decimal'),
-	'image' => 'system/modules/metamodelsfilter_fromto/html/filter_fromto.png',
-	'info_callback' => array('TableMetaModelFilterSetting','infoCallback'),
-);
+$GLOBALS['METAMODELS']['filters']['fromto']['class'] = 'MetaModelFilterSettingFromTo';
+$GLOBALS['METAMODELS']['filters']['fromto']['image'] = 'system/modules/metamodelsfilter_fromto/html/filter_fromto.png';
+$GLOBALS['METAMODELS']['filters']['fromto']['info_callback'] = array('TableMetaModelFilterSetting', 'infoCallback');
+$GLOBALS['METAMODELS']['filters']['fromto']['attr_filter'][] = 'numeric';
+$GLOBALS['METAMODELS']['filters']['fromto']['attr_filter'][] = 'decimal';
