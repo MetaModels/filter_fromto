@@ -18,9 +18,9 @@
 /**
  * Frontend filter
  */
-$GLOBALS['METAMODELS']['filters']['fromto']['class'] = 'MetaModelFilterSettingFromTo';
+$GLOBALS['METAMODELS']['filters']['fromto']['class'] = 'MetaModels\Filter\Setting\FromTo';
 $GLOBALS['METAMODELS']['filters']['fromto']['image'] = 'system/modules/metamodelsfilter_fromto/html/filter_fromto.png';
-$GLOBALS['METAMODELS']['filters']['fromto']['info_callback'] = array('TableMetaModelFilterSetting', 'infoCallback');
+$GLOBALS['METAMODELS']['filters']['fromto']['info_callback'] = array('MetaModels\Dca\Filter', 'infoCallback');
 $GLOBALS['METAMODELS']['filters']['fromto']['attr_filter'][] = 'numeric';
 $GLOBALS['METAMODELS']['filters']['fromto']['attr_filter'][] = 'decimal';
 
