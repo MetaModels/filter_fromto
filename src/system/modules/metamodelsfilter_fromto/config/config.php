@@ -23,3 +23,7 @@ $GLOBALS['METAMODELS']['filters']['fromto']['image'] = 'system/modules/metamodel
 $GLOBALS['METAMODELS']['filters']['fromto']['info_callback'] = array('TableMetaModelFilterSetting', 'infoCallback');
 $GLOBALS['METAMODELS']['filters']['fromto']['attr_filter'][] = 'numeric';
 $GLOBALS['METAMODELS']['filters']['fromto']['attr_filter'][] = 'decimal';
+
+// non composerized Contao 2.X autoload support.
+$GLOBALS['MM_AUTOLOAD'][] = dirname(__DIR__);
+$GLOBALS['MM_AUTOLOAD'][] = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'deprecated';

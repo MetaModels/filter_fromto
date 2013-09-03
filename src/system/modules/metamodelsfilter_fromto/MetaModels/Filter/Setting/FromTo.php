@@ -15,6 +15,13 @@
  * @filesource
  */
 
+namespace MetaModels\Filter\Setting;
+
+use MetaModels\Filter\IFilter;
+use MetaModels\Filter\Rules\SimpleQuery;
+use MetaModels\Filter\Rules\StaticIdList;
+use MetaModels\FrontendIntegration\FrontendFilterOptions;
+
 /**
  * Filter "value from x to y" for FE-filtering, based on filters by the meta models team.
  *
@@ -22,7 +29,7 @@
  * @subpackage FilterFromTo
  * @author     Christian de la Haye <service@delahaye.de>
  */
-class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
+class FromTo extends Simple
 {
 	/**
 	 * {@inheritdoc}
@@ -45,7 +52,7 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 	/**
 	 * {@inheritdoc}
 	 */
-	public function prepareRules(IMetaModelFilter $objFilter, $arrFilterUrl)
+	public function prepareRules(IFilter $objFilter, $arrFilterUrl)
 	{
 		$objMetaModel = $this->getMetaModel();
 		$objAttribute = $objMetaModel->getAttributeById($this->get('attr_id'));
@@ -94,14 +101,13 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 				}
 			}
 
-			$objFilter->addFilterRule(new MetaModelFilterRuleSimpleQuery(
+			$objFilter->addFilterRule(new SimpleQuery(
 				sprintf('SELECT id FROM %s WHERE ', $this->getMetaModel()->getTableName()) . implode(' AND ', $arrQuery), $arrParams));
 			return;
 		}
 
-		$objFilter->addFilterRule(new MetaModelFilterRuleStaticIdList(NULL));
+		$objFilter->addFilterRule(new StaticIdList(NULL));
 	}
-
 
 	/**
 	 * {@inheritdoc}
@@ -126,7 +132,7 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getParameterFilterWidgets($arrIds, $arrFilterUrl, $arrJumpTo, MetaModelFrontendFilterOptions $objFrontendFilterOptions)
+	public function getParameterFilterWidgets($arrIds, $arrFilterUrl, $arrJumpTo, FrontendFilterOptions $objFrontendFilterOptions)
 	{
 		$objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
 
@@ -148,7 +154,7 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 		$arrLabel = array(
 			($this->get('label') ? $this->get('label') : $objAttribute->getName()),
 			'GET: '.$this->get('urlparam')
-			);
+		);
 
 		if($this->get('fromfield') && $this->get('tofield'))
 		{

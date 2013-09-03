@@ -21,5 +21,7 @@
  */
 ClassLoader::addClasses(array
 (
-	'MetaModelFilterSettingFromTo'         => 'system/modules/metamodelsfilter_fromto/MetaModelFilterSettingFromTo.php',
+	'MetaModels\Filter\Setting\FromTo' => 'system/modules/metamodelsfilter_fromto/MetaModels/Filter/Setting/FromTo.php',
+
+	'MetaModelFilterSettingFromTo'     => 'system/modules/metamodelsfilter_fromto/deprecated/MetaModelFilterSettingFromTo.php',
 ));
