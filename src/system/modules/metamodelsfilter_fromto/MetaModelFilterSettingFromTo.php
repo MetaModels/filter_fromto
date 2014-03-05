@@ -196,6 +196,7 @@ class MetaModelFilterSettingFromTo extends MetaModelFilterSetting
 				(
 					'label'     => $arrLabel,
 					'inputType' => 'multitext',
+					'options'   => $arrOptions,
 					'eval'      => array
 					(
 						'multiple'  => true,
