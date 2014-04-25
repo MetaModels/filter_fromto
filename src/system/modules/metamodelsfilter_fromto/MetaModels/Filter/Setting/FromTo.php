@@ -202,6 +202,7 @@ class FromTo extends Simple
 				(
 					'label'     => $arrLabel,
 					'inputType' => 'multitext',
+					'options'   => $arrOptions,
 					'eval'      => array
 					(
 						'multiple'  => true,

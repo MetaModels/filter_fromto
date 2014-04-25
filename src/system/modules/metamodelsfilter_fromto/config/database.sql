@@ -18,5 +18,5 @@ CREATE TABLE `tl_metamodel_filtersetting` (
   `moreequal` char(1) NOT NULL default '1',
   `lessequal` char(1) NOT NULL default '1',
   `fromfield` char(1) NOT NULL default '1',
-  `tofield` char(1) NOT NULL default '1',
+  `tofield` char(1) NOT NULL default '1'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
