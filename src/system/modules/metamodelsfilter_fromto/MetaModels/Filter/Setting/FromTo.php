@@ -46,8 +46,9 @@ class FromTo extends Simple
 		{
 			return $objAttribute->getColName();
 		}
-	}
 
+		return null;
+	}
 
 	/**
 	 * {@inheritdoc}
@@ -57,16 +58,15 @@ class FromTo extends Simple
 		$objMetaModel = $this->getMetaModel();
 		$objAttribute = $objMetaModel->getAttributeById($this->get('attr_id'));
 		$strParamName = $this->getParamName();
-		$strColname = $objAttribute->getColName();
+		$strColname   = $objAttribute->getColName();
 
-		$arrParamValue = NULL;
+		$arrParamValue = null;
 		if (array_key_exists($strParamName, $arrFilterUrl) && !empty($arrFilterUrl[$strParamName]))
 		{
 			if (is_array($arrFilterUrl[$strParamName]))
 			{
 				$arrParamValue = $arrFilterUrl[$strParamName];
 			} else {
-				// TODO: still unsure if double underscore is such a wise idea.
 				$arrParamValue = explode('__', $arrFilterUrl[$strParamName]);
 			}
 		}
@@ -76,19 +76,19 @@ class FromTo extends Simple
 			$strMore = $this->get('moreequal') ? '>=' : '>';
 			$strLess = $this->get('lessequal') ? '<=' : '<';
 
-			$arrQuery = array();
+			$arrQuery  = array();
 			$arrParams = array();
 
-			if($this->get('fromfield'))
+			if ($this->get('fromfield'))
 			{
 				if ($arrParamValue[0])
 				{
-					$arrQuery[] = sprintf('(%s%s?)', $objAttribute->getColName(), $strMore);
+					$arrQuery[]  = sprintf('(%s%s?)', $objAttribute->getColName(), $strMore);
 					$arrParams[] = $arrParamValue[0];
 				}
 				if ($arrParamValue[1])
 				{
-					$arrQuery[] = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
+					$arrQuery[]  = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
 					$arrParams[] = $arrParamValue[1];
 				}
 			}
@@ -96,17 +96,24 @@ class FromTo extends Simple
 			{
 				if ($arrParamValue[0])
 				{
-					$arrQuery[] = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
+					$arrQuery[]  = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
 					$arrParams[] = $arrParamValue[0];
 				}
 			}
 
 			$objFilter->addFilterRule(new SimpleQuery(
-				sprintf('SELECT id FROM %s WHERE ', $this->getMetaModel()->getTableName()) . implode(' AND ', $arrQuery), $arrParams));
+				sprintf('
+					SELECT id
+					FROM %s
+					WHERE ',
+					$this->getMetaModel()->getTableName()) . implode(' AND ', $arrQuery),
+					$arrParams
+				)
+			);
 			return;
 		}
 
-		$objFilter->addFilterRule(new StaticIdList(NULL));
+		$objFilter->addFilterRule(new StaticIdList(null));
 	}
 
 	/**
@@ -124,7 +131,13 @@ class FromTo extends Simple
 	public function getParameterFilterNames()
 	{
 		return array(
-			$this->getParamName() => ($this->get('label') ? $this->get('label') : $this->getMetaModel()->getAttributeById($this->get('attr_id'))->getName())
+			$this->getParamName() => (
+				$this->get('label')
+				?: $this
+					->getMetaModel()
+					->getAttributeById($this->get('attr_id'))
+					->getName()
+			)
 		);
 	}
 
@@ -132,11 +145,19 @@ class FromTo extends Simple
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getParameterFilterWidgets($arrIds, $arrFilterUrl, $arrJumpTo, FrontendFilterOptions $objFrontendFilterOptions)
+	public function getParameterFilterWidgets(
+		$arrIds,
+		$arrFilterUrl,
+		$arrJumpTo,
+		FrontendFilterOptions $objFrontendFilterOptions
+	)
 	{
 		$objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
 
-		$arrOptions = $objAttribute->getFilterOptions(($this->get('onlypossible') ? $arrIds : NULL), (bool)$this->get('onlyused'));
+		$arrOptions = $objAttribute->getFilterOptions(
+			($this->get('onlypossible') ? $arrIds : null),
+			(bool)$this->get('onlyused')
+		);
 
 		// Remove empty values from list.
 		foreach ($arrOptions as $mixKeyOption => $mixOption)
@@ -145,7 +166,7 @@ class FromTo extends Simple
 			$mixOption = strip_tags($mixOption);
 			$mixOption = trim($mixOption);
 
-			if($mixOption === '' || $mixOption === null)
+			if ($mixOption === '' || $mixOption === null)
 			{
 				unset($arrOptions[$mixKeyOption]);
 			}
@@ -156,7 +177,7 @@ class FromTo extends Simple
 			'GET: '.$this->get('urlparam')
 		);
 
-		if($this->get('fromfield') && $this->get('tofield'))
+		if ($this->get('fromfield') && $this->get('tofield'))
 		{
 			$arrLabel[0] .= ' '.$GLOBALS['TL_LANG']['metamodels_frontendfilter']['fromto'];
 		}
@@ -171,17 +192,17 @@ class FromTo extends Simple
 
 		$arrUrlValue = $arrFilterUrl[$this->getParamName()];
 
-		// split up our param so the widgets can use it again.
-		$strParamName = $this->getParamName();
+		// Split up our param so the widgets can use it again.
+		$strParamName   = $this->getParamName();
 		$arrMyFilterUrl = $arrFilterUrl;
-		// if we have a value, we have to explode it by double underscore to have a valid value which the active checks may cope with.
+		// If we have a value, we have to explode it by double underscore to have a valid value which the active checks
+		// may cope with.
 		if (array_key_exists($strParamName, $arrFilterUrl) && !empty($arrFilterUrl[$strParamName]))
 		{
 			if (is_array($arrFilterUrl[$strParamName]))
 			{
 				$arrParamValue = $arrFilterUrl[$strParamName];
 			} else {
-				// TODO: still unsure if double underscore is such a wise idea.
 				$arrParamValue = explode('__', $arrFilterUrl[$strParamName], 2);
 			}
 
@@ -189,8 +210,8 @@ class FromTo extends Simple
 			{
 				$arrMyFilterUrl[$strParamName] = $arrParamValue;
 			} else {
-				// no values given, clear the array.
-				$arrParamValue = NULL;
+				// No values given, clear the array.
+				$arrParamValue = null;
 			}
 		}
 
@@ -200,19 +221,18 @@ class FromTo extends Simple
 			$this->getParamName() => $this->prepareFrontendFilterWidget(
 				array
 				(
-					'label'     => $arrLabel,
-					'inputType' => 'multitext',
-					'options'   => $arrOptions,
-					'eval'      => array
+					'label'         => $arrLabel,
+					'inputType'     => 'multitext',
+					'options'       => $arrOptions,
+					'eval'          => array
 					(
 						'multiple'  => true,
 						'size'      => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
 						'urlparam'  => $this->get('urlparam'),
 						'template'  => $this->get('template'),
 					),
-					// we need to implode to have it transported correctly in the frontend filter.
-					// TODO: still unsure if double underscore is such a wise idea.
-					'urlvalue' => !empty($arrParamValue) ? implode('__', $arrParamValue) : ''
+					// We need to implode to have it transported correctly in the frontend filter.
+					'urlvalue'      => !empty($arrParamValue) ? implode('__', $arrParamValue) : ''
 				),
 				$arrMyFilterUrl,
 				$arrJumpTo,
@@ -228,11 +248,12 @@ class FromTo extends Simple
 	 */
 	public function getReferencedAttributes()
 	{
+		$objAttribute = null;
 		if (!($this->get('attr_id') && ($objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id')))))
 		{
 			return array();
 		}
 
-		return array($objAttribute->getColName());
+		return $objAttribute ? array($objAttribute->getColName()) : array();
 	}
 }

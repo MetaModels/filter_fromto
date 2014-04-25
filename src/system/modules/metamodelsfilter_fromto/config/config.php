@@ -18,8 +18,12 @@
 /**
  * Frontend filter
  */
-$GLOBALS['METAMODELS']['filters']['fromto']['class'] = 'MetaModels\Filter\Setting\FromTo';
-$GLOBALS['METAMODELS']['filters']['fromto']['image'] = 'system/modules/metamodelsfilter_fromto/html/filter_fromto.png';
-$GLOBALS['METAMODELS']['filters']['fromto']['info_callback'] = array('MetaModels\DcGeneral\Events\Table\FilterSetting\DrawSetting', 'modelToLabelWithAttributeAndUrlParam');
+$GLOBALS['METAMODELS']['filters']['fromto']['class']         = 'MetaModels\Filter\Setting\FromTo';
+$GLOBALS['METAMODELS']['filters']['fromto']['image']         =
+	'system/modules/metamodelsfilter_fromto/html/filter_fromto.png';
+$GLOBALS['METAMODELS']['filters']['fromto']['info_callback'] = array(
+	'MetaModels\DcGeneral\Events\Table\FilterSetting\DrawSetting',
+	'modelToLabelWithAttributeAndUrlParam'
+);
 $GLOBALS['METAMODELS']['filters']['fromto']['attr_filter'][] = 'numeric';
 $GLOBALS['METAMODELS']['filters']['fromto']['attr_filter'][] = 'decimal';
