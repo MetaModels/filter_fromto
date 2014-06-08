@@ -18,6 +18,7 @@
 /**
  * labels
  */
-$GLOBALS['TL_LANG']['metamodels_frontendfilter']['fromto'] = 'from/to';
-$GLOBALS['TL_LANG']['metamodels_frontendfilter']['from']   = 'from';
-$GLOBALS['TL_LANG']['metamodels_frontendfilter']['to']     = 'to';
+$GLOBALS['TL_LANG']['metamodels_frontendfilter']['fromto']     = 'from/to';
+$GLOBALS['TL_LANG']['metamodels_frontendfilter']['fromtodate'] = 'from/to date';
+$GLOBALS['TL_LANG']['metamodels_frontendfilter']['from']       = 'from';
+$GLOBALS['TL_LANG']['metamodels_frontendfilter']['to']         = 'to';

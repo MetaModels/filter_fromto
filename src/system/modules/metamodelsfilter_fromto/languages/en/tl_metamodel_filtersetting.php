@@ -18,12 +18,14 @@
 /**
  * filter types
  */
-$GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['typenames']['fromto']   = 'Value from/to';
+$GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['typenames']['fromto']     = 'Value from/to';
+$GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['typenames']['fromtodate'] = 'Value from/to for date';
 
 
 /**
  * fields
  */
+$GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['dateformat']  = array('Dateformate', 'Here you can add the date format. PHP need this information for the transforming from a string to a unix timestamp.');
 $GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['moreequal']    = array('Value 1 included', 'Standard: excluded.');
 $GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['lessequal']    = array('Value 2 included', 'Standard: excluded.');
 $GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['fromfield']    = array('Field for value 1', 'Show FE field for value no 1.');
