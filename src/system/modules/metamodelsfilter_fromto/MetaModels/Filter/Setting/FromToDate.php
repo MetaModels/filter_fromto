@@ -67,38 +67,60 @@ class FromToDate extends FromTo
 			$arrParamValue[0] = $this->stringToDateObject($arrParamValue[0]);
 			$arrParamValue[1] = $this->stringToDateObject($arrParamValue[1]);
 
+			// Get the right format for the field.
+			switch ($this->get('timetype'))
+			{
+				case 'time':
+					$strMask    = 'FROM_UNIXTIME(%s, \'%%%%H:%%%%i:%%%%s\')%s?';
+					$strFormate = 'H:i;s';
+					break;
+
+				case 'date':
+					$strMask    = 'FROM_UNIXTIME(%s, \'%%%%d.%%%%m.%%%%Y\')%s?';
+					$strFormate = 'd.m.Y';
+					break;
+
+				case 'datim':
+					$strMask    = 'FROM_UNIXTIME(%s, \'%%%%d.%%%%m.%%%%Y %%%%H:%%%%i:%%%%s\')%s?';
+					$strFormate = 'd.m.Y H:i;s';
+					break;
+
+				default:
+					$strMask    = '(%s%s?)';
+					$strFormate = false;
+					break;
+			}
+
+			// Build query and param array.
 			if ($this->get('fromfield'))
 			{
 				if ($arrParamValue[0])
 				{
-					$arrQuery[]  = sprintf('(%s%s?)', $objAttribute->getColName(), $strMore);
-					$arrParams[] = $arrParamValue[0];
+					$arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strMore);
+					$arrParams[] = ($strFormate !== false) ? $arrParamValue[0]->format($strFormate) :  $arrParamValue[0]->getTimestamp();
 				}
+
 				if ($arrParamValue[1])
 				{
-					$arrQuery[]  = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
-					$arrParams[] = $arrParamValue[1];
+					$arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strLess);
+					$arrParams[] = ($strFormate !== false) ? $arrParamValue[1]->format($strFormate) :  $arrParamValue[1]->getTimestamp();;
 				}
 			}
 			else
 			{
 				if ($arrParamValue[0])
 				{
-					$arrQuery[]  = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
-					$arrParams[] = $arrParamValue[0];
+					$arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strLess);
+					$arrParams[] = ($strFormate !== false) ? $arrParamValue[0]->format($strFormate) :  $arrParamValue[0]->getTimestamp();
 				}
 			}
 
-			$objFilter->addFilterRule(new SimpleQuery(
-					sprintf('
-					SELECT id
-					FROM %s
-					WHERE ',
-						$this->getMetaModel()->getTableName()
-					) . implode(' AND ', $arrQuery),
-					$arrParams
-				)
-			);
+			// Build sql.
+			$strSql =  sprintf('SELECT id FROM %s WHERE ', $this->getMetaModel()->getTableName());
+			$strSql .=  implode(' AND ', $arrQuery);
+
+			// Add to filter.
+			$objFilter->addFilterRule(new SimpleQuery($strSql, $arrParams));
 			return;
 		}
 
