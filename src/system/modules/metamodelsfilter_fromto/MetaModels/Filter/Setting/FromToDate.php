@@ -64,8 +64,8 @@ class FromToDate extends FromTo
 			$arrParams = array();
 
 			// Get form the data a timestamp for the database query.
-			$arrParamValue[0] = $this->stringToUnix($arrParamValue[0]);
-			$arrParamValue[1] = $this->stringToUnix($arrParamValue[1]);
+			$arrParamValue[0] = $this->stringToDateObject($arrParamValue[0]);
+			$arrParamValue[1] = $this->stringToDateObject($arrParamValue[1]);
 
 			if ($this->get('fromfield'))
 			{
@@ -110,9 +110,9 @@ class FromToDate extends FromTo
 	 *
 	 * @param string $string The string with the date.
 	 *
-	 * @return int The timestamp.
+	 * @return \DateTime The timestamp.
 	 */
-	protected function stringToUnix($string)
+	protected function stringToDateObject($string)
 	{
 		// Check if we have a string.
 		if (empty($string))
@@ -130,6 +130,6 @@ class FromToDate extends FromTo
 		}
 
 		// Make a unix timestamp from the string.
-		return $date->getTimestamp();
+		return $date;
 	}
 }
