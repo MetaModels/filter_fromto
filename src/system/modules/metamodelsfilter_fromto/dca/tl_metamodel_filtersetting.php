@@ -38,6 +38,8 @@ $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromtodate ext
 $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromtodate extends _attribute_']['+fefilter'][] =
 	'dateformat';
 $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromtodate extends _attribute_']['+fefilter'][] =
+	'timetype';
+$GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromtodate extends _attribute_']['+fefilter'][] =
 	'label';
 $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromtodate extends _attribute_']['+fefilter'][] =
 	'template';
@@ -106,5 +108,24 @@ $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['fields']['dateformat'] = array
 	'eval'                    => array
 	(
 		'tl_class'            => 'w50'
+	)
+);
+
+$GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['fields']['timetype'] = array
+(
+	'label'               => &$GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['timetype'],
+	'exclude'             => true,
+	'inputType'           => 'select',
+	'reference'           => &$GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['timetypeOptions'],
+	'options'             => array
+	(
+		'time',
+		'date',
+		'datim'
+	),
+	'eval'                => array
+	(
+		'doNotSaveEmpty'  => true,
+		'tl_class'        => 'w50'
 	)
 );
