@@ -71,17 +71,17 @@ class FromToDate extends FromTo
 			switch ($this->get('timetype'))
 			{
 				case 'time':
-					$strMask    = 'FROM_UNIXTIME(%s, \'%%%%H:%%%%i:%%%%s\')%s?';
+					$strMask    = 'time(FROM_UNIXTIME(%s)) %s STR_TO_DATE(?, \'%%%%H:%%%%i:%%%%s\')';
 					$strFormate = 'H:i;s';
 					break;
 
 				case 'date':
-					$strMask    = 'FROM_UNIXTIME(%s, \'%%%%d.%%%%m.%%%%Y\')%s?';
+					$strMask    = 'date(FROM_UNIXTIME(%s)) %s STR_TO_DATE(?, \'%%%%d.%%%%m.%%%%Y\')';
 					$strFormate = 'd.m.Y';
 					break;
 
 				case 'datim':
-					$strMask    = 'FROM_UNIXTIME(%s, \'%%%%d.%%%%m.%%%%Y %%%%H:%%%%i:%%%%s\')%s?';
+					$strMask    = 'FROM_UNIXTIME(%s) %s STR_TO_DATE(?,\'%%%%d.%%%%m.%%%%Y %%%%H:%%%%i:%%%%s\')';
 					$strFormate = 'd.m.Y H:i;s';
 					break;
 
