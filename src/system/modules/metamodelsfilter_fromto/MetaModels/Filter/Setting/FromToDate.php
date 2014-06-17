@@ -123,7 +123,7 @@ class FromToDate extends FromTo
 			}
 
 			// Build sql.
-			$strSql =  sprintf('SELECT id FROM %s WHERE ', $this->getMetaModel()->getTableName());
+			$strSql =   sprintf('SELECT id FROM %s WHERE ', $this->getMetaModel()->getTableName());
 			$strSql .=  implode(' AND ', $arrQuery);
 
 			// Add to filter.
