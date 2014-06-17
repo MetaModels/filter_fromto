@@ -115,6 +115,13 @@ class FromToDate extends FromTo
 				}
 			}
 
+			// Check if we have a query if not return here.
+			if(empty($arrQuery))
+			{
+				$objFilter->addFilterRule(new StaticIdList(null));
+				return;
+			}
+
 			// Build sql.
 			$strSql =  sprintf('SELECT id FROM %s WHERE ', $this->getMetaModel()->getTableName());
 			$strSql .=  implode(' AND ', $arrQuery);
