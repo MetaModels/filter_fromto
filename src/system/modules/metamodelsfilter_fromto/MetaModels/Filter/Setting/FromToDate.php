@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The MetaModels extension allows the creation of multiple collections of custom items,
  * each with its own unique set of selectable attributes, with attribute extendability.
@@ -97,13 +96,17 @@ class FromToDate extends FromTo
 				if ($arrParamValue[0])
 				{
 					$arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strMore);
-					$arrParams[] = ($strFormate !== false) ? $arrParamValue[0]->format($strFormate) :  $arrParamValue[0]->getTimestamp();
+					$arrParams[] = ($strFormate !== false)
+						? $arrParamValue[0]->format($strFormate)
+						:  $arrParamValue[0]->getTimestamp();
 				}
 
 				if ($arrParamValue[1])
 				{
 					$arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strLess);
-					$arrParams[] = ($strFormate !== false) ? $arrParamValue[1]->format($strFormate) :  $arrParamValue[1]->getTimestamp();;
+					$arrParams[] = ($strFormate !== false)
+						? $arrParamValue[1]->format($strFormate)
+						:  $arrParamValue[1]->getTimestamp();
 				}
 			}
 			else
@@ -111,19 +114,21 @@ class FromToDate extends FromTo
 				if ($arrParamValue[0])
 				{
 					$arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strLess);
-					$arrParams[] = ($strFormate !== false) ? $arrParamValue[0]->format($strFormate) :  $arrParamValue[0]->getTimestamp();
+					$arrParams[] = ($strFormate !== false)
+						? $arrParamValue[0]->format($strFormate)
+						:  $arrParamValue[0]->getTimestamp();
 				}
 			}
 
 			// Check if we have a query if not return here.
-			if(empty($arrQuery))
+			if (empty($arrQuery))
 			{
 				$objFilter->addFilterRule(new StaticIdList(null));
 				return;
 			}
 
 			// Build sql.
-			$strSql =   sprintf('SELECT id FROM %s WHERE ', $this->getMetaModel()->getTableName());
+			$strSql  =  sprintf('SELECT id FROM %s WHERE ', $this->getMetaModel()->getTableName());
 			$strSql .=  implode(' AND ', $arrQuery);
 
 			// Add to filter.
@@ -209,8 +214,6 @@ class FromToDate extends FromTo
 		{
 			$arrLabel[0] .= ' '.$GLOBALS['TL_LANG']['metamodels_frontendfilter']['to'];
 		}
-
-		$arrUrlValue = $arrFilterUrl[$this->getParamName()];
 
 		// Split up our param so the widgets can use it again.
 		$strParamName   = $this->getParamName();

@@ -58,7 +58,6 @@ class FromTo extends Simple
 		$objMetaModel = $this->getMetaModel();
 		$objAttribute = $objMetaModel->getAttributeById($this->get('attr_id'));
 		$strParamName = $this->getParamName();
-		$strColname   = $objAttribute->getColName();
 
 		$arrParamValue = null;
 		if (array_key_exists($strParamName, $arrFilterUrl) && !empty($arrFilterUrl[$strParamName]))
@@ -189,8 +188,6 @@ class FromTo extends Simple
 		{
 			$arrLabel[0] .= ' '.$GLOBALS['TL_LANG']['metamodels_frontendfilter']['to'];
 		}
-
-		$arrUrlValue = $arrFilterUrl[$this->getParamName()];
 
 		// Split up our param so the widgets can use it again.
 		$strParamName   = $this->getParamName();
