@@ -154,7 +154,7 @@ class FromToDate extends FromTo
 		$arrParamValue[0] = $this->stringToDateObject($arrParamValue[0]);
 		$arrParamValue[1] = $this->stringToDateObject($arrParamValue[1]);
 		$strMask          = $this->getMask();
-		$strFormate       = $this->getFormat();
+		$strFormat        = $this->getFormat();
 
 		// Build query and param array.
 		if ($this->get('fromfield'))
@@ -162,19 +162,19 @@ class FromToDate extends FromTo
 			if ($arrParamValue[0])
 			{
 				$arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strMore);
-				$arrParams[] = $this->formatValue($strFormate, $arrParamValue[0]);
+				$arrParams[] = $this->formatValue($strFormat, $arrParamValue[0]);
 			}
 
 			if ($arrParamValue[1])
 			{
 				$arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strLess);
-				$arrParams[] = $this->formatValue($strFormate, $arrParamValue[1]);
+				$arrParams[] = $this->formatValue($strFormat, $arrParamValue[1]);
 			}
 		}
 		elseif ($arrParamValue[0])
 		{
 			$arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strLess);
-			$arrParams[] = $this->formatValue($strFormate, $arrParamValue[0]);
+			$arrParams[] = $this->formatValue($strFormat, $arrParamValue[0]);
 		}
 
 		// Check if we have a query if not return here.
@@ -193,7 +193,7 @@ class FromToDate extends FromTo
 	}
 
 	/**
-	 * Try to get from a string the timestamp build on the dateformate.
+	 * Try to get from a string the timestamp build on the date format.
 	 *
 	 * @param string $string The string with the date.
 	 *
