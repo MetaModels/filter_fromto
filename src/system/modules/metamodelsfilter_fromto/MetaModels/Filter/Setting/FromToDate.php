@@ -32,111 +32,164 @@ use MetaModels\FrontendIntegration\FrontendFilterOptions;
 class FromToDate extends FromTo
 {
 	/**
+	 * Retrieve the parameter value from the filter url.
+	 *
+	 * @param array $filterUrl The filter url from which to extract the parameter.
+	 *
+	 * @return null|string|array
+	 */
+	protected function getParameterValue($filterUrl)
+	{
+		$parameterName = $this->getParamName();
+		if (isset($filterUrl[$parameterName]) && !empty($filterUrl[$parameterName]))
+		{
+			if (is_array($filterUrl[$parameterName]))
+			{
+				return $filterUrl[$parameterName];
+			}
+
+			return explode('__', $filterUrl[$parameterName]);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Format the date time object accordingly to the format.
+	 *
+	 * @param string           $format The format to use.
+	 *
+	 * @param \DateTime|string $value  The value to format.
+	 *
+	 * @return string
+	 */
+	protected function formatValue($format, $value)
+	{
+		if (is_string($value))
+		{
+			return $value;
+		}
+
+		$string = $value->format($format);
+
+		if ($string)
+		{
+			return $string;
+		}
+
+		return $value->getTimestamp();
+	}
+
+	/**
+	 * Detect the SQL mask to use.
+	 *
+	 * @return string|false
+	 */
+	protected function getMask()
+	{
+		// Get the right format for the field.
+		switch ($this->get('timetype'))
+		{
+			case 'time':
+				return 'time(FROM_UNIXTIME(%s)) %s STR_TO_DATE(?, \'%%%%H:%%%%i:%%%%s\')';
+
+			case 'date':
+				return 'date(FROM_UNIXTIME(%s)) %s STR_TO_DATE(?, \'%%%%d.%%%%m.%%%%Y\')';
+
+			case 'datim':
+				return 'FROM_UNIXTIME(%s) %s STR_TO_DATE(?,\'%%%%d.%%%%m.%%%%Y %%%%H:%%%%i:%%%%s\')';
+
+			default:
+		}
+
+		return '(%s%s?)';
+	}
+
+	/**
+	 * Detect the format to use.
+	 *
+	 * @return string|false
+	 */
+	protected function getFormat()
+	{
+		// Get the right format for the field.
+		switch ($this->get('timetype'))
+		{
+			case 'time':
+				return 'H:i;s';
+
+			case 'date':
+				return 'd.m.Y';
+
+			case 'datim':
+				return 'd.m.Y H:i;s';
+
+			default:
+		}
+
+		return false;
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function prepareRules(IFilter $objFilter, $arrFilterUrl)
 	{
-		$objMetaModel = $this->getMetaModel();
-		$objAttribute = $objMetaModel->getAttributeById($this->get('attr_id'));
-		$strParamName = $this->getParamName();
-		$strColname   = $objAttribute->getColName();
+		$objMetaModel  = $this->getMetaModel();
+		$objAttribute  = $objMetaModel->getAttributeById($this->get('attr_id'));
+		$strParamName  = $this->getParamName();
+		$arrParamValue = $this->getParameterValue($arrFilterUrl);
 
-		$arrParamValue = null;
-		if (array_key_exists($strParamName, $arrFilterUrl) && !empty($arrFilterUrl[$strParamName]))
+		if (!($objAttribute && $strParamName && $arrParamValue && ($arrParamValue[0] || $arrParamValue[1])))
 		{
-			if (is_array($arrFilterUrl[$strParamName]))
-			{
-				$arrParamValue = $arrFilterUrl[$strParamName];
-			}
-			else
-			{
-				$arrParamValue = explode('__', $arrFilterUrl[$strParamName]);
-			}
+			$objFilter->addFilterRule(new StaticIdList(null));
 		}
 
-		if ($objAttribute && $strParamName && $arrParamValue && ($arrParamValue[0] || $arrParamValue[1]))
+		$strMore   = $this->get('moreequal') ? '>=' : '>';
+		$strLess   = $this->get('lessequal') ? '<=' : '<';
+		$arrQuery  = array();
+		$arrParams = array();
+
+		// Get form the data a timestamp for the database query.
+		$arrParamValue[0] = $this->stringToDateObject($arrParamValue[0]);
+		$arrParamValue[1] = $this->stringToDateObject($arrParamValue[1]);
+		$strMask          = $this->getMask();
+		$strFormate       = $this->getFormat();
+
+		// Build query and param array.
+		if ($this->get('fromfield'))
 		{
-			$strMore = $this->get('moreequal') ? '>=' : '>';
-			$strLess = $this->get('lessequal') ? '<=' : '<';
-
-			$arrQuery  = array();
-			$arrParams = array();
-
-			// Get form the data a timestamp for the database query.
-			$arrParamValue[0] = $this->stringToDateObject($arrParamValue[0]);
-			$arrParamValue[1] = $this->stringToDateObject($arrParamValue[1]);
-
-			// Get the right format for the field.
-			switch ($this->get('timetype'))
+			if ($arrParamValue[0])
 			{
-				case 'time':
-					$strMask    = 'time(FROM_UNIXTIME(%s)) %s STR_TO_DATE(?, \'%%%%H:%%%%i:%%%%s\')';
-					$strFormate = 'H:i;s';
-					break;
-
-				case 'date':
-					$strMask    = 'date(FROM_UNIXTIME(%s)) %s STR_TO_DATE(?, \'%%%%d.%%%%m.%%%%Y\')';
-					$strFormate = 'd.m.Y';
-					break;
-
-				case 'datim':
-					$strMask    = 'FROM_UNIXTIME(%s) %s STR_TO_DATE(?,\'%%%%d.%%%%m.%%%%Y %%%%H:%%%%i:%%%%s\')';
-					$strFormate = 'd.m.Y H:i;s';
-					break;
-
-				default:
-					$strMask    = '(%s%s?)';
-					$strFormate = false;
-					break;
+				$arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strMore);
+				$arrParams[] = $this->formatValue($strFormate, $arrParamValue[0]);
 			}
 
-			// Build query and param array.
-			if ($this->get('fromfield'))
+			if ($arrParamValue[1])
 			{
-				if ($arrParamValue[0])
-				{
-					$arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strMore);
-					$arrParams[] = ($strFormate !== false)
-						? $arrParamValue[0]->format($strFormate)
-						:  $arrParamValue[0]->getTimestamp();
-				}
-
-				if ($arrParamValue[1])
-				{
-					$arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strLess);
-					$arrParams[] = ($strFormate !== false)
-						? $arrParamValue[1]->format($strFormate)
-						:  $arrParamValue[1]->getTimestamp();
-				}
+				$arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strLess);
+				$arrParams[] = $this->formatValue($strFormate, $arrParamValue[1]);
 			}
-			else
-			{
-				if ($arrParamValue[0])
-				{
-					$arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strLess);
-					$arrParams[] = ($strFormate !== false)
-						? $arrParamValue[0]->format($strFormate)
-						:  $arrParamValue[0]->getTimestamp();
-				}
-			}
+		}
+		elseif ($arrParamValue[0])
+		{
+			$arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strLess);
+			$arrParams[] = $this->formatValue($strFormate, $arrParamValue[0]);
+		}
 
-			// Check if we have a query if not return here.
-			if (empty($arrQuery))
-			{
-				$objFilter->addFilterRule(new StaticIdList(null));
-				return;
-			}
-
-			// Build sql.
-			$strSql  =  sprintf('SELECT id FROM %s WHERE ', $this->getMetaModel()->getTableName());
-			$strSql .=  implode(' AND ', $arrQuery);
-
-			// Add to filter.
-			$objFilter->addFilterRule(new SimpleQuery($strSql, $arrParams));
+		// Check if we have a query if not return here.
+		if (empty($arrQuery))
+		{
+			$objFilter->addFilterRule(new StaticIdList(null));
 			return;
 		}
 
-		$objFilter->addFilterRule(new StaticIdList(null));
+		// Build sql.
+		$strSql  =  sprintf('SELECT id FROM %s WHERE ', $this->getMetaModel()->getTableName());
+		$strSql .=  implode(' AND ', $arrQuery);
+
+		// Add to filter.
+		$objFilter->addFilterRule(new SimpleQuery($strSql, $arrParams));
 	}
 
 	/**
