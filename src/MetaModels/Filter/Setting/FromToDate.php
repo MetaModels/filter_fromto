@@ -145,37 +145,20 @@ class FromToDate extends FromTo
             $objFilter->addFilterRule(new StaticIdList(null));
         }
 
-        $strMore   = $this->get('moreequal') ? '>=' : '>';
-        $strLess   = $this->get('lessequal') ? '<=' : '<';
         $arrQuery  = array();
         $arrParams = array();
 
         // Get form the data a timestamp for the database query.
         $arrParamValue[0] = $this->stringToDateObject($arrParamValue[0]);
         $arrParamValue[1] = $this->stringToDateObject($arrParamValue[1]);
-        $strMask          = $this->getMask();
-        $strFormat        = $this->getFormat();
 
         // Build query and param array.
-        if ($this->get('fromfield'))
-        {
-            if ($arrParamValue[0])
-            {
-                $arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strMore);
-                $arrParams[] = $this->formatValue($strFormat, $arrParamValue[0]);
-            }
-
-            if ($arrParamValue[1])
-            {
-                $arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strLess);
-                $arrParams[] = $this->formatValue($strFormat, $arrParamValue[1]);
-            }
-        }
-        elseif ($arrParamValue[0])
-        {
-            $arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strLess);
-            $arrParams[] = $this->formatValue($strFormat, $arrParamValue[0]);
-        }
+        list($arrQuery, $arrParams) = $this->prepareParamsAndQuery(
+            $arrParamValue,
+            $objAttribute,
+            $arrQuery,
+            $arrParams
+        );
 
         // Check if we have a query if not return here.
         if (empty($arrQuery))
@@ -231,67 +214,12 @@ class FromToDate extends FromTo
     )
     {
         $objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
+        $arrOptions   = $this->prepareWidgetOptions($arrIds, $objAttribute);
+        $arrLabel     = $this->prepareWidgetLabel($objAttribute);
 
-        $arrOptions = $objAttribute->getFilterOptions(
-            ($this->get('onlypossible') ? $arrIds : null),
-            (bool)$this->get('onlyused')
-        );
+        list($arrMyFilterUrl, $arrParamValue) = $this->prepareWidgetParamAndFilterUrl($arrFilterUrl);
 
-        // Remove empty values from list.
-        foreach ($arrOptions as $mixKeyOption => $mixOption)
-        {
-            // Remove html/php tags.
-            $mixOption = strip_tags($mixOption);
-            $mixOption = trim($mixOption);
-
-            if ($mixOption === '' || $mixOption === null)
-            {
-                unset($arrOptions[$mixKeyOption]);
-            }
-        }
-
-        $arrLabel = array(
-            ($this->get('label') ? $this->get('label') : $objAttribute->getName()),
-            'GET: '.$this->get('urlparam')
-        );
-
-        if ($this->get('fromfield') && $this->get('tofield'))
-        {
-            $arrLabel[0] .= ' '.$GLOBALS['TL_LANG']['metamodels_frontendfilter']['fromto'];
-        }
-        elseif($this->get('fromfield') && !$this->get('tofield'))
-        {
-            $arrLabel[0] .= ' '.$GLOBALS['TL_LANG']['metamodels_frontendfilter']['from'];
-        }
-        else
-        {
-            $arrLabel[0] .= ' '.$GLOBALS['TL_LANG']['metamodels_frontendfilter']['to'];
-        }
-
-        // Split up our param so the widgets can use it again.
-        $strParamName   = $this->getParamName();
-        $arrMyFilterUrl = $arrFilterUrl;
-        // If we have a value, we have to explode it by double underscore to have a valid value which the active checks
-        // may cope with.
-        if (array_key_exists($strParamName, $arrFilterUrl) && !empty($arrFilterUrl[$strParamName]))
-        {
-            if (is_array($arrFilterUrl[$strParamName]))
-            {
-                $arrParamValue = $arrFilterUrl[$strParamName];
-            } else {
-                $arrParamValue = explode('__', $arrFilterUrl[$strParamName], 2);
-            }
-
-            if ($arrParamValue && ($arrParamValue[0] || $arrParamValue[1]))
-            {
-                $arrMyFilterUrl[$strParamName] = $arrParamValue;
-            } else {
-                // No values given, clear the array.
-                $arrParamValue = null;
-            }
-        }
-
-        $GLOBALS['MM_FILTER_PARAMS'][] = $this->getParamName();
+        $this->addFilterParam();
 
         return array(
             $this->getParamName() => $this->prepareFrontendFilterWidget(
@@ -319,4 +247,140 @@ class FromToDate extends FromTo
         );
     }
 
+    /**
+     * @param $arrParamValue
+     * @param $objAttribute
+     * @param $arrQuery
+     * @param $arrParams
+     *
+     * @return array
+     */
+    private function prepareParamsAndQuery(
+        $arrParamValue,
+        $objAttribute,
+        $arrQuery,
+        $arrParams
+    ) {
+        $strMore   = $this->get('moreequal') ? '>=' : '>';
+        $strLess   = $this->get('lessequal') ? '<=' : '<';
+        $strMask   = $this->getMask();
+        $strFormat = $this->getFormat();
+
+        if ($this->get('fromfield')) {
+            if ($arrParamValue[0]) {
+                $arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strMore);
+                $arrParams[] = $this->formatValue($strFormat, $arrParamValue[0]);
+            }
+
+            if ($arrParamValue[1]) {
+                $arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strLess);
+                $arrParams[] = $this->formatValue($strFormat, $arrParamValue[1]);
+            }
+        } elseif ($arrParamValue[0]) {
+            $arrQuery[]  = sprintf($strMask, $objAttribute->getColName(), $strLess);
+            $arrParams[] = $this->formatValue($strFormat, $arrParamValue[0]);
+        }
+
+        return array($arrQuery, $arrParams);
+    }
+
+    /**
+     * @param $arrIds
+     * @param $objAttribute
+     *
+     * @return mixed
+     */
+    private function prepareWidgetOptions($arrIds, $objAttribute)
+    {
+        $arrOptions = $objAttribute->getFilterOptions(
+            ($this->get('onlypossible') ? $arrIds : null),
+            (bool)$this->get('onlyused')
+        );
+
+        // Remove empty values from list.
+        foreach ($arrOptions as $mixKeyOption => $mixOption) {
+            // Remove html/php tags.
+            $mixOption = strip_tags($mixOption);
+            $mixOption = trim($mixOption);
+
+            if ($mixOption === '' || $mixOption === null) {
+                unset($arrOptions[$mixKeyOption]);
+            }
+        }
+
+        return $arrOptions;
+    }
+
+    /**
+     * @param $objAttribute
+     *
+     * @return array
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    private function prepareWidgetLabel($objAttribute)
+    {
+        $arrLabel = array(
+            ($this->get('label') ? $this->get('label') : $objAttribute->getName()),
+            'GET: ' . $this->get('urlparam')
+        );
+
+        if ($this->get('fromfield') && $this->get('tofield')) {
+            $arrLabel[0] .= ' ' . $GLOBALS['TL_LANG']['metamodels_frontendfilter']['fromto'];
+        } elseif ($this->get('fromfield') && !$this->get('tofield')) {
+            $arrLabel[0] .= ' ' . $GLOBALS['TL_LANG']['metamodels_frontendfilter']['from'];
+        } else {
+            $arrLabel[0] .= ' ' . $GLOBALS['TL_LANG']['metamodels_frontendfilter']['to'];
+        }
+
+        return $arrLabel;
+    }
+
+    /**
+     * @param $arrFilterUrl
+     *
+     * @return array
+     */
+    private function prepareWidgetParamAndFilterUrl($arrFilterUrl)
+    {
+        // Split up our param so the widgets can use it again.
+        $strParamName   = $this->getParamName();
+        $arrMyFilterUrl = $arrFilterUrl;
+        $arrParamValue  = null;
+
+        // If we have a value, we have to explode it by double underscore to have a valid value which the active checks
+        // may cope with.
+        if (array_key_exists($strParamName, $arrFilterUrl) && !empty($arrFilterUrl[$strParamName])) {
+            if (is_array($arrFilterUrl[$strParamName])) {
+                $arrParamValue = $arrFilterUrl[$strParamName];
+            } else {
+                $arrParamValue = explode('__', $arrFilterUrl[$strParamName], 2);
+            }
+
+            if ($arrParamValue && ($arrParamValue[0] || $arrParamValue[1])) {
+                $arrMyFilterUrl[$strParamName] = $arrParamValue;
+
+                return array($arrMyFilterUrl, $arrParamValue);
+            } else {
+                // No values given, clear the array.
+                $arrParamValue = null;
+
+                return array($arrMyFilterUrl, $arrParamValue);
+            }
+        }
+
+        return array($arrMyFilterUrl, $arrParamValue);
+    }
+
+    /**
+     * Add filter param.
+     *
+     * @return void
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    private function addFilterParam()
+    {
+        $GLOBALS['MM_FILTER_PARAMS'][] = $this->getParamName();
+    }
 }
