@@ -37,14 +37,12 @@ class FromTo extends Simple
      */
     protected function getParamName()
     {
-        if ($this->get('urlparam'))
-        {
+        if ($this->get('urlparam')) {
             return $this->get('urlparam');
         }
 
         $objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
-        if ($objAttribute)
-        {
+        if ($objAttribute) {
             return $objAttribute->getColName();
         }
 
@@ -61,29 +59,29 @@ class FromTo extends Simple
         $strParamName = $this->getParamName();
 
         $arrParamValue = null;
-        if (array_key_exists($strParamName, $arrFilterUrl) && !empty($arrFilterUrl[$strParamName]))
-        {
-            if (is_array($arrFilterUrl[$strParamName]))
-            {
+        if (array_key_exists($strParamName, $arrFilterUrl) && !empty($arrFilterUrl[$strParamName])) {
+            if (is_array($arrFilterUrl[$strParamName])) {
                 $arrParamValue = $arrFilterUrl[$strParamName];
             } else {
                 $arrParamValue = explode('__', $arrFilterUrl[$strParamName]);
             }
         }
 
-        if ($objAttribute && $strParamName && $arrParamValue && ($arrParamValue[0] || $arrParamValue[1]))
-        {
-            list($arrQuery, $arrParams) = $this->prepareQueryAndParams($arrParamValue, $objAttribute);
+        if ($objAttribute && $strParamName && $arrParamValue && ($arrParamValue[0] || $arrParamValue[1])) {
+            list($arrQuery, $arrParams) = $this->prepareRuleQueryAndParams($arrParamValue, $objAttribute);
 
-            $objFilter->addFilterRule(new SimpleQuery(
-                sprintf('
-                    SELECT id
-                    FROM %s
-                    WHERE ',
-                    $this->getMetaModel()->getTableName()) . implode(' AND ', $arrQuery),
+            $objFilter->addFilterRule(
+                new SimpleQuery(
+                    sprintf(
+                        'SELECT id
+                        FROM %s
+                        WHERE ',
+                        $this->getMetaModel()->getTableName()
+                    ) . implode(' AND ', $arrQuery),
                     $arrParams
                 )
             );
+
             return;
         }
 
@@ -97,7 +95,6 @@ class FromTo extends Simple
     {
         return ($strParamName = $this->getParamName()) ? array($strParamName) : array();
     }
-
 
     /**
      * {@inheritdoc}
@@ -115,7 +112,6 @@ class FromTo extends Simple
         );
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -124,14 +120,13 @@ class FromTo extends Simple
         $arrFilterUrl,
         $arrJumpTo,
         FrontendFilterOptions $objFrontendFilterOptions
-    )
-    {
+    ) {
         $objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
 
-        $arrOptions = $this->prepareOptions($arrIds, $objAttribute);
-        $arrLabel   = $this->prepareLabel($objAttribute);
+        $arrOptions = $this->prepareWidgetOptions($arrIds, $objAttribute);
+        $arrLabel   = $this->prepareWidgetLabel($objAttribute);
 
-        list($arrMyFilterUrl, $arrParamValue) = $this->splitParamAndUrl($arrFilterUrl);
+        list($arrMyFilterUrl, $arrParamValue) = $this->prepareWidgetParamAndFilterUrl($arrFilterUrl);
 
         $this->addParamFilter();
 
@@ -167,8 +162,8 @@ class FromTo extends Simple
     public function getReferencedAttributes()
     {
         $objAttribute = null;
-        if (!($this->get('attr_id') && ($objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id')))))
-        {
+        if (!($this->get('attr_id')
+            && ($objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'))))) {
             return array();
         }
 
@@ -183,7 +178,7 @@ class FromTo extends Simple
      *
      * @return array
      */
-    private function prepareQueryAndParams($arrParamValue, $objAttribute)
+    private function prepareRuleQueryAndParams($arrParamValue, $objAttribute)
     {
         $strMore = $this->get('moreequal') ? '>=' : '>';
         $strLess = $this->get('lessequal') ? '<=' : '<';
@@ -219,7 +214,7 @@ class FromTo extends Simple
      *
      * @SuppressWarnings(PHPMD.Superglobals)
      */
-    private function prepareLabel($objAttribute)
+    private function prepareWidgetLabel($objAttribute)
     {
         $arrLabel = array(
             ($this->get('label') ? $this->get('label') : $objAttribute->getName()),
@@ -245,11 +240,11 @@ class FromTo extends Simple
      *
      * @return array
      */
-    private function prepareOptions($arrIds, $objAttribute)
+    private function prepareWidgetOptions($arrIds, $objAttribute)
     {
         $arrOptions = $objAttribute->getFilterOptions(
             ($this->get('onlypossible') ? $arrIds : null),
-            (bool)$this->get('onlyused')
+            (bool) $this->get('onlyused')
         );
 
         // Remove empty values from list.
@@ -285,7 +280,7 @@ class FromTo extends Simple
      *
      * @return array
      */
-    private function splitParamAndUrl($arrFilterUrl)
+    private function prepareWidgetParamAndFilterUrl($arrFilterUrl)
     {
         // Split up our param so the widgets can use it again.
         $strParamName   = $this->getParamName();

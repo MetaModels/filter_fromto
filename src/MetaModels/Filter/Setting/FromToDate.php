@@ -17,6 +17,7 @@
 
 namespace MetaModels\Filter\Setting;
 
+use MetaModels\Attribute\IAttribute;
 use MetaModels\Filter\IFilter;
 use MetaModels\Filter\Rules\SimpleQuery;
 use MetaModels\Filter\Rules\StaticIdList;
@@ -41,10 +42,8 @@ class FromToDate extends FromTo
     protected function getParameterValue($filterUrl)
     {
         $parameterName = $this->getParamName();
-        if (isset($filterUrl[$parameterName]) && !empty($filterUrl[$parameterName]))
-        {
-            if (is_array($filterUrl[$parameterName]))
-            {
+        if (isset($filterUrl[$parameterName]) && !empty($filterUrl[$parameterName])) {
+            if (is_array($filterUrl[$parameterName])) {
                 return $filterUrl[$parameterName];
             }
 
@@ -58,22 +57,19 @@ class FromToDate extends FromTo
      * Format the date time object accordingly to the format.
      *
      * @param string           $format The format to use.
-     *
      * @param \DateTime|string $value  The value to format.
      *
      * @return string
      */
     protected function formatValue($format, $value)
     {
-        if (is_string($value))
-        {
+        if (is_string($value)) {
             return $value;
         }
 
         $string = $value->format($format);
 
-        if ($string)
-        {
+        if ($string) {
             return $string;
         }
 
@@ -88,8 +84,7 @@ class FromToDate extends FromTo
     protected function getMask()
     {
         // Get the right format for the field.
-        switch ($this->get('timetype'))
-        {
+        switch ($this->get('timetype')) {
             case 'time':
                 return 'time(FROM_UNIXTIME(%s)) %s STR_TO_DATE(?, \'%%%%H:%%%%i:%%%%s\')';
 
@@ -113,8 +108,7 @@ class FromToDate extends FromTo
     protected function getFormat()
     {
         // Get the right format for the field.
-        switch ($this->get('timetype'))
-        {
+        switch ($this->get('timetype')) {
             case 'time':
                 return 'H:i;s';
 
@@ -140,8 +134,7 @@ class FromToDate extends FromTo
         $strParamName  = $this->getParamName();
         $arrParamValue = $this->getParameterValue($arrFilterUrl);
 
-        if (!($objAttribute && $strParamName && $arrParamValue && ($arrParamValue[0] || $arrParamValue[1])))
-        {
+        if (!($objAttribute && $strParamName && $arrParamValue && ($arrParamValue[0] || $arrParamValue[1]))) {
             $objFilter->addFilterRule(new StaticIdList(null));
         }
 
@@ -153,7 +146,7 @@ class FromToDate extends FromTo
         $arrParamValue[1] = $this->stringToDateObject($arrParamValue[1]);
 
         // Build query and param array.
-        list($arrQuery, $arrParams) = $this->prepareParamsAndQuery(
+        list($arrQuery, $arrParams) = $this->prepareRuleParamsAndQuery(
             $arrParamValue,
             $objAttribute,
             $arrQuery,
@@ -161,15 +154,15 @@ class FromToDate extends FromTo
         );
 
         // Check if we have a query if not return here.
-        if (empty($arrQuery))
-        {
+        if (empty($arrQuery)) {
             $objFilter->addFilterRule(new StaticIdList(null));
+
             return;
         }
 
         // Build sql.
-        $strSql  =  sprintf('SELECT id FROM %s WHERE ', $this->getMetaModel()->getTableName());
-        $strSql .=  implode(' AND ', $arrQuery);
+        $strSql  = sprintf('SELECT id FROM %s WHERE ', $this->getMetaModel()->getTableName());
+        $strSql .= implode(' AND ', $arrQuery);
 
         // Add to filter.
         $objFilter->addFilterRule(new SimpleQuery($strSql, $arrParams));
@@ -185,8 +178,7 @@ class FromToDate extends FromTo
     protected function stringToDateObject($string)
     {
         // Check if we have a string.
-        if (empty($string))
-        {
+        if (empty($string)) {
             return '';
         }
 
@@ -194,8 +186,7 @@ class FromToDate extends FromTo
         $date = \DateTime::createFromFormat($this->get('dateformat'), $string);
 
         // Check if we have a data, if not return a empty string.
-        if ($date == null)
-        {
+        if ($date == null) {
             return '';
         }
 
@@ -211,8 +202,7 @@ class FromToDate extends FromTo
         $arrFilterUrl,
         $arrJumpTo,
         FrontendFilterOptions $objFrontendFilterOptions
-    )
-    {
+    ) {
         $objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
         $arrOptions   = $this->prepareWidgetOptions($arrIds, $objAttribute);
         $arrLabel     = $this->prepareWidgetLabel($objAttribute);
@@ -223,39 +213,39 @@ class FromToDate extends FromTo
 
         return array(
             $this->getParamName() => $this->prepareFrontendFilterWidget(
-                    array
-                    (
-                        'label'         => $arrLabel,
-                        'inputType'     => 'multitext',
-                        'options'       => $arrOptions,
-                        'timetype'      => $this->get('timetype'),
-                        'dateformat'    => $this->get('dateformat'),
-                        'eval'          => array
-                        (
-                            'multiple'  => true,
-                            'size'      => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
-                            'urlparam'  => $this->get('urlparam'),
-                            'template'  => $this->get('template'),
-                        ),
-                        // We need to implode to have it transported correctly in the frontend filter.
-                        'urlvalue'      => !empty($arrParamValue) ? implode('__', $arrParamValue) : ''
+                array(
+                    'label'         => $arrLabel,
+                    'inputType'     => 'multitext',
+                    'options'       => $arrOptions,
+                    'timetype'      => $this->get('timetype'),
+                    'dateformat'    => $this->get('dateformat'),
+                    'eval'          => array(
+                        'multiple'  => true,
+                        'size'      => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
+                        'urlparam'  => $this->get('urlparam'),
+                        'template'  => $this->get('template'),
                     ),
-                    $arrMyFilterUrl,
-                    $arrJumpTo,
-                    $objFrontendFilterOptions
-                )
+                    // We need to implode to have it transported correctly in the frontend filter.
+                    'urlvalue'      => !empty($arrParamValue) ? implode('__', $arrParamValue) : ''
+                ),
+                $arrMyFilterUrl,
+                $arrJumpTo,
+                $objFrontendFilterOptions
+            )
         );
     }
 
     /**
-     * @param $arrParamValue
-     * @param $objAttribute
-     * @param $arrQuery
-     * @param $arrParams
+     * Prepare params and query for the rule.
+     *
+     * @param array      $arrParamValue The param value.
+     * @param IAttribute $objAttribute  The metamodel attribute.
+     * @param array      $arrQuery      The query array.
+     * @param array      $arrParams     The params array.
      *
      * @return array
      */
-    private function prepareParamsAndQuery(
+    private function prepareRuleParamsAndQuery(
         $arrParamValue,
         $objAttribute,
         $arrQuery,
@@ -285,16 +275,18 @@ class FromToDate extends FromTo
     }
 
     /**
-     * @param $arrIds
-     * @param $objAttribute
+     * Prepare options for the widget.
      *
-     * @return mixed
+     * @param array      $arrIds       List of ids.
+     * @param IAttribute $objAttribute The metamodel attribute.
+     *
+     * @return array
      */
     private function prepareWidgetOptions($arrIds, $objAttribute)
     {
         $arrOptions = $objAttribute->getFilterOptions(
             ($this->get('onlypossible') ? $arrIds : null),
-            (bool)$this->get('onlyused')
+            (bool) $this->get('onlyused')
         );
 
         // Remove empty values from list.
@@ -312,7 +304,9 @@ class FromToDate extends FromTo
     }
 
     /**
-     * @param $objAttribute
+     * Prepare the widget label.
+     *
+     * @param IAttribute $objAttribute The metamodel attribute.
      *
      * @return array
      *
@@ -337,7 +331,9 @@ class FromToDate extends FromTo
     }
 
     /**
-     * @param $arrFilterUrl
+     * Prepare the widget Param and filter url.
+     *
+     * @param array $arrFilterUrl The filter url.
      *
      * @return array
      */
@@ -373,7 +369,7 @@ class FromToDate extends FromTo
     }
 
     /**
-     * Add filter param.
+     * Add filter param to global.
      *
      * @return void
      *
