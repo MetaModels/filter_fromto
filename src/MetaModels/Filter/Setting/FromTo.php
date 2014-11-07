@@ -17,6 +17,7 @@
 
 namespace MetaModels\Filter\Setting;
 
+use MetaModels\Attribute\IAttribute;
 use MetaModels\Filter\IFilter;
 use MetaModels\Filter\Rules\SimpleQuery;
 use MetaModels\Filter\Rules\StaticIdList;
@@ -72,33 +73,7 @@ class FromTo extends Simple
 
         if ($objAttribute && $strParamName && $arrParamValue && ($arrParamValue[0] || $arrParamValue[1]))
         {
-            $strMore = $this->get('moreequal') ? '>=' : '>';
-            $strLess = $this->get('lessequal') ? '<=' : '<';
-
-            $arrQuery  = array();
-            $arrParams = array();
-
-            if ($this->get('fromfield'))
-            {
-                if ($arrParamValue[0])
-                {
-                    $arrQuery[]  = sprintf('(%s%s?)', $objAttribute->getColName(), $strMore);
-                    $arrParams[] = $arrParamValue[0];
-                }
-                if ($arrParamValue[1])
-                {
-                    $arrQuery[]  = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
-                    $arrParams[] = $arrParamValue[1];
-                }
-            }
-            else
-            {
-                if ($arrParamValue[0])
-                {
-                    $arrQuery[]  = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
-                    $arrParams[] = $arrParamValue[0];
-                }
-            }
+            list($arrQuery, $arrParams) = $this->prepareQueryAndParams($arrParamValue, $objAttribute);
 
             $objFilter->addFilterRule(new SimpleQuery(
                 sprintf('
@@ -153,66 +128,12 @@ class FromTo extends Simple
     {
         $objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
 
-        $arrOptions = $objAttribute->getFilterOptions(
-            ($this->get('onlypossible') ? $arrIds : null),
-            (bool)$this->get('onlyused')
-        );
+        $arrOptions = $this->prepareOptions($arrIds, $objAttribute);
+        $arrLabel   = $this->prepareLabel($objAttribute);
 
-        // Remove empty values from list.
-        foreach ($arrOptions as $mixKeyOption => $mixOption)
-        {
-            // Remove html/php tags.
-            $mixOption = strip_tags($mixOption);
-            $mixOption = trim($mixOption);
+        list($arrMyFilterUrl, $arrParamValue) = $this->splitParamAndUrl($arrFilterUrl);
 
-            if ($mixOption === '' || $mixOption === null)
-            {
-                unset($arrOptions[$mixKeyOption]);
-            }
-        }
-
-        $arrLabel = array(
-            ($this->get('label') ? $this->get('label') : $objAttribute->getName()),
-            'GET: '.$this->get('urlparam')
-        );
-
-        if ($this->get('fromfield') && $this->get('tofield'))
-        {
-            $arrLabel[0] .= ' '.$GLOBALS['TL_LANG']['metamodels_frontendfilter']['fromto'];
-        }
-        elseif($this->get('fromfield') && !$this->get('tofield'))
-        {
-            $arrLabel[0] .= ' '.$GLOBALS['TL_LANG']['metamodels_frontendfilter']['from'];
-        }
-        else
-        {
-            $arrLabel[0] .= ' '.$GLOBALS['TL_LANG']['metamodels_frontendfilter']['to'];
-        }
-
-        // Split up our param so the widgets can use it again.
-        $strParamName   = $this->getParamName();
-        $arrMyFilterUrl = $arrFilterUrl;
-        // If we have a value, we have to explode it by double underscore to have a valid value which the active checks
-        // may cope with.
-        if (array_key_exists($strParamName, $arrFilterUrl) && !empty($arrFilterUrl[$strParamName]))
-        {
-            if (is_array($arrFilterUrl[$strParamName]))
-            {
-                $arrParamValue = $arrFilterUrl[$strParamName];
-            } else {
-                $arrParamValue = explode('__', $arrFilterUrl[$strParamName], 2);
-            }
-
-            if ($arrParamValue && ($arrParamValue[0] || $arrParamValue[1]))
-            {
-                $arrMyFilterUrl[$strParamName] = $arrParamValue;
-            } else {
-                // No values given, clear the array.
-                $arrParamValue = null;
-            }
-        }
-
-        $GLOBALS['MM_FILTER_PARAMS'][] = $this->getParamName();
+        $this->addParamFilter();
 
         return array(
             $this->getParamName() => $this->prepareFrontendFilterWidget(
@@ -252,5 +173,142 @@ class FromTo extends Simple
         }
 
         return $objAttribute ? array($objAttribute->getColName()) : array();
+    }
+
+    /**
+     * Prepare query and filter params.
+     *
+     * @param array      $arrParamValue Param value.
+     * @param IAttribute $objAttribute  Metamodel Attribute.
+     *
+     * @return array
+     */
+    private function prepareQueryAndParams($arrParamValue, $objAttribute)
+    {
+        $strMore = $this->get('moreequal') ? '>=' : '>';
+        $strLess = $this->get('lessequal') ? '<=' : '<';
+
+        $arrQuery  = array();
+        $arrParams = array();
+
+        if ($this->get('fromfield')) {
+            if ($arrParamValue[0]) {
+                $arrQuery[]  = sprintf('(%s%s?)', $objAttribute->getColName(), $strMore);
+                $arrParams[] = $arrParamValue[0];
+            }
+            if ($arrParamValue[1]) {
+                $arrQuery[]  = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
+                $arrParams[] = $arrParamValue[1];
+            }
+        } else {
+            if ($arrParamValue[0]) {
+                $arrQuery[]  = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
+                $arrParams[] = $arrParamValue[0];
+            }
+        }
+
+        return array($arrQuery, $arrParams);
+    }
+
+    /**
+     * The the label for the current attribute.
+     *
+     * @param IAttribute $objAttribute Metamodel attribute.
+     *
+     * @return array
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    private function prepareLabel($objAttribute)
+    {
+        $arrLabel = array(
+            ($this->get('label') ? $this->get('label') : $objAttribute->getName()),
+            'GET: ' . $this->get('urlparam')
+        );
+
+        if ($this->get('fromfield') && $this->get('tofield')) {
+            $arrLabel[0] .= ' ' . $GLOBALS['TL_LANG']['metamodels_frontendfilter']['fromto'];
+        } elseif ($this->get('fromfield') && !$this->get('tofield')) {
+            $arrLabel[0] .= ' ' . $GLOBALS['TL_LANG']['metamodels_frontendfilter']['from'];
+        } else {
+            $arrLabel[0] .= ' ' . $GLOBALS['TL_LANG']['metamodels_frontendfilter']['to'];
+        }
+
+        return $arrLabel;
+    }
+
+    /**
+     * Prepare options for widget configuration.
+     *
+     * @param array      $arrIds       List of ids.
+     * @param IAttribute $objAttribute Current Metamodel attribute.
+     *
+     * @return array
+     */
+    private function prepareOptions($arrIds, $objAttribute)
+    {
+        $arrOptions = $objAttribute->getFilterOptions(
+            ($this->get('onlypossible') ? $arrIds : null),
+            (bool)$this->get('onlyused')
+        );
+
+        // Remove empty values from list.
+        foreach ($arrOptions as $mixKeyOption => $mixOption) {
+            // Remove html/php tags.
+            $mixOption = strip_tags($mixOption);
+            $mixOption = trim($mixOption);
+
+            if ($mixOption === '' || $mixOption === null) {
+                unset($arrOptions[$mixKeyOption]);
+            }
+        }
+
+        return $arrOptions;
+    }
+
+    /**
+     * Add param filter to global list.
+     *
+     * @return void
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    private function addParamFilter()
+    {
+        $GLOBALS['MM_FILTER_PARAMS'][] = $this->getParamName();
+    }
+
+    /**
+     * Split up param to filter url and param value.
+     *
+     * @param array $arrFilterUrl Filter url array.
+     *
+     * @return array
+     */
+    private function splitParamAndUrl($arrFilterUrl)
+    {
+        // Split up our param so the widgets can use it again.
+        $strParamName   = $this->getParamName();
+        $arrMyFilterUrl = $arrFilterUrl;
+        $arrParamValue  = null;
+
+        // If we have a value, we have to explode it by double underscore to have a valid value which the active checks
+        // may cope with.
+        if (array_key_exists($strParamName, $arrFilterUrl) && !empty($arrFilterUrl[$strParamName])) {
+            if (is_array($arrFilterUrl[$strParamName])) {
+                $arrParamValue = $arrFilterUrl[$strParamName];
+            } else {
+                $arrParamValue = explode('__', $arrFilterUrl[$strParamName], 2);
+            }
+
+            if ($arrParamValue && ($arrParamValue[0] || $arrParamValue[1])) {
+                $arrMyFilterUrl[$strParamName] = $arrParamValue;
+            } else {
+                // No values given, clear the array.
+                $arrParamValue = null;
+            }
+        }
+
+        return array($arrMyFilterUrl, $arrParamValue);
     }
 }
