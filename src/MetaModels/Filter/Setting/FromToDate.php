@@ -313,6 +313,7 @@ class FromToDate extends FromTo
      * @return array
      *
      * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     private function prepareWidgetLabel($objAttribute)
     {
@@ -376,6 +377,7 @@ class FromToDate extends FromTo
      * @return void
      *
      * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     private function addFilterParam()
     {
