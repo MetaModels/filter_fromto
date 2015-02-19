@@ -30,7 +30,7 @@ class FromToDateFilterSettingTypeFactory extends AbstractFilterSettingTypeFactor
         parent::__construct();
 
         $this
-            ->setTypeName('fromto')
+            ->setTypeName('fromtodate')
             ->setTypeIcon('system/modules/metamodelsfilter_fromto/html/filter_fromto.png')
             ->setTypeClass('MetaModels\Filter\Setting\FromToDate')
             ->allowAttributeTypes('numeric', 'decimal', 'timestamp');
