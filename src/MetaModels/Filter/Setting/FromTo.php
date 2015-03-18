@@ -146,7 +146,7 @@ class FromTo extends Simple
                     (
                         'multiple'  => true,
                         'size'      => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
-                        'urlparam'  => $this->get('urlparam'),
+                        'urlparam'  => $this->getParamName(),
                         'template'  => $this->get('template'),
                     ),
                     // We need to implode to have it transported correctly in the frontend filter.
@@ -218,12 +218,13 @@ class FromTo extends Simple
      * @return array
      *
      * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
     private function prepareWidgetLabel($objAttribute)
     {
         $arrLabel = array(
             ($this->get('label') ? $this->get('label') : $objAttribute->getName()),
-            'GET: ' . $this->get('urlparam')
+            'GET: ' . $this->getParamName()
         );
 
         if ($this->get('fromfield') && $this->get('tofield')) {
