@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The MetaModels extension allows the creation of multiple collections of custom items,
  * each with its own unique set of selectable attributes, with attribute extendability.
@@ -7,6 +6,7 @@
  * data in each collection.
  *
  * PHP version 5
+ *
  * @package    MetaModels
  * @subpackage FilterFromTo
  * @author     Christian de la Haye <service@delahaye.de>
@@ -22,294 +22,26 @@
 
 namespace MetaModels\Filter\Setting;
 
-use MetaModels\Attribute\IAttribute;
-use MetaModels\Filter\IFilter;
-use MetaModels\Filter\Rules\SimpleQuery;
-use MetaModels\Filter\Rules\StaticIdList;
-use MetaModels\FrontendIntegration\FrontendFilterOptions;
+use MetaModels\Filter\Rules\FromTo as FromToRule;
 
 /**
  * Filter "value from x to y" for FE-filtering, based on filters by the meta models team.
- *
- * @package       MetaModels
- * @subpackage FilterFromTo
- * @author     Christian de la Haye <service@delahaye.de>
  */
-class FromTo extends Simple
+class FromTo extends AbstractFromTo
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    protected function getParamName()
+    protected function formatValue($value)
     {
-        if ($this->get('urlparam')) {
-            return $this->get('urlparam');
-        }
-
-        $objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
-        if ($objAttribute) {
-            return $objAttribute->getColName();
-        }
-
-        return null;
+        return $value;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function prepareRules(IFilter $objFilter, $arrFilterUrl)
+    protected function buildFromToRule($attribute)
     {
-        $objMetaModel = $this->getMetaModel();
-        $objAttribute = $objMetaModel->getAttributeById($this->get('attr_id'));
-        $strParamName = $this->getParamName();
-
-        $arrParamValue = null;
-        if (array_key_exists($strParamName, $arrFilterUrl) && !empty($arrFilterUrl[$strParamName])) {
-            if (is_array($arrFilterUrl[$strParamName])) {
-                $arrParamValue = $arrFilterUrl[$strParamName];
-            } else {
-                $arrParamValue = explode('__', $arrFilterUrl[$strParamName]);
-            }
-        }
-
-        if ($objAttribute && $strParamName && $arrParamValue && ($arrParamValue[0] || $arrParamValue[1])) {
-            list($arrQuery, $arrParams) = $this->prepareRuleQueryAndParams($arrParamValue, $objAttribute);
-
-            $objFilter->addFilterRule(
-                new SimpleQuery(
-                    sprintf(
-                        'SELECT id
-                        FROM %s
-                        WHERE ',
-                        $this->getMetaModel()->getTableName()
-                    ) . implode(' AND ', $arrQuery),
-                    $arrParams
-                )
-            );
-
-            return;
-        }
-
-        $objFilter->addFilterRule(new StaticIdList(null));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParameters()
-    {
-        return ($strParamName = $this->getParamName()) ? array($strParamName) : array();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParameterFilterNames()
-    {
-        return array(
-            $this->getParamName() => (
-                $this->get('label')
-                ?: $this
-                    ->getMetaModel()
-                    ->getAttributeById($this->get('attr_id'))
-                    ->getName()
-            )
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParameterFilterWidgets(
-        $arrIds,
-        $arrFilterUrl,
-        $arrJumpTo,
-        FrontendFilterOptions $objFrontendFilterOptions
-    ) {
-        $objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
-
-        $arrOptions = $this->prepareWidgetOptions($arrIds, $objAttribute);
-        $arrLabel   = $this->prepareWidgetLabel($objAttribute);
-
-        list($arrMyFilterUrl, $arrParamValue) = $this->prepareWidgetParamAndFilterUrl($arrFilterUrl);
-
-        $this->addParamFilter();
-
-        return array(
-            $this->getParamName() => $this->prepareFrontendFilterWidget(
-                array
-                (
-                    'label'         => $arrLabel,
-                    'inputType'     => 'multitext',
-                    'options'       => $arrOptions,
-                    'eval'          => array
-                    (
-                        'multiple'  => true,
-                        'size'      => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
-                        'urlparam'  => $this->getParamName(),
-                        'template'  => $this->get('template'),
-                    ),
-                    // We need to implode to have it transported correctly in the frontend filter.
-                    'urlvalue'      => !empty($arrParamValue) ? implode('__', $arrParamValue) : ''
-                ),
-                $arrMyFilterUrl,
-                $arrJumpTo,
-                $objFrontendFilterOptions
-            )
-        );
-    }
-
-    /**
-     * Retrieve the attribute name that is referenced in this filter setting.
-     *
-     * @return array
-     */
-    public function getReferencedAttributes()
-    {
-        $objAttribute = null;
-        if (!($this->get('attr_id')
-            && ($objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'))))) {
-            return array();
-        }
-
-        return $objAttribute ? array($objAttribute->getColName()) : array();
-    }
-
-    /**
-     * Prepare query and filter params.
-     *
-     * @param array      $arrParamValue Param value.
-     * @param IAttribute $objAttribute  Metamodel Attribute.
-     *
-     * @return array
-     */
-    private function prepareRuleQueryAndParams($arrParamValue, $objAttribute)
-    {
-        $strMore = $this->get('moreequal') ? '>=' : '>';
-        $strLess = $this->get('lessequal') ? '<=' : '<';
-
-        $arrQuery  = array();
-        $arrParams = array();
-
-        if ($this->get('fromfield')) {
-            if ($arrParamValue[0]) {
-                $arrQuery[]  = sprintf('(%s%s?)', $objAttribute->getColName(), $strMore);
-                $arrParams[] = $arrParamValue[0];
-            }
-            if ($arrParamValue[1]) {
-                $arrQuery[]  = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
-                $arrParams[] = $arrParamValue[1];
-            }
-        } else {
-            if ($arrParamValue[0]) {
-                $arrQuery[]  = sprintf('(%s%s?)', $objAttribute->getColName(), $strLess);
-                $arrParams[] = $arrParamValue[0];
-            }
-        }
-
-        return array($arrQuery, $arrParams);
-    }
-
-    /**
-     * The the label for the current attribute.
-     *
-     * @param IAttribute $objAttribute Metamodel attribute.
-     *
-     * @return array
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
-     */
-    private function prepareWidgetLabel($objAttribute)
-    {
-        $arrLabel = array(
-            ($this->get('label') ? $this->get('label') : $objAttribute->getName()),
-            'GET: ' . $this->getParamName()
-        );
-
-        if ($this->get('fromfield') && $this->get('tofield')) {
-            $arrLabel[0] .= ' ' . $GLOBALS['TL_LANG']['metamodels_frontendfilter']['fromto'];
-        } elseif ($this->get('fromfield') && !$this->get('tofield')) {
-            $arrLabel[0] .= ' ' . $GLOBALS['TL_LANG']['metamodels_frontendfilter']['from'];
-        } else {
-            $arrLabel[0] .= ' ' . $GLOBALS['TL_LANG']['metamodels_frontendfilter']['to'];
-        }
-
-        return $arrLabel;
-    }
-
-    /**
-     * Prepare options for widget configuration.
-     *
-     * @param array      $arrIds       List of ids.
-     * @param IAttribute $objAttribute Current Metamodel attribute.
-     *
-     * @return array
-     */
-    private function prepareWidgetOptions($arrIds, $objAttribute)
-    {
-        $arrOptions = $objAttribute->getFilterOptions(
-            ($this->get('onlypossible') ? $arrIds : null),
-            (bool) $this->get('onlyused')
-        );
-
-        // Remove empty values from list.
-        foreach ($arrOptions as $mixKeyOption => $mixOption) {
-            // Remove html/php tags.
-            $mixOption = strip_tags($mixOption);
-            $mixOption = trim($mixOption);
-
-            if ($mixOption === '' || $mixOption === null) {
-                unset($arrOptions[$mixKeyOption]);
-            }
-        }
-
-        return $arrOptions;
-    }
-
-    /**
-     * Add param filter to global list.
-     *
-     * @return void
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     */
-    private function addParamFilter()
-    {
-        $GLOBALS['MM_FILTER_PARAMS'][] = $this->getParamName();
-    }
-
-    /**
-     * Split up param to filter url and param value.
-     *
-     * @param array $arrFilterUrl Filter url array.
-     *
-     * @return array
-     */
-    private function prepareWidgetParamAndFilterUrl($arrFilterUrl)
-    {
-        // Split up our param so the widgets can use it again.
-        $strParamName   = $this->getParamName();
-        $arrMyFilterUrl = $arrFilterUrl;
-        $arrParamValue  = null;
-
-        // If we have a value, we have to explode it by double underscore to have a valid value which the active checks
-        // may cope with.
-        if (array_key_exists($strParamName, $arrFilterUrl) && !empty($arrFilterUrl[$strParamName])) {
-            if (is_array($arrFilterUrl[$strParamName])) {
-                $arrParamValue = $arrFilterUrl[$strParamName];
-            } else {
-                $arrParamValue = explode('__', $arrFilterUrl[$strParamName], 2);
-            }
-
-            if ($arrParamValue && ($arrParamValue[0] || $arrParamValue[1])) {
-                $arrMyFilterUrl[$strParamName] = $arrParamValue;
-            } else {
-                // No values given, clear the array.
-                $arrParamValue = null;
-            }
-        }
-
-        return array($arrMyFilterUrl, $arrParamValue);
+        return new FromToRule($attribute);
     }
 }
