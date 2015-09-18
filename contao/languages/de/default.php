@@ -8,10 +8,11 @@
  *
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  *
- * last-updated: 2013-05-13T22:14:13+02:00
+ * last-updated: 2015-07-11T07:34:45+02:00
  */
 
+$GLOBALS['TL_LANG']['metamodels_frontendfilter']['from']       = 'von';
+$GLOBALS['TL_LANG']['metamodels_frontendfilter']['fromto']     = 'von / bis';
+$GLOBALS['TL_LANG']['metamodels_frontendfilter']['fromtodate'] = 'von/bis Datum';
+$GLOBALS['TL_LANG']['metamodels_frontendfilter']['to']         = 'bis';
 
-$GLOBALS['TL_LANG']['metamodels_frontendfilter']['from']   = 'von';
-$GLOBALS['TL_LANG']['metamodels_frontendfilter']['fromto'] = 'von / bis';
-$GLOBALS['TL_LANG']['metamodels_frontendfilter']['to']     = 'bis';
