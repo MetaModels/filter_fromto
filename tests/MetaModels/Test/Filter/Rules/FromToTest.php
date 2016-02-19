@@ -70,7 +70,7 @@ class FromToTest extends FromToTestCase
                 'expected'   => array(3, 4, 5, 6),
                 'message'    => 'start range 30 inclusive'
             ),
-             array(
+            array(
                 'data'       => $baseData,
                 'ruleValues' => array_replace_recursive($ruleValues, array('upperBound' => '30')),
                 'expected'   => array(1, 2),
