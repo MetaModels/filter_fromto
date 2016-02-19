@@ -254,7 +254,7 @@ abstract class AbstractFromTo extends Simple
                 'size'      => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
                 'urlparam'  => $this->getParamName(),
                 'template'  => $this->get('template'),
-                'colname'   => $attribute->getColname(),
+                'colname'   => $attribute->getColName(),
             ),
             // We need to implode to have it transported correctly in the frontend filter.
             'urlvalue'      => !empty($currentValue) ? implode('__', $currentValue) : ''
@@ -325,7 +325,7 @@ abstract class AbstractFromTo extends Simple
         if (count($value) == 2) {
             // Two values, apply filtering for a value range if both fields are allowed.
             if (!($this->get('fromfield') && $this->get('tofield'))) {
-                throw new \LengthException('Only one value is allowed.');
+                throw new \LengthException('Only one value is allowed, please configure fromfield and tofield.');
             }
 
             $rule
