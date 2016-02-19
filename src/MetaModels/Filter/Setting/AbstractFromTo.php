@@ -10,8 +10,8 @@
  * @package    MetaModels
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  The MetaModels team.
- * @license    LGPL.
+ * @copyright  2012-2016 The MetaModels team.
+ * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
@@ -25,10 +25,6 @@ use MetaModels\FrontendIntegration\FrontendFilterOptions;
 
 /**
  * Filter "value from x to y" for FE-filtering, based on filters by the meta models team.
- *
- * @package       MetaModels
- * @subpackage FilterFromTo
- * @author     Christian de la Haye <service@delahaye.de>
  */
 abstract class AbstractFromTo extends Simple
 {
