@@ -247,8 +247,6 @@ abstract class AbstractFromTo extends Simple
             'label'         => $this->prepareWidgetLabel($attribute),
             'inputType'     => 'multitext',
             'options'       => $this->prepareWidgetOptions($ids, $attribute),
-            'timetype'      => $this->get('timetype'),
-            'dateformat'    => $this->get('dateformat'),
             'eval'          => array(
                 'multiple'  => true,
                 'size'      => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
