@@ -192,6 +192,48 @@ class FromToTest extends FromToTestCase
                 'expected'      => array(5, 6),
                 'message'       => 'filtering only start passed - https://github.com/MetaModels/filter_fromto/issues/13'
             ),
+            15 => array(
+                'filterSetting' => array_replace_recursive(
+                    $baseSettings,
+                    array(
+                        'moreequal' => 1,
+                        'lessequal' => 1,
+                    )
+                ),
+                'data'          => array(
+                    1 => '1.1',
+                    2 => '1.1',
+                    3 => '1.2',
+                    4 => '1.3',
+                    5 => '1',
+                    6 => '1.4',
+                    7 => '0',
+                ),
+                'filterValues'  => array('urlParameter' => '1.0__1.2'),
+                'expected'      => array(1, 2, 3, 5),
+                'message'       => 'filtering decimal - https://github.com/MetaModels/filter_fromto/issues/12'
+            ),
+            16 => array(
+                'filterSetting' => array_replace_recursive(
+                    $baseSettings,
+                    array(
+                        'moreequal' => 1,
+                        'lessequal' => 1,
+                    )
+                ),
+                'data'          => array(
+                    1 => 1.1,
+                    2 => 1.1,
+                    3 => 1.2,
+                    4 => 1.3,
+                    5 => 1,
+                    6 => 1.4,
+                    7 => 0,
+                ),
+                'filterValues'  => array('urlParameter' => '1.0__1.2'),
+                'expected'      => array(1, 2, 3, 5),
+                'message'       => 'filtering decimal - https://github.com/MetaModels/filter_fromto/issues/12'
+            ),
         );
     }
 
