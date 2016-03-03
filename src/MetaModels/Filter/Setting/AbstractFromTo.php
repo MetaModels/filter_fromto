@@ -80,10 +80,10 @@ abstract class AbstractFromTo extends Simple
         $parameterName = $this->getParamName();
         if (isset($filterUrl[$parameterName]) && !empty($filterUrl[$parameterName])) {
             if (is_array($filterUrl[$parameterName])) {
-                return array_values(array_filter($filterUrl[$parameterName]));
+                return array_values($filterUrl[$parameterName]);
             }
 
-            return array_values(array_filter(explode('__', $filterUrl[$parameterName])));
+            return array_values(explode('__', $filterUrl[$parameterName]));
         }
 
         return null;
