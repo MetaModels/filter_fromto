@@ -23,7 +23,7 @@ use MetaModels\Filter\Rules\Comparing\GreaterThan;
 use MetaModels\Filter\Rules\Comparing\LessThan;
 
 /**
- * Test the FromTo class.
+ * FromTo filter rule.
  */
 class FromTo implements IFilterRule
 {

@@ -20,7 +20,7 @@ namespace MetaModels\Filter\Rules;
 use MetaModels\Attribute\ISimple;
 
 /**
- * Test the FromTo class.
+ * FromTo filter rule for date values.
  */
 class FromToDate extends FromTo
 {
