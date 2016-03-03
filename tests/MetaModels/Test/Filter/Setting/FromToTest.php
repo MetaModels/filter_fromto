@@ -178,6 +178,20 @@ class FromToTest extends FromToTestCase
                 'expected'      => array(2, 3),
                 'message'       => 'filtering exclusive with array values'
             ),
+            13 => array(
+                'filterSetting' => $baseSettings,
+                'data'          => $baseData,
+                'filterValues'  => array('urlParameter' => '__40'),
+                'expected'      => array(1, 2, 3),
+                'message'       => 'filtering only end passed - https://github.com/MetaModels/filter_fromto/issues/13'
+            ),
+            14 => array(
+                'filterSetting' => $baseSettings,
+                'data'          => $baseData,
+                'filterValues'  => array('urlParameter' => '40__'),
+                'expected'      => array(5, 6),
+                'message'       => 'filtering only start passed - https://github.com/MetaModels/filter_fromto/issues/13'
+            ),
         );
     }
 

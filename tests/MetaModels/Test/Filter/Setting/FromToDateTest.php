@@ -213,7 +213,7 @@ class FromToDateTest extends FromToTestCase
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
                 'filterValues'  => array('urlParameter' => $generateUrlValue('', $baseData[4])),
-                'expected'      => array(5, 6),
+                'expected'      => array(1, 2, 3),
                 'message'       => 'filtering exclusive with empty start but valid end.'
             ),
             17 => array(
