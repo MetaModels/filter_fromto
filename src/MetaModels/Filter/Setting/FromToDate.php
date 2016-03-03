@@ -24,7 +24,7 @@ use MetaModels\Attribute\IAttribute;
 use MetaModels\Filter\Rules\FromToDate as FromToRule;
 
 /**
- * Filter "value from x to y" for FE-filtering, based on filters by the meta models team.
+ * Filter "value from x to y" for FE-filtering, regarding date and time representations.
  */
 class FromToDate extends AbstractFromTo
 {
@@ -36,6 +36,9 @@ class FromToDate extends AbstractFromTo
         $parameters               = parent::getFilterWidgetParameters($attribute, $currentValue, $ids);
         $parameters['timetype']   = $this->get('timetype');
         $parameters['dateformat'] = $this->determineDateFormat();
+        // Add eval values that shall get passed to the widget instance.
+        $parameters['eval']['rgxp']       = 'MetaModelsFilterRangeDateRgXp';
+        $parameters['eval']['dateformat'] = $this->determineDateFormat();
 
         return $parameters;
     }
