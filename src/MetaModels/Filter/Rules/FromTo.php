@@ -224,7 +224,7 @@ class FromTo implements IFilterRule
         }
 
         if (is_array($upper) && is_array($lower)) {
-            return array_intersect($lower, $upper);
+            return array_values(array_intersect($lower, $upper));
         }
 
         // Return the non null array otherwise.
