@@ -19,6 +19,7 @@
 
 namespace MetaModels\Filter\Setting;
 
+use Contao\Date;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\Filter\Rules\FromToDate as FromToRule;
 
@@ -34,7 +35,7 @@ class FromToDate extends AbstractFromTo
     {
         $parameters               = parent::getFilterWidgetParameters($attribute, $currentValue, $ids);
         $parameters['timetype']   = $this->get('timetype');
-        $parameters['dateformat'] = $this->get('dateformat');
+        $parameters['dateformat'] = $this->determineDateFormat();
 
         return $parameters;
     }
@@ -45,7 +46,7 @@ class FromToDate extends AbstractFromTo
     protected function formatValue($value)
     {
         // Try to make a date from a string.
-        $date = \DateTime::createFromFormat($this->get('dateformat'), $value);
+        $date = \DateTime::createFromFormat($this->determineDateFormat(), $value);
 
         // Check if we have a date, if not return a empty string.
         if ($date === false) {
@@ -65,5 +66,19 @@ class FromToDate extends AbstractFromTo
         $rule->setDateType($this->get('timetype'));
 
         return $rule;
+    }
+
+    /**
+     * Obtain the correct date/time string.
+     *
+     * @return string
+     */
+    private function determineDateFormat()
+    {
+        if ($format = trim($this->get('dateformat'))) {
+            return $format;
+        }
+
+        return Date::getFormatFromRgxp($this->get('timetype'));
     }
 }
