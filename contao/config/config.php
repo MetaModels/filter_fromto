@@ -15,24 +15,7 @@
  * @filesource
  */
 
-namespace MetaModels\Filter\Setting;
-
-/**
- * Attribute type factory for from-to filter settings.
- */
-class FromToFilterSettingTypeFactory extends AbstractFilterSettingTypeFactory
-{
-    /**
-     * {@inheritDoc}
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this
-            ->setTypeName('fromto')
-            ->setTypeIcon('system/modules/metamodelsfilter_fromto/html/filter_fromto.png')
-            ->setTypeClass('MetaModels\Filter\Setting\FromTo')
-            ->allowAttributeTypes('numeric', 'decimal');
-    }
-}
+$GLOBALS['TL_HOOKS']['addCustomRegexp'][] = array(
+    'MetaModels\Filter\Helper\MetaModelsFilterRangeDateRgXp',
+    'processCustomDateRegexp'
+);

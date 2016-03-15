@@ -10,8 +10,8 @@
  * @package    MetaModels
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  The MetaModels team.
- * @license    LGPL.
+ * @copyright  2012-2016 The MetaModels team.
+ * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
@@ -70,7 +70,7 @@ class FromToTest extends FromToTestCase
                 'expected'   => array(3, 4, 5, 6),
                 'message'    => 'start range 30 inclusive'
             ),
-             array(
+            array(
                 'data'       => $baseData,
                 'ruleValues' => array_replace_recursive($ruleValues, array('upperBound' => '30')),
                 'expected'   => array(1, 2),

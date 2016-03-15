@@ -10,8 +10,8 @@
  * @package    MetaModels
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  The MetaModels team.
- * @license    LGPL.
+ * @copyright  2012-2016 The MetaModels team.
+ * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
@@ -213,7 +213,7 @@ class FromToDateTest extends FromToTestCase
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
                 'filterValues'  => array('urlParameter' => $generateUrlValue('', $baseData[4])),
-                'expected'      => array(5, 6),
+                'expected'      => array(1, 2, 3),
                 'message'       => 'filtering exclusive with empty start but valid end.'
             ),
             17 => array(

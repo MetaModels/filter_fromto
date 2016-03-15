@@ -10,8 +10,8 @@
  * @package    MetaModels
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  The MetaModels team.
- * @license    LGPL.
+ * @copyright  2012-2016 The MetaModels team.
+ * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
@@ -25,10 +25,6 @@ use MetaModels\FrontendIntegration\FrontendFilterOptions;
 
 /**
  * Filter "value from x to y" for FE-filtering, based on filters by the meta models team.
- *
- * @package       MetaModels
- * @subpackage FilterFromTo
- * @author     Christian de la Haye <service@delahaye.de>
  */
 abstract class AbstractFromTo extends Simple
 {
@@ -84,10 +80,10 @@ abstract class AbstractFromTo extends Simple
         $parameterName = $this->getParamName();
         if (isset($filterUrl[$parameterName]) && !empty($filterUrl[$parameterName])) {
             if (is_array($filterUrl[$parameterName])) {
-                return array_values(array_filter($filterUrl[$parameterName]));
+                return array_values($filterUrl[$parameterName]);
             }
 
-            return array_values(array_filter(explode('__', $filterUrl[$parameterName])));
+            return array_values(explode('__', $filterUrl[$parameterName]));
         }
 
         return null;
@@ -251,14 +247,12 @@ abstract class AbstractFromTo extends Simple
             'label'         => $this->prepareWidgetLabel($attribute),
             'inputType'     => 'multitext',
             'options'       => $this->prepareWidgetOptions($ids, $attribute),
-            'timetype'      => $this->get('timetype'),
-            'dateformat'    => $this->get('dateformat'),
             'eval'          => array(
                 'multiple'  => true,
                 'size'      => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
                 'urlparam'  => $this->getParamName(),
                 'template'  => $this->get('template'),
-                'colname'   => $attribute->getColname(),
+                'colname'   => $attribute->getColName(),
             ),
             // We need to implode to have it transported correctly in the frontend filter.
             'urlvalue'      => !empty($currentValue) ? implode('__', $currentValue) : ''
@@ -329,7 +323,7 @@ abstract class AbstractFromTo extends Simple
         if (count($value) == 2) {
             // Two values, apply filtering for a value range if both fields are allowed.
             if (!($this->get('fromfield') && $this->get('tofield'))) {
-                throw new \LengthException('Only one value is allowed.');
+                throw new \LengthException('Only one value is allowed, please configure fromfield and tofield.');
             }
 
             $rule

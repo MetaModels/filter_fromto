@@ -10,8 +10,8 @@
  * @package    MetaModels
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  The MetaModels team.
- * @license    LGPL.
+ * @copyright  2012-2016 The MetaModels team.
+ * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
@@ -23,7 +23,7 @@ use MetaModels\Filter\Rules\Comparing\GreaterThan;
 use MetaModels\Filter\Rules\Comparing\LessThan;
 
 /**
- * Test the FromTo class.
+ * FromTo filter rule.
  */
 class FromTo implements IFilterRule
 {
@@ -224,7 +224,7 @@ class FromTo implements IFilterRule
         }
 
         if (is_array($upper) && is_array($lower)) {
-            return array_intersect($lower, $upper);
+            return array_values(array_intersect($lower, $upper));
         }
 
         // Return the non null array otherwise.
