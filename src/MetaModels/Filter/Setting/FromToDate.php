@@ -53,7 +53,7 @@ class FromToDate extends AbstractFromTo
 
         // Check if we have a date, if not return a empty string.
         if ($date === false) {
-            return '';
+            return false;
         }
 
         // Make a unix timestamp from the string.
