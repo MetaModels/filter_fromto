@@ -326,9 +326,9 @@ abstract class AbstractFromTo extends Simple
         $formattedValueOne  = null;
 
         // Two values, apply filtering for a value range if both fields are allowed.
-        if(count($value) == 2 && !($this->get('fromfield') && $this->get('tofield'))){
+        if (count($value) == 2 && !($this->get('fromfield') && $this->get('tofield'))) {
             throw new \LengthException('Only one value is allowed, please configure fromfield and tofield.');
-        } else if(count($value) == 2){
+        } elseif (count($value) == 2) {
             $formattedValueZero = $this->formatValue($value[0]);
             $formattedValueOne  = $this->formatValue($value[1]);
         } else {
@@ -349,7 +349,7 @@ abstract class AbstractFromTo extends Simple
         if (count($value) == 2) {
             $rule->setLowerBound($formattedValueZero, $this->get('moreequal'))
                  ->setUpperBound($formattedValueOne, $this->get('lessequal'));
-        } else if ($this->get('fromfield')) { // Only one value, decide which one to use.
+        } elseif ($this->get('fromfield')) {
             $rule->setLowerBound($formattedValueZero, $this->get('moreequal'));
         } else {
             $rule->setUpperBound($formattedValueZero, $this->get('lessequal'));
