@@ -1,16 +1,20 @@
 <?php
+
 /**
- * The MetaModels extension allows the creation of multiple collections of custom items,
- * each with its own unique set of selectable attributes, with attribute extendability.
- * The Front-End modules allow you to build powerful listing and filtering of the
- * data in each collection.
+ * This file is part of MetaModels/filter_fromto.
  *
- * PHP version 5
+ * (c) 2012-2017 The MetaModels team.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * This project is provided in good faith and hope to be usable by anyone.
  *
  * @package    MetaModels
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Stefan Heimes <stefan_heimes@hotmail.com>
+ * @copyright  2012-2017 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -301,44 +305,54 @@ abstract class AbstractFromTo extends Simple
             return;
         }
 
+        // No attribute, get out.
         $attribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
-
         if (!($attribute)) {
             $objFilter->addFilterRule(new StaticIdList(null));
 
             return;
         }
 
-        $value = $this->getParameterValue($arrFilterUrl);
         // No filter values, get out.
+        $value = $this->getParameterValue($arrFilterUrl);
         if (empty($value)) {
             $objFilter->addFilterRule(new StaticIdList(null));
 
             return;
         }
 
+        // Preinit some vars and than check the format.
+        $formattedValueZero = null;
+        $formattedValueOne  = null;
+
+        // Two values, apply filtering for a value range if both fields are allowed.
+        if (count($value) == 2 && !($this->get('fromfield') && $this->get('tofield'))) {
+            throw new \LengthException('Only one value is allowed, please configure fromfield and tofield.');
+        } elseif (count($value) == 2) {
+            $formattedValueZero = $this->formatValue($value[0]);
+            $formattedValueOne  = $this->formatValue($value[1]);
+        } else {
+            $formattedValueZero = $this->formatValue($value[0]);
+        }
+
+        // If something went wrong return an empty list.
+        if ($formattedValueZero === false || $formattedValueOne === false) {
+            $objFilter->addFilterRule(new StaticIdList([]));
+
+            return;
+        }
+
+        // Add rule to the filter.
         $rule = $this->buildFromToRule($attribute);
         $objFilter->addFilterRule($rule);
 
         if (count($value) == 2) {
-            // Two values, apply filtering for a value range if both fields are allowed.
-            if (!($this->get('fromfield') && $this->get('tofield'))) {
-                throw new \LengthException('Only one value is allowed, please configure fromfield and tofield.');
-            }
-
-            $rule
-                ->setLowerBound($this->formatValue($value[0]), $this->get('moreequal'))
-                ->setUpperBound($this->formatValue($value[1]), $this->get('lessequal'));
-
-            return;
+            $rule->setLowerBound($formattedValueZero, $this->get('moreequal'))
+                 ->setUpperBound($formattedValueOne, $this->get('lessequal'));
+        } elseif ($this->get('fromfield')) {
+            $rule->setLowerBound($formattedValueZero, $this->get('moreequal'));
+        } else {
+            $rule->setUpperBound($formattedValueZero, $this->get('lessequal'));
         }
-
-        // Only one value, decide which one to use.
-        if ($this->get('fromfield')) {
-            $rule->setLowerBound($this->formatValue($value[0]), $this->get('moreequal'));
-
-            return;
-        }
-        $rule->setUpperBound($this->formatValue($value[0]), $this->get('lessequal'));
     }
 }
