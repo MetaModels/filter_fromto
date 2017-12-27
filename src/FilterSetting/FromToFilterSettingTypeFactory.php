@@ -21,6 +21,8 @@
 
 namespace MetaModels\FilterFromToBundle\FilterSetting;
 
+use MetaModels\Filter\Setting\AbstractFilterSettingTypeFactory;
+
 /**
  * Attribute type factory for from-to filter settings.
  */
@@ -35,8 +37,8 @@ class FromToFilterSettingTypeFactory extends AbstractFilterSettingTypeFactory
 
         $this
             ->setTypeName('fromto')
-            ->setTypeIcon('system/modules/metamodelsfilter_fromto/html/filter_fromto.png')
-            ->setTypeClass('MetaModels\Filter\Setting\FromTo')
+            ->setTypeIcon('bundles/metamodelsfilterfromto/filter_fromto.png')
+            ->setTypeClass(FromTo::class)
             ->allowAttributeTypes('numeric', 'decimal');
     }
 }

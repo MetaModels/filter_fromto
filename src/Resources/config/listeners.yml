@@ -1,1 +1,9 @@
 services:
+    metamodels.filter_fromto.factory:
+        class: MetaModels\FilterFromToBundle\FilterSetting\FromToFilterSettingTypeFactory
+        tags:
+          - { name: metamodels.filter_factory }
+    metamodels.filter_fromtodate.factory:
+        class: MetaModels\FilterFromToBundle\FilterSetting\FromToDateFilterSettingTypeFactory
+        tags:
+          - { name: metamodels.filter_factory }
