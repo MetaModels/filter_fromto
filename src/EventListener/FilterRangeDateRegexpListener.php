@@ -41,6 +41,8 @@ class FilterRangeDateRegexpListener
      *
      * @return void
      *
+     * @throws \Exception
+     *
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
