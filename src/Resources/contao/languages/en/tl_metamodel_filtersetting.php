@@ -11,7 +11,7 @@
  * This project is provided in good faith and hope to be usable by anyone.
  *
  * @package    MetaModels
- * @subpackage FilterFromTo
+ * @subpackage FilterFromToBundle
  * @author     Christian de la Haye <service@delahaye.de>
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @copyright  2012-2017 The MetaModels team.
