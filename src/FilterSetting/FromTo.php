@@ -23,9 +23,9 @@
  * @filesource
  */
 
-namespace MetaModels\Filter\Setting;
+namespace MetaModels\FilterFromToBundle\FilterSetting;
 
-use MetaModels\Filter\Rules\FromTo as FromToRule;
+use MetaModels\FilterFromToBundle\FilterRule\FromTo as FromToRule;
 
 /**
  * Filter "value from x to y" for FE-filtering, based on filters by the meta models team.

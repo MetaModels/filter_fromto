@@ -44,13 +44,16 @@
     "contao/manager-plugin": "~2.1"
   },
   "autoload": {
-    "psr-0": {
-      "MetaModels\\": "src"
-    }
+    "psr-4": {
+      "MetaModels\\FilterFromToBundle": "src"
+    },
+    "files": [
+      "src/deprecated-autoload.php"
+    ]
   },
   "autoload-dev": {
     "psr-0": {
-      "MetaModels\\Test\\": "tests"
+      "MetaModels\\FilterFromToBundle\\Test\\": "tests"
     }
   },
   "extra": {

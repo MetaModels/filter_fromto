@@ -15,9 +15,9 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Filter\Rules;
+namespace MetaModels\FilterFromToBundle\Test\FilterRule;
 
-use MetaModels\Filter\Rules\FromTo;
+use MetaModels\FilterFromToBundle\FilterRule\FromTo;
 use MetaModels\Test\Contao\Database;
 
 /**

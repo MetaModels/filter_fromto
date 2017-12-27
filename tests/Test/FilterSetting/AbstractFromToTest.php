@@ -15,10 +15,10 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Filter\Setting;
+namespace MetaModels\FilterFromToBundle\Test\FilterSetting;
 
-use MetaModels\Filter\Setting\AbstractFromTo;
 use MetaModels\Filter\Setting\ICollection;
+use MetaModels\FilterFromToBundle\FilterSetting\AbstractFromTo;
 use MetaModels\FrontendIntegration\FrontendFilterOptions;
 
 /**
@@ -54,7 +54,7 @@ class AbstractFromToTest extends FromToTestCase
         );
 
         return $this->getMockForAbstractClass(
-            'MetaModels\Filter\Setting\AbstractFromTo',
+            AbstractFromTo::class,
             array($filterSetting, $data),
             '',
             true,

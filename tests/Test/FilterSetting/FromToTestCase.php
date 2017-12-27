@@ -15,8 +15,9 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Filter\Setting;
+namespace MetaModels\FilterFromToBundle\Test\FilterSetting;
 
+use MetaModels\Attribute\BaseSimple;
 use MetaModels\IMetaModel;
 
 /**
@@ -72,7 +73,7 @@ class FromToTestCase extends TestCase
         );
 
         $attribute = $this->getMock(
-            '\MetaModels\Attribute\BaseSimple',
+            BaseSimple::class,
             array(
                 'filterGreaterThan',
                 'filterLessThan',

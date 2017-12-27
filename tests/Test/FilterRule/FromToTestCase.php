@@ -15,9 +15,11 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Filter\Rules;
+namespace MetaModels\FilterFromToBundle\Test\FilterRule;
 
+use MetaModels\Attribute\BaseSimple;
 use MetaModels\IMetaModel;
+use MetaModels\MetaModel;
 use MetaModels\MetaModelsServiceContainer;
 use MetaModels\Test\Contao\Database;
 use MetaModels\Test\TestCase;
@@ -38,7 +40,7 @@ class FromToTestCase extends TestCase
     protected function mockMetaModel($tableName = 'mm_unittest')
     {
         $metaModel = $this->getMock(
-            'MetaModels\MetaModel',
+            MetaModel::class,
             array('getTableName', 'getServiceContainer'),
             array(array())
         );
@@ -78,7 +80,7 @@ class FromToTestCase extends TestCase
             );
 
         $attribute = $this->getMock(
-            '\MetaModels\Attribute\BaseSimple',
+            BaseSimple::class,
             array(
                 'filterGreaterThan',
                 'filterLessThan',

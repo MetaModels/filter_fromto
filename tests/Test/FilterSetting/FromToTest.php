@@ -15,15 +15,14 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Filter\Setting;
+namespace MetaModels\FilterFromToBundle\Test\FilterSetting;
 
-use MetaModels\Filter\Setting\FromToDate;
-use MetaModels\FrontendIntegration\FrontendFilterOptions;
+use MetaModels\FilterFromToBundle\FilterSetting\FromTo;
 
 /**
  * Test the FromTo class.
  */
-class FromToDateTest extends FromToTestCase
+class FromToTest extends FromToTestCase
 {
     /**
      * Provide test data.
@@ -33,41 +32,30 @@ class FromToDateTest extends FromToTestCase
     public function provider()
     {
         $baseSettings = array(
-            'attr_id'    => 1,
-            'urlparam'   => 'urlParameter',
-            'label'      => 'Test',
-            'template'   => '',
-            'moreequal'  => 0,
-            'lessequal'  => 0,
-            'fromfield'  => 1,
-            'tofield'    => 1,
-            'dateformat' => 'Y-m-d-H-i-s',
-            'timetype'   => 'datim'
+            'attr_id'   => 1,
+            'urlparam'  => 'urlParameter',
+            'label'     => 'Test',
+            'template'  => '',
+            'moreequal' => 0,
+            'lessequal' => 0,
+            'fromfield' => 1,
+            'tofield'   => 1,
         );
 
         $baseData = array(
-            1 => strtotime('1985-01-01T11:00:00+00:00'),
-            2 => strtotime('1990-01-01T11:00:00+00:00'),
-            3 => strtotime('1995-01-01T11:00:00+00:00'),
-            4 => strtotime('2000-01-01T11:00:00+00:00'),
-            5 => strtotime('2010-01-01T01:00:00+00:00'),
-            6 => strtotime('2015-01-01T01:00:00+00:00'),
+            1 => '10',
+            2 => '20',
+            3 => '30',
+            4 => '40',
+            5 => '50',
+            6 => '60',
         );
-
-        $generateUrlValue = function ($start, $end = null) use ($baseSettings) {
-            $value = is_int($start) ? date($baseSettings['dateformat'], $start) : $start;
-            if ($end) {
-                $value .= '__' . (is_int($end) ? date($baseSettings['dateformat'], $end) : $end);
-            }
-
-            return $value;
-        };
 
         return array(
             1 => array(
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[1], $baseData[4])),
+                'filterValues'  => array('urlParameter' => '10__40'),
                 'expected'      => array(2, 3),
                 'message'       => 'filtering with exclusive'
             ),
@@ -79,7 +67,7 @@ class FromToDateTest extends FromToTestCase
                     )
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[1], $baseData[3])),
+                'filterValues'  => array('urlParameter' => '10__30'),
                 'expected'      => array(2, 3),
                 'message'       => 'filtering with end of range inclusive.'
             ),
@@ -91,7 +79,7 @@ class FromToDateTest extends FromToTestCase
                     )
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[1], $baseData[4])),
+                'filterValues'  => array('urlParameter' => '10__40'),
                 'expected'      => array(1, 2, 3),
                 'message'       => 'filtering with start of range inclusive.'
             ),
@@ -104,14 +92,14 @@ class FromToDateTest extends FromToTestCase
                     )
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[1], $baseData[2])),
-                'expected'      => array(1, 2),
+                'filterValues'  => array('urlParameter' => '10__15'),
+                'expected'      => array(1),
                 'message'       => 'filtering with start and end of range inclusive.'
             ),
             5 => array(
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[4])),
+                'filterValues'  => array('urlParameter' => '40'),
                 'expected'      => array(5, 6),
                 'message'       => 'filtering two fields with exclusive but only one value given'
             ),
@@ -123,7 +111,7 @@ class FromToDateTest extends FromToTestCase
                     )
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[4])),
+                'filterValues'  => array('urlParameter' => '40'),
                 'expected'      => array(5, 6),
                 'message'       => 'filtering only start field with exclusive and one value given'
             ),
@@ -135,7 +123,7 @@ class FromToDateTest extends FromToTestCase
                     )
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[4])),
+                'filterValues'  => array('urlParameter' => '40'),
                 'expected'      => array(1, 2, 3),
                 'message'       => 'filtering only end field with exclusive and one value given'
             ),
@@ -147,7 +135,7 @@ class FromToDateTest extends FromToTestCase
                     )
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[1], $baseData[2])),
+                'filterValues'  => array('urlParameter' => '100__400'),
                 'expected'      => '\LengthException',
                 'message'       => 'filtering only end field with exclusive and two values given'
             ),
@@ -159,7 +147,7 @@ class FromToDateTest extends FromToTestCase
                     )
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[1])),
+                'filterValues'  => array('urlParameter' => '1'),
                 'expected'      => null,
                 'message'       => 'ignore filtering with invalid attribute'
             ),
@@ -172,7 +160,7 @@ class FromToDateTest extends FromToTestCase
                     )
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[1])),
+                'filterValues'  => array('urlParameter' => '1'),
                 'expected'      => null,
                 'message'       => 'ignore filtering when neither start nor end are checked.'
             ),
@@ -186,42 +174,65 @@ class FromToDateTest extends FromToTestCase
             12 => array(
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array(
-                    'urlParameter' => array(
-                        $generateUrlValue($baseData[1]),
-                        $generateUrlValue($baseData[4])
-                    )
-                ),
+                'filterValues'  => array('urlParameter' => array('10', '40')),
                 'expected'      => array(2, 3),
                 'message'       => 'filtering exclusive with array values'
             ),
             13 => array(
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue('broken', $baseData[4])),
+                'filterValues'  => array('urlParameter' => '__40'),
                 'expected'      => array(1, 2, 3),
-                'message'       => 'filtering exclusive with broken start but valid end.'
+                'message'       => 'filtering only end passed - https://github.com/MetaModels/filter_fromto/issues/13'
             ),
             14 => array(
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[4], 'broken')),
+                'filterValues'  => array('urlParameter' => '40__'),
                 'expected'      => array(5, 6),
-                'message'       => 'filtering exclusive with valid start but broken end.'
+                'message'       => 'filtering only start passed - https://github.com/MetaModels/filter_fromto/issues/13'
+            ),
+            15 => array(
+                'filterSetting' => array_replace_recursive(
+                    $baseSettings,
+                    array(
+                        'moreequal' => 1,
+                        'lessequal' => 1,
+                    )
+                ),
+                'data'          => array(
+                    1 => '1.1',
+                    2 => '1.1',
+                    3 => '1.2',
+                    4 => '1.3',
+                    5 => '1',
+                    6 => '1.4',
+                    7 => '0',
+                ),
+                'filterValues'  => array('urlParameter' => '1.0__1.2'),
+                'expected'      => array(1, 2, 3, 5),
+                'message'       => 'filtering decimal - https://github.com/MetaModels/filter_fromto/issues/12'
             ),
             16 => array(
-                'filterSetting' => $baseSettings,
-                'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue('', $baseData[4])),
-                'expected'      => array(1, 2, 3),
-                'message'       => 'filtering exclusive with empty start but valid end.'
-            ),
-            17 => array(
-                'filterSetting' => $baseSettings,
-                'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[4], '')),
-                'expected'      => array(5, 6),
-                'message'       => 'filtering exclusive with valid start but empty end.'
+                'filterSetting' => array_replace_recursive(
+                    $baseSettings,
+                    array(
+                        'moreequal' => 1,
+                        'lessequal' => 1,
+                    )
+                ),
+                'data'          => array(
+                    1 => 1.1,
+                    2 => 1.1,
+                    3 => 1.2,
+                    4 => 1.3,
+                    5 => 1,
+                    6 => 1.4,
+                    7 => 0,
+                ),
+                'filterValues'  => array('urlParameter' => '1.0__1.2'),
+                'expected'      => array(1, 2, 3, 5),
+                'message'       => 'filtering decimal - https://github.com/MetaModels/filter_fromto/issues/12'
             ),
         );
     }
@@ -250,7 +261,7 @@ class FromToDateTest extends FromToTestCase
 
         $this->mockAttribute($metaModel, array(), $data);
 
-        $filterSetting = new FromToDate($filterSetting, $filterSettingData);
+        $filterSetting = new FromTo($filterSetting, $filterSettingData);
 
         $filter = $metaModel->getEmptyFilter();
 
@@ -271,73 +282,5 @@ class FromToDateTest extends FromToTestCase
 
             $this->fail('Expected exception of type: ' . $expected);
         }
-    }
-
-    /**
-     * Test the generating of the widget.
-     *
-     * @return void
-     */
-    public function testGetParameterFilterWidgets()
-    {
-        $that          = $this;
-        $filterSetting = $this->mockFilterSetting();
-        $urlParameter  = date('Y-m-d-H-i-s', 473425200) . '__' . date('Y-m-d-H-i-s', 1420074000);
-        $fromTo        = $this->getMock(
-            'MetaModels\Filter\Setting\FromToDate',
-            array('prepareFrontendFilterWidget'),
-            array($filterSetting, array(
-                'attr_id'   => 1,
-                'urlparam'  => 'urlParameter',
-                'label'     => 'Test filter',
-                'template'  => '',
-                'moreequal' => 1,
-                'lessequal' => 1,
-                'fromfield' => 1,
-                'tofield'   => 1,
-                'dateformat' => 'Y-m-d-H-i-s',
-                'timetype'   => 'datim'
-            ))
-        );
-
-        $this->mockAttribute($filterSetting->getMetaModel());
-
-        $fromTo->expects($this->any())->method('prepareFrontendFilterWidget')->will($this->returnCallback(
-            function ($arrWidget, $arrFilterUrl, $arrJumpTo) use ($that, $fromTo, $urlParameter) {
-                /** @var FromToDate $fromTo */
-                $that->assertEquals(2, count($arrWidget['label']));
-                $that->assertArrayHasKey('timetype', $arrWidget);
-                $that->assertEquals($arrWidget['timetype'], $fromTo->get('timetype'));
-                $that->assertArrayHasKey('dateformat', $arrWidget);
-                $that->assertEquals($arrWidget['dateformat'], $fromTo->get('dateformat'));
-                $that->assertEquals($arrWidget['urlvalue'], $urlParameter);
-
-                return array(
-                    'widget' => $arrWidget,
-                    'filterUrl' => $arrFilterUrl,
-                    'jumpTo' => $arrJumpTo,
-                );
-            }
-        ));
-
-        /** @var FromToDate $fromTo */
-
-        include_once __DIR__ . '/../../../../../contao/languages/en/default.php';
-
-        $result = $fromTo->getParameterFilterWidgets(
-            array(),
-            array('urlParameter' => $urlParameter),
-            array('Test jump to'),
-            new FrontendFilterOptions()
-        );
-
-        $this->assertArrayHasKey('urlParameter', $result);
-        $that->assertEquals(1, count($result));
-        $result = $result['urlParameter'];
-
-        $this->assertEquals(
-            array('urlParameter' => explode('__', $urlParameter)),
-            $result['filterUrl']
-        );
     }
 }

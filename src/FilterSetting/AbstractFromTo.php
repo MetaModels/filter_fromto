@@ -19,12 +19,12 @@
  * @filesource
  */
 
-namespace MetaModels\Filter\Setting;
+namespace MetaModels\FilterFromToBundle\FilterSetting;
 
 use MetaModels\Attribute\IAttribute;
 use MetaModels\Filter\IFilter;
-use MetaModels\Filter\Rules\FromTo;
 use MetaModels\Filter\Rules\StaticIdList;
+use MetaModels\Filter\Setting\Simple;
 use MetaModels\FrontendIntegration\FrontendFilterOptions;
 
 /**

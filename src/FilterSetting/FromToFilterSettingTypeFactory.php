@@ -19,7 +19,7 @@
  * @filesource
  */
 
-namespace MetaModels\Filter\Setting;
+namespace MetaModels\FilterFromToBundle\FilterSetting;
 
 /**
  * Attribute type factory for from-to filter settings.

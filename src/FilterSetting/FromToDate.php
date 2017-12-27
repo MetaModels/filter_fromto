@@ -20,11 +20,11 @@
  * @filesource
  */
 
-namespace MetaModels\Filter\Setting;
+namespace MetaModels\FilterFromToBundle\FilterSetting;
 
 use Contao\Date;
 use MetaModels\Attribute\IAttribute;
-use MetaModels\Filter\Rules\FromToDate as FromToRule;
+use MetaModels\FilterFromToBundle\FilterRule\FromToDate as FromToRule;
 
 /**
  * Filter "value from x to y" for FE-filtering, regarding date and time representations.

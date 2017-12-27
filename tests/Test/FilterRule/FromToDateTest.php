@@ -15,9 +15,10 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Filter\Rules;
+namespace MetaModels\FilterFromToBundle\Test\FilterRule;
 
-use MetaModels\Filter\Rules\FromToDate;
+use MetaModels\Attribute\IAttribute;
+use MetaModels\FilterFromToBundle\FilterRule\FromToDate;
 use MetaModels\Filter\Rules\SimpleQuery;
 use MetaModels\Test\Contao\Database;
 
@@ -34,7 +35,7 @@ class FromToDateTest extends FromToTestCase
     public function testTimeRaisesExceptionForNonSimpleAttribute()
     {
         $attribute = $this->getMockForAbstractClass(
-            '\MetaModels\Attribute\IAttribute',
+            IAttribute::class,
             array(
                 $this->mockMetaModel(),
                 array()
@@ -216,7 +217,7 @@ class FromToDateTest extends FromToTestCase
     protected function getMockedFromToDateRule($data, $ruleValues)
     {
         $rule = $this->getMock(
-            'MetaModels\Filter\Rules\FromToDate',
+            FromToDate::class,
             array('executeRule'),
             array($this->mockAttribute($this->mockMetaModel(), $data))
         );

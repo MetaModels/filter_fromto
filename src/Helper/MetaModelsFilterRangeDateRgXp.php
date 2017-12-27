@@ -20,7 +20,7 @@
  */
 
 
-namespace MetaModels\Filter\Helper;
+namespace MetaModels\FilterFromToBundle\Helper;
 
 use Contao\Date;
 use Contao\Widget;

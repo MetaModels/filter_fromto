@@ -19,7 +19,7 @@
  * @filesource
  */
 
-namespace MetaModels\Filter\Rules;
+namespace MetaModels\FilterFromToBundle\FilterRule;
 
 use MetaModels\Attribute\IAttribute;
 use MetaModels\Filter\IFilterRule;

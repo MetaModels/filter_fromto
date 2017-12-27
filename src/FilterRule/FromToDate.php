@@ -19,9 +19,10 @@
  * @filesource
  */
 
-namespace MetaModels\Filter\Rules;
+namespace MetaModels\FilterFromToBundle\FilterRule;
 
 use MetaModels\Attribute\ISimple;
+use MetaModels\Filter\Rules\SimpleQuery;
 
 /**
  * FromTo filter rule for date values.
