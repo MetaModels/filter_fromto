@@ -7,3 +7,7 @@ services:
         class: MetaModels\FilterFromToBundle\FilterSetting\FromToDateFilterSettingTypeFactory
         tags:
           - { name: metamodels.filter_factory }
+    metamodels.filter_fromto.add_custom_regexp_listener:
+        class: MetaModels\FilterFromToBundle\EventListener\FilterRangeDateRegexpListener
+        tags:
+          - { name: 'contao.hook', hook: 'addCustomRegexp', method: 'onAddCustomRegexp' }

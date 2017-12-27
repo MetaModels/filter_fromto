@@ -20,7 +20,7 @@
  */
 
 
-namespace MetaModels\FilterFromToBundle\Helper;
+namespace MetaModels\FilterFromToBundle\EventListener;
 
 use Contao\Date;
 use Contao\Widget;
@@ -28,7 +28,7 @@ use Contao\Widget;
 /**
  * This class is a helper class to provide special date regexp.
  */
-class MetaModelsFilterRangeDateRgXp
+class FilterRangeDateRegexpListener
 {
     /**
      * Process a custom date regexp on a widget.
@@ -44,7 +44,7 @@ class MetaModelsFilterRangeDateRgXp
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      */
-    public static function processCustomDateRegexp($rgxp, $value, $widget)
+    public static function onAddCustomRegexp($rgxp, $value, $widget)
     {
         if ('MetaModelsFilterRangeDateRgXp' !== $rgxp) {
             return;
