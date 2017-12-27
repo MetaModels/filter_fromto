@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * * This file is part of MetaModels/filter_fromto.
+ *
+ * (c) 2012-2017 The MetaModels team.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * This project is provided in good faith and hope to be usable by anyone.
+ *
+ * @package    MetaModels
+ * @subpackage FromToFilterBundle
+ * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
+ * @copyright  2012-2017 The MetaModels team.
+ * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
+ * @filesource
+ */
+
+namespace MetaModels\FromToFilterBundle;
+
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+
+/**
+ * The Bundle class.
+ */
+class MetaModelsFilterFromToBundle extends Bundle
+{
+
+}
