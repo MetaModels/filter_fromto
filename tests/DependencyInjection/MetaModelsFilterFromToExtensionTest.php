@@ -21,7 +21,7 @@
 namespace MetaModels\FilterFromToBundle\Test\DependencyInjection;
 
 use MetaModels\FilterFromToBundle\FilterSetting\FromToFilterSettingTypeFactory;
-use MetaModels\FromToFilterBundle\DependencyInjection\MetaModelsFilterFromToExtension;
+use MetaModels\FilterFromToBundle\DependencyInjection\MetaModelsFilterFromToExtension;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
