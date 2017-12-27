@@ -45,7 +45,7 @@
   },
   "autoload": {
     "psr-4": {
-      "MetaModels\\FilterFromToBundle": "src"
+      "MetaModels\\FilterFromToBundle\\": "src"
     },
     "files": [
       "src/deprecated-autoload.php"
