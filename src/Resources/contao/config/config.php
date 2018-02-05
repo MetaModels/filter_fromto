@@ -26,6 +26,6 @@
  * Waiting for Contao 4.5 (see contao/core-bundle#1094) to get rid of this file
  */
 $GLOBALS['TL_HOOKS']['addCustomRegexp'][] = [
-    'metamodels.filter_fromto.add_custom_regexp_listener',
+    'metamodels.filter_fromto.listener.add_custom_regexp',
     'onAddCustomRegexp',
 ];
