@@ -9,7 +9,7 @@
   ],
   "type": "contao-module",
   "homepage": "http://now.metamodel.me/",
-  "license": "LGPL-3.0+",
+  "license": "LGPL-3.0-or-later",
   "authors": [
     {
       "name": "Christian Schiffler",
@@ -31,7 +31,7 @@
     "source": "https://github.com/MetaModels/filter_fromto"
   },
   "require": {
-    "php": ">=5.4",
+    "php": "^5.6 || ^7.0",
     "contao/core": "^3.5.5",
     "contao-community-alliance/composer-plugin": "~2.0",
     "metamodels/core": "~2.0"
