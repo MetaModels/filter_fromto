@@ -1,17 +1,21 @@
 <?php
+
 /**
- * The MetaModels extension allows the creation of multiple collections of custom items,
- * each with its own unique set of selectable attributes, with attribute extendability.
- * The Front-End modules allow you to build powerful listing and filtering of the
- * data in each collection.
+ * This file is part of MetaModels/filter_fromto.
  *
- * PHP version 5
+ * (c) 2012-2018 The MetaModels team.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * This project is provided in good faith and hope to be usable by anyone.
  *
  * @package    MetaModels
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2012-2016 The MetaModels team.
- * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2012-2018 The MetaModels team.
+ * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
@@ -37,11 +41,11 @@ class FromToTestCase extends TestCase
      */
     protected function mockMetaModel($tableName = 'mm_unittest')
     {
-        $metaModel = $this->getMock(
-            'MetaModels\MetaModel',
-            array('getTableName', 'getServiceContainer'),
-            array(array())
-        );
+       $metaModel = $this
+           ->getMockBuilder('MetaModels\MetaModel')
+           ->setMethods(array())
+           ->setConstructorArgs(array(array()))
+           ->getMock();
 
         $serviceContainer = new MetaModelsServiceContainer();
         $serviceContainer
