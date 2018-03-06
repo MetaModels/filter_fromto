@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2017 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,13 +17,14 @@
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     David Molineus <mail@netzmacht.de>
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
- * @copyright  2012-2017 The MetaModels team.
- * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2012-2018 The MetaModels team.
+ * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
 // From/To normal.
-$GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromto extends _attribute_']['+config'][]   =
+$GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromto extends _attribute_']['+fefilter'][]   =
     'urlparam';
 $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromto extends _attribute_']['+fefilter'][] =
     'label';
@@ -39,7 +40,7 @@ $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromto extends
     'tofield';
 
 // From/To for date.
-$GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromtodate extends _attribute_']['+config'][]   =
+$GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromtodate extends _attribute_']['+fefilter'][]   =
     'urlparam';
 $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromtodate extends _attribute_']['+fefilter'][] =
     'dateformat';
