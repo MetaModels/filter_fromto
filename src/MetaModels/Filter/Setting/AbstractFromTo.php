@@ -37,7 +37,7 @@ abstract class AbstractFromTo extends Simple
      *
      * @param mixed $value The value to format.
      *
-     * @return string
+     * @return string|bool
      */
     abstract protected function formatValue($value);
 
@@ -321,35 +321,48 @@ abstract class AbstractFromTo extends Simple
             return;
         }
 
-        // Preinit some vars and than check the format.
-        $formattedValueZero = null;
-        $formattedValueOne  = null;
-
         // Two values, apply filtering for a value range if both fields are allowed.
-        if (count($value) == 2 && !($this->get('fromfield') && $this->get('tofield'))) {
-            throw new \LengthException('Only one value is allowed, please configure fromfield and tofield.');
-        } elseif (count($value) == 2) {
-            $formattedValueZero = $this->formatValue($value[0]);
-            $formattedValueOne  = $this->formatValue($value[1]);
-        } else {
-            $formattedValueZero = $this->formatValue($value[0]);
+        if (count($value) == 2) {
+            if (!($this->get('fromfield') && $this->get('tofield'))) {
+                throw new \LengthException('Only one value is allowed, please configure fromfield and tofield.');
+            }
+
+            // Add rule to the filter.
+            $objFilter->addFilterRule(
+                $this->createFromToRule($attribute, $this->formatEmpty($value[0]), $this->formatEmpty($value[1]))
+            );
         }
 
         // Add rule to the filter.
-        $objFilter->addFilterRule($this->createFromToRule($attribute, $value, $formattedValueZero, $formattedValueOne));
+        $objFilter->addFilterRule($this->createFromToRule($attribute, $this->formatEmpty($value[0]), null));
+    }
+
+    /**
+     * Format the value but return empty if it is empty.
+     *
+     * @param string $value The value to format.
+     *
+     * @return bool|string
+     */
+    private function formatEmpty($value)
+    {
+        if (empty($value = trim($value))) {
+            return $value;
+        }
+
+        return $this->formatValue($value);
     }
 
     /**
      * Create and populate a rule instance.
      *
      * @param IAttribute $attribute          The attribute to filter on.
-     * @param mixed      $value              The value to filter for.
      * @param string     $formattedValueZero The formatted first value.
      * @param string     $formattedValueOne  The formatted second value.
      *
      * @return FromTo|StaticIdList
      */
-    private function createFromToRule(IAttribute $attribute, $value, $formattedValueZero, $formattedValueOne)
+    private function createFromToRule(IAttribute $attribute, $formattedValueZero, $formattedValueOne)
     {
         // If something went wrong return an empty list.
         if ($formattedValueZero === false || $formattedValueOne === false) {
@@ -359,7 +372,7 @@ abstract class AbstractFromTo extends Simple
         // Add rule to the filter.
         $rule = $this->buildFromToRule($attribute);
 
-        if (count($value) == 2) {
+        if (null !== $formattedValueOne) {
             $rule->setLowerBound($formattedValueZero, $this->get('moreequal'))
                 ->setUpperBound($formattedValueOne, $this->get('lessequal'));
             return $rule;

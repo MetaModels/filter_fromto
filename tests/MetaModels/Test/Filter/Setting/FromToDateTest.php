@@ -199,14 +199,14 @@ class FromToDateTest extends FromToTestCase
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
                 'filterValues'  => array('urlParameter' => $generateUrlValue('broken', $baseData[4])),
-                'expected'      => array(1, 2, 3),
+                'expected'      => array(),
                 'message'       => 'filtering exclusive with broken start but valid end.'
             ),
             14 => array(
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
                 'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[4], 'broken')),
-                'expected'      => array(5, 6),
+                'expected'      => array(),
                 'message'       => 'filtering exclusive with valid start but broken end.'
             ),
             16 => array(
