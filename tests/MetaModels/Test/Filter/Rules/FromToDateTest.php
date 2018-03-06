@@ -41,8 +41,16 @@ class FromToDateTest extends FromToTestCase
             ->setLowerBound(10, true)
             ->setUpperBound(20, true);
 
-        $this->expectException('RuntimeException');
-        $this->expectExceptionMessage('Filtering for time ranges is only possible on simple attributes.');
+        if (method_exists($this, 'expectException')) {
+            $this->expectException('RuntimeException');
+            $this->expectExceptionMessage('Filtering for time ranges is only possible on simple attributes.');
+        } else {
+            // PHP 5.6 & PHPUnit 4.8 fallback.
+            $this->setExpectedException(
+                'RuntimeException',
+                'Filtering for time ranges is only possible on simple attributes.'
+            );
+        }
         $rule->getMatchingIds();
     }
 
@@ -218,7 +226,7 @@ class FromToDateTest extends FromToTestCase
 
         $that = $this;
 
-        $rule->expects($this->any())->method('executeRule')->will($this->returnCallback(
+        $rule->method('executeRule')->willReturnCallback(
             function ($executedRule) use ($that, $ruleValues, $rule) {
                 /** @var FromToDate $rule */
                 $simpleQuery = isset($ruleValues['simpleQuery']) ? array_filter($ruleValues['simpleQuery']) : null;
@@ -291,7 +299,7 @@ class FromToDateTest extends FromToTestCase
 
                 return $executedRule->getMatchingIds();
             }
-        ));
+        );
 
         return $rule;
     }
