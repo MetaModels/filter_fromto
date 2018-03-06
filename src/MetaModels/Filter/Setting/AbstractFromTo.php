@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2017 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,8 +14,8 @@
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
- * @copyright  2012-2017 The MetaModels team.
- * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
+ * @copyright  2012-2018 The MetaModels team.
+ * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
@@ -335,24 +335,41 @@ abstract class AbstractFromTo extends Simple
             $formattedValueZero = $this->formatValue($value[0]);
         }
 
+        // Add rule to the filter.
+        $objFilter->addFilterRule($this->createFromToRule($attribute, $value, $formattedValueZero, $formattedValueOne));
+    }
+
+    /**
+     * Create and populate a rule instance.
+     *
+     * @param IAttribute $attribute          The attribute to filter on.
+     * @param mixed      $value              The value to filter for.
+     * @param string     $formattedValueZero The formatted first value.
+     * @param string     $formattedValueOne  The formatted second value.
+     *
+     * @return FromTo|StaticIdList
+     */
+    private function createFromToRule(IAttribute $attribute, $value, $formattedValueZero, $formattedValueOne)
+    {
         // If something went wrong return an empty list.
         if ($formattedValueZero === false || $formattedValueOne === false) {
-            $objFilter->addFilterRule(new StaticIdList([]));
-
-            return;
+            return new StaticIdList([]);
         }
 
         // Add rule to the filter.
         $rule = $this->buildFromToRule($attribute);
-        $objFilter->addFilterRule($rule);
 
         if (count($value) == 2) {
             $rule->setLowerBound($formattedValueZero, $this->get('moreequal'))
-                 ->setUpperBound($formattedValueOne, $this->get('lessequal'));
-        } elseif ($this->get('fromfield')) {
-            $rule->setLowerBound($formattedValueZero, $this->get('moreequal'));
-        } else {
-            $rule->setUpperBound($formattedValueZero, $this->get('lessequal'));
+                ->setUpperBound($formattedValueOne, $this->get('lessequal'));
+            return $rule;
         }
+        if ($this->get('fromfield')) {
+            $rule->setLowerBound($formattedValueZero, $this->get('moreequal'));
+            return $rule;
+        }
+        $rule->setUpperBound($formattedValueZero, $this->get('lessequal'));
+
+        return $rule;
     }
 }
