@@ -17,9 +17,9 @@
 
 namespace MetaModels\Test\Filter\Rules;
 
+use MetaModels\Attribute\IAttribute;
 use MetaModels\Filter\Rules\FromToDate;
 use MetaModels\Filter\Rules\SimpleQuery;
-use MetaModels\Test\Contao\Database;
 
 /**
  * Test the FromTo class.
@@ -33,13 +33,7 @@ class FromToDateTest extends FromToTestCase
      */
     public function testTimeRaisesExceptionForNonSimpleAttribute()
     {
-        $attribute = $this->getMockForAbstractClass(
-            '\MetaModels\Attribute\IAttribute',
-            array(
-                $this->mockMetaModel(),
-                array()
-            )
-        );
+        $attribute = $this->getMockForAbstractClass(IAttribute::class);
 
         $rule = new FromToDate($attribute);
         $rule
@@ -47,7 +41,8 @@ class FromToDateTest extends FromToTestCase
             ->setLowerBound(10, true)
             ->setUpperBound(20, true);
 
-        $this->setExpectedException('RuntimeException');
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Filtering for time ranges is only possible on simple attributes.');
         $rule->getMatchingIds();
     }
 
@@ -215,11 +210,11 @@ class FromToDateTest extends FromToTestCase
      */
     protected function getMockedFromToDateRule($data, $ruleValues)
     {
-        $rule = $this->getMock(
-            'MetaModels\Filter\Rules\FromToDate',
-            array('executeRule'),
-            array($this->mockAttribute($this->mockMetaModel(), $data))
-        );
+        $rule = $this
+            ->getMockBuilder(FromToDate::class)
+            ->setMethods(['executeRule'])
+            ->setConstructorArgs([$this->mockAttribute($this->mockMetaModel(), $data)])
+            ->getMock();
 
         $that = $this;
 

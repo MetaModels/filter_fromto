@@ -248,7 +248,6 @@ class AbstractFromToTest extends FromToTestCase
             array('urlParameter' => array('01', '20')),
             $result['filterUrl']
         );
-
     }
 
     /**
@@ -269,6 +268,5 @@ class AbstractFromToTest extends FromToTestCase
             array(),
             $fromTo->getParameterFilterWidgets(array(), array(), array(), new FrontendFilterOptions())
         );
-
     }
 }

@@ -17,19 +17,23 @@
 
 namespace MetaModels\Test\Filter\Setting;
 
+use MetaModels\Attribute\BaseSimple;
+use MetaModels\Attribute\IAttribute;
+use MetaModels\Filter\Filter;
+use MetaModels\Filter\Setting\ICollection;
 use MetaModels\IMetaModel;
 
 /**
  * Some base methods for easy mocking of objects.
  */
-class FromToTestCase extends TestCase
+class FromToTestCase extends \PHPUnit\Framework\TestCase
 {
     /**
      * Create a return callback.
      *
      * @param array $array The array to return values from.
      *
-     * @return \PHPUnit_Framework_MockObject_Stub_ReturnCallback
+     * @return \PHPUnit\Framework\MockObject\Stub\ReturnCallback
      *
      * @throws \InvalidArgumentException The returned callback will throw an exception for unknown values.
      */
@@ -71,18 +75,12 @@ class FromToTestCase extends TestCase
             $attributeData
         );
 
-        $attribute = $this->getMock(
-            '\MetaModels\Attribute\BaseSimple',
-            array(
-                'filterGreaterThan',
-                'filterLessThan',
-                'get'
-            ),
-            array(
-                $metaModel,
-                $attributeData
-            )
-        );
+        $attribute = $this
+            ->getMockBuilder(BaseSimple::class)
+            ->setMethods(['filterGreaterThan', 'filterLessThan', 'get'])
+            ->setConstructorArgs([$metaModel, $attributeData])
+            ->getMock();
+
         $attribute
             ->expects($this->any())
             ->method('get')
@@ -136,5 +134,68 @@ class FromToTestCase extends TestCase
         );
 
         return $attribute;
+    }
+
+    /**
+     * Mock an ICollection.
+     *
+     * @param string $tableName The table name of the MetaModel to mock (optional, defaults to "mm_unittest").
+     *
+     * @return ICollection
+     */
+    protected function mockFilterSetting($tableName = 'mm_unittest')
+    {
+        $filterSetting = $this->getMockForAbstractClass(ICollection::class);
+
+        $filterSetting
+            ->expects($this->any())
+            ->method('getMetaModel')
+            ->will($this->returnValue($this->mockMetaModel($tableName)));
+
+        return $filterSetting;
+    }
+
+    /**
+     * Mock a MetaModel.
+     *
+     * @param string $tableName The table name of the MetaModel to mock (optional, defaults to "mm_unittest").
+     *
+     * @return IMetaModel
+     */
+    protected function mockMetaModel($tableName = 'mm_unittest')
+    {
+        $metaModel = $this->getMockForAbstractClass(IMetaModel::class);
+
+        $metaModel
+            ->method('getTableName')
+            ->will($this->returnValue($tableName));
+        $metaModel
+            ->method('getEmptyFilter')
+            ->will($this->returnValue(new Filter($metaModel)));
+        $metaModel
+            ->expects($this->never())
+            ->method('getServiceContainer');
+
+        /** @var IAttribute[] $attributes */
+        $attributes = [];
+
+        $metaModel
+            ->method('addAttribute')
+            ->willReturnCallback(function ($attribute) use (&$attributes) {
+                $attributes[] = $attribute;
+            });
+
+        $metaModel
+            ->method('getAttributeById')
+            ->willReturnCallback(function ($id) use (&$attributes) {
+                foreach ($attributes as $attribute) {
+                    if ($attribute->get('id') === $id) {
+                        return $attribute;
+                    }
+                }
+                return null;
+            });
+
+        return $metaModel;
     }
 }

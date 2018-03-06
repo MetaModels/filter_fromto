@@ -283,22 +283,25 @@ class FromToDateTest extends FromToTestCase
         $that          = $this;
         $filterSetting = $this->mockFilterSetting();
         $urlParameter  = date('Y-m-d-H-i-s', 473425200) . '__' . date('Y-m-d-H-i-s', 1420074000);
-        $fromTo        = $this->getMock(
-            'MetaModels\Filter\Setting\FromToDate',
-            array('prepareFrontendFilterWidget'),
-            array($filterSetting, array(
-                'attr_id'   => 1,
-                'urlparam'  => 'urlParameter',
-                'label'     => 'Test filter',
-                'template'  => '',
-                'moreequal' => 1,
-                'lessequal' => 1,
-                'fromfield' => 1,
-                'tofield'   => 1,
-                'dateformat' => 'Y-m-d-H-i-s',
-                'timetype'   => 'datim'
-            ))
-        );
+        $fromTo        = $this
+            ->getMockBuilder(FromToDate::class)
+            ->setMethods(['prepareFrontendFilterWidget'])
+            ->setConstructorArgs([
+                $filterSetting,
+                [
+                    'attr_id'   => 1,
+                    'urlparam'  => 'urlParameter',
+                    'label'     => 'Test filter',
+                    'template'  => '',
+                    'moreequal' => 1,
+                    'lessequal' => 1,
+                    'fromfield' => 1,
+                    'tofield'   => 1,
+                    'dateformat' => 'Y-m-d-H-i-s',
+                    'timetype'   => 'datim'
+                ]
+            ])
+            ->getMock();
 
         $this->mockAttribute($filterSetting->getMetaModel());
 

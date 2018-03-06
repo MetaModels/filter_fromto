@@ -37,9 +37,8 @@
     "metamodels/core": "~2.0"
   },
   "require-dev": {
-    "cyberspectrum/contao-toolbox": "~0.6",
-    "phpcq/all-tasks": "~1.1",
-    "metamodels/base-unit-tests": "~1.0"
+    "cyberspectrum/contao-toolbox": "~0.7",
+    "phpcq/all-tasks": "~1.2"
   },
   "autoload": {
     "psr-0": {

@@ -18,7 +18,6 @@
 namespace MetaModels\Test\Filter\Rules;
 
 use MetaModels\Filter\Rules\FromTo;
-use MetaModels\Test\Contao\Database;
 
 /**
  * Test the FromTo class.
