@@ -95,6 +95,14 @@ class FromToDate extends FromTo
 
             return null;
         }
+		
+        // Set the time to 0h 0m 0s.
+        if ($this->dateType == 'date') {
+            if ($this->getLowerBound()) {
+                $timestamp = $this->getLowerBound();
+                $this->setLowerBound($timestamp - ($timestamp % 86400), $this->isLowerInclusive());
+            } 
+        }
 
         return parent::evaluateLowerBound();
     }
@@ -114,6 +122,14 @@ class FromToDate extends FromTo
             }
 
             return null;
+        }
+		
+         // Set the time to 23h 59m 59s.
+        if ($this->dateType == 'date') {
+            if ($this->getUpperBound()) {
+                $timestamp = $this->getUpperBound();
+                $this->setUpperBound($timestamp - ($timestamp % 86400) + (86400 - 1), $this->isUpperInclusive());
+            } 
         }
 
         return parent::evaluateUpperBound();
