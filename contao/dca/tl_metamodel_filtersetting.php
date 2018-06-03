@@ -65,6 +65,7 @@ $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['fields']['moreequal'] = array
     'exclude'   => true,
     'default'   => true,
     'inputType' => 'checkbox',
+    'sql'       => 'char(1) NOT NULL default \'1\'',
     'eval'      => array
     (
         'tl_class' => 'w50'
@@ -77,6 +78,7 @@ $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['fields']['lessequal'] = array
     'exclude'   => true,
     'default'   => true,
     'inputType' => 'checkbox',
+    'sql'       => 'char(1) NOT NULL default \'1\'',
     'eval'      => array
     (
         'tl_class' => 'w50'
@@ -89,6 +91,7 @@ $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['fields']['fromfield'] = array
     'exclude'   => true,
     'default'   => true,
     'inputType' => 'checkbox',
+    'sql'       => 'char(1) NOT NULL default \'1\'',
     'eval'      => array
     (
         'tl_class' => 'w50 clr'
@@ -101,6 +104,7 @@ $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['fields']['tofield'] = array
     'exclude'   => true,
     'default'   => true,
     'inputType' => 'checkbox',
+    'sql'       => 'char(1) NOT NULL default \'1\'',
     'eval'      => array
     (
         'tl_class' => 'w50'
@@ -112,6 +116,7 @@ $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['fields']['dateformat'] = array
     'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['dateformat'],
     'exclude'   => true,
     'inputType' => 'text',
+    'sql'       => 'char(32) NOT NULL default \'\'',
     'eval'      => array
     (
         'tl_class' => 'w50'
@@ -130,6 +135,7 @@ $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['fields']['timetype'] = array
         'date',
         'datim'
     ),
+    'sql'       => 'varchar(64) NOT NULL default \'\'',
     'eval'      => array
     (
         'doNotSaveEmpty' => true,
