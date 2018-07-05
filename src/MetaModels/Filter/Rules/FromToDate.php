@@ -101,7 +101,7 @@ class FromToDate extends FromTo
         if ($this->dateType == 'date') {
             if ($this->getLowerBound()) {
                 $timestamp = $this->getLowerBound();
-                $this->setLowerBound($timestamp - ($timestamp % 86400), $this->isLowerInclusive());
+                $this->setLowerBound(($timestamp - ($timestamp % 86400)), $this->isLowerInclusive());
             }
         }
 
@@ -129,7 +129,7 @@ class FromToDate extends FromTo
         if ($this->dateType == 'date') {
             if ($this->getUpperBound()) {
                 $timestamp = $this->getUpperBound();
-                $this->setUpperBound($timestamp - ($timestamp % 86400) + (86400 - 1), $this->isUpperInclusive());
+                $this->setUpperBound(($timestamp - (($timestamp % 86400) + (86400 - 1))), $this->isUpperInclusive());
             }
         }
 
