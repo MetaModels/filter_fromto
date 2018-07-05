@@ -59,7 +59,7 @@ class AbstractFromToTest extends FromToTestCase
         );
 
         return $this->getMockForAbstractClass(
-            'MetaModels\Filter\Setting\AbstractFromTo',
+            AbstractFromTo::class,
             [$filterSetting, $data],
             '',
             true,
