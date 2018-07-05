@@ -1,33 +1,53 @@
 <?php
+
 /**
- * The MetaModels extension allows the creation of multiple collections of custom items,
- * each with its own unique set of selectable attributes, with attribute extendability.
- * The Front-End modules allow you to build powerful listing and filtering of the
- * data in each collection.
+ * This file is part of MetaModels/filter_fromto.
  *
- * PHP version 5
+ * (c) 2012-2018 The MetaModels team.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * This project is provided in good faith and hope to be usable by anyone.
  *
  * @package    MetaModels
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2012-2016 The MetaModels team.
- * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
+ * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
 namespace MetaModels\Test\Filter\Rules;
 
+use MetaModels\Attribute\BaseSimple;
 use MetaModels\IMetaModel;
-use MetaModels\MetaModelsServiceContainer;
-use MetaModels\Test\Contao\Database;
-use MetaModels\Test\TestCase;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use MetaModels\IMetaModelsServiceContainer;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test the FromTo class.
  */
 class FromToTestCase extends TestCase
 {
+    /**
+     * Sets up the fixture, for example, open a network connection.
+     * This method is called before a test is executed.
+     *
+     * @return void
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+        $GLOBALS['container']['metamodels-service-container'] =
+            $this->getMockForAbstractClass(IMetaModelsServiceContainer::class);
+    }
+
     /**
      * Mock a MetaModel.
      *
@@ -37,25 +57,15 @@ class FromToTestCase extends TestCase
      */
     protected function mockMetaModel($tableName = 'mm_unittest')
     {
-        $metaModel = $this->getMock(
-            'MetaModels\MetaModel',
-            array('getTableName', 'getServiceContainer'),
-            array(array())
-        );
-
-        $serviceContainer = new MetaModelsServiceContainer();
-        $serviceContainer
-            ->setDatabase(Database::getNewTestInstance())
-            ->setEventDispatcher(new EventDispatcher());
+        $metaModel = $this->getMockForAbstractClass(IMetaModel::class);
 
         $metaModel
             ->expects($this->any())
             ->method('getTableName')
             ->will($this->returnValue($tableName));
         $metaModel
-            ->expects($this->any())
-            ->method('getServiceContainer')
-            ->will($this->returnValue($serviceContainer));
+            ->expects($this->never())
+            ->method('getServiceContainer');
 
         return $metaModel;
     }
@@ -69,26 +79,19 @@ class FromToTestCase extends TestCase
      *
      * @return \MetaModels\Attribute\ISimple
      */
-    protected function mockAttribute($metaModel, $values = array())
+    protected function mockAttribute($metaModel, $values = [])
     {
-        $attributeData = array(
+        $attributeData = [
                 'id'      => 1,
                 'colname' => 'testAttribute',
                 'name'    => 'Test Attribute'
-            );
+        ];
 
-        $attribute = $this->getMock(
-            '\MetaModels\Attribute\BaseSimple',
-            array(
-                'filterGreaterThan',
-                'filterLessThan',
-                'get'
-            ),
-            array(
-                $metaModel,
-                $attributeData
-            )
-        );
+        $attribute = $this
+            ->getMockBuilder(BaseSimple::class)
+            ->setMethods(['getColName', 'filterGreaterThan', 'filterLessThan', 'get'])
+            ->setConstructorArgs([$metaModel, $attributeData])
+            ->getMock();
         $attribute
             ->expects($this->any())
             ->method('getColName')
@@ -96,50 +99,44 @@ class FromToTestCase extends TestCase
         $attribute
             ->expects($this->any())
             ->method('filterGreaterThan')
-            ->will(
-                $this->returnCallback(
-                    function ($testValue, $inclusive = false) use ($values) {
-                        $ids = array();
-                        foreach ($values as $itemId => $value) {
-                            if ($inclusive) {
-                                if ($value >= $testValue) {
-                                    $ids[] = $itemId;
-                                }
-                            } elseif ($value > $testValue) {
+            ->willReturnCallback(
+                function ($testValue, $inclusive = false) use ($values) {
+                    $ids = [];
+                    foreach ($values as $itemId => $value) {
+                        if ($inclusive) {
+                            if ($value >= $testValue) {
                                 $ids[] = $itemId;
                             }
+                        } elseif ($value > $testValue) {
+                            $ids[] = $itemId;
                         }
-
-                        return $ids;
                     }
-                )
+
+                    return $ids;
+                }
             );
         $attribute
             ->expects($this->any())
             ->method('filterLessThan')
-            ->will(
-                $this->returnCallback(
-                    function ($testValue, $inclusive = false) use ($values) {
-                        $ids = array();
-                        foreach ($values as $itemId => $value) {
-                            if ($inclusive) {
-                                if ($value <= $testValue) {
-                                    $ids[] = $itemId;
-                                }
-                            } elseif ($value < $testValue) {
+            ->willReturnCallback(
+                function ($testValue, $inclusive = false) use ($values) {
+                    $ids = [];
+                    foreach ($values as $itemId => $value) {
+                        if ($inclusive) {
+                            if ($value <= $testValue) {
                                 $ids[] = $itemId;
                             }
+                        } elseif ($value < $testValue) {
+                            $ids[] = $itemId;
                         }
-
-                        return $ids;
                     }
-                )
+
+                    return $ids;
+                }
             );
 
         /** @var \MetaModels\Attribute\ISimple $attribute */
-        $metaModel->addAttribute(
-            $attribute
-        );
+        $metaModel->addAttribute($attribute);
 
         return $attribute;
     }

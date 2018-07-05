@@ -1,25 +1,30 @@
 <?php
+
 /**
- * The MetaModels extension allows the creation of multiple collections of custom items,
- * each with its own unique set of selectable attributes, with attribute extendability.
- * The Front-End modules allow you to build powerful listing and filtering of the
- * data in each collection.
+ * This file is part of MetaModels/filter_fromto.
  *
- * PHP version 5
+ * (c) 2012-2018 The MetaModels team.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * This project is provided in good faith and hope to be usable by anyone.
  *
  * @package    MetaModels
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2012-2016 The MetaModels team.
- * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
+ * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
 namespace MetaModels\Test\Filter\Rules;
 
+use MetaModels\Attribute\IAttribute;
 use MetaModels\Filter\Rules\FromToDate;
 use MetaModels\Filter\Rules\SimpleQuery;
-use MetaModels\Test\Contao\Database;
 
 /**
  * Test the FromTo class.
@@ -33,13 +38,7 @@ class FromToDateTest extends FromToTestCase
      */
     public function testTimeRaisesExceptionForNonSimpleAttribute()
     {
-        $attribute = $this->getMockForAbstractClass(
-            '\MetaModels\Attribute\IAttribute',
-            array(
-                $this->mockMetaModel(),
-                array()
-            )
-        );
+        $attribute = $this->getMockForAbstractClass(IAttribute::class);
 
         $rule = new FromToDate($attribute);
         $rule
@@ -47,7 +46,16 @@ class FromToDateTest extends FromToTestCase
             ->setLowerBound(10, true)
             ->setUpperBound(20, true);
 
-        $this->setExpectedException('RuntimeException');
+        if (\method_exists($this, 'expectException')) {
+            $this->expectException('RuntimeException');
+            $this->expectExceptionMessage('Filtering for time ranges is only possible on simple attributes.');
+        } else {
+            // PHP 5.6 & PHPUnit 4.8 fallback.
+            $this->setExpectedException(
+                'RuntimeException',
+                'Filtering for time ranges is only possible on simple attributes.'
+            );
+        }
         $rule->getMatchingIds();
     }
 
@@ -58,150 +66,150 @@ class FromToDateTest extends FromToTestCase
      */
     public function provider()
     {
-        $baseData = array(
-            1 => strtotime('1985-01-01T11:00:00+00:00'),
-            2 => strtotime('1990-01-01T11:00:00+00:00'),
-            3 => strtotime('1995-01-01T11:00:00+00:00'),
-            4 => strtotime('2000-01-01T11:00:00+00:00'),
-            5 => strtotime('2010-01-01T01:00:00+00:00'),
-            6 => strtotime('2015-01-01T01:00:00+00:00'),
-        );
+        $baseData = [
+            1 => \strtotime('1985-01-01T11:00:00+00:00'),
+            2 => \strtotime('1990-01-01T11:00:00+00:00'),
+            3 => \strtotime('1995-01-01T11:00:00+00:00'),
+            4 => \strtotime('2000-01-01T11:00:00+00:00'),
+            5 => \strtotime('2010-01-01T01:00:00+00:00'),
+            6 => \strtotime('2015-01-01T01:00:00+00:00'),
+        ];
 
-        $ruleValues = array(
+        $ruleValues = [
             'lowerBound'     => null,
             'lowerInclusive' => null,
             'upperBound'     => null,
             'upperInclusive' => null,
             'dateType'       => 'datim',
-            'simpleQuery'    => array(
+            'simpleQuery'    => [
                 '>=' => null,
                 '>'  => null,
                 '<=' => null,
                 '<'  => null,
-            ),
-        );
+            ],
+        ];
 
-        return array(
-            array(
+        return [
+            [
                 'data'       => $baseData,
                 'ruleValues' => null,
                 'expected'   => null,
                 'message'    => 'empty rule'
-            ),
-            array(
+            ],
+            [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
-                    array(
+                    [
                         'lowerBound' => $baseData[3]
-                    )
+                    ]
                 ),
-                'expected'   => array(4, 5, 6),
+                'expected'   => [4, 5, 6],
                 'message'    => 'start range 30 exclusive'
-            ),
-            array(
+            ],
+            [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
-                    array(
+                    [
                         'lowerBound' => $baseData[3],
                         'lowerInclusive' => true
-                    )
+                    ]
                 ),
-                'expected'   => array(3, 4, 5, 6),
+                'expected'   => [3, 4, 5, 6],
                 'message'    => 'start range 30 inclusive'
-            ),
-            array(
+            ],
+            [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
-                    array(
+                    [
                         'upperBound' => $baseData[3]
-                    )
+                    ]
                 ),
-                'expected'   => array(1, 2),
+                'expected'   => [1, 2],
                 'message'    => 'end range exclusive'
-            ),
-            array(
+            ],
+            [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
-                    array(
+                    [
                         'upperBound' => $baseData[3],
                         'upperInclusive' => true
-                    )
+                    ]
                 ),
-                'expected'   => array(1, 2, 3),
+                'expected'   => [1, 2, 3],
                 'message'    => 'end range inclusive'
-            ),
-            array(
+            ],
+            [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
-                    array(
+                    [
                         'upperBound' => 1
-                    )
+                    ]
                 ),
-                'expected'   => array(),
+                'expected'   => [],
                 'message'    => 'end range before first - should not match anything'
-            ),
-            array(
+            ],
+            [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
-                    array(
+                    [
                         'lowerBound' => $baseData[6] + 4000
-                    )
+                    ]
                 ),
-                'expected'   => array(),
+                'expected'   => [],
                 'message'    => 'start range beyond max - should not match anything'
-            ),
-            array(
+            ],
+            [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
-                    array(
+                    [
                         'lowerBound' => 0,
                         'upperBound' => 0,
                         'dateType' => 'time',
-                        'simpleQuery' => array(
-                        )
-                    )
+                        'simpleQuery' => [
+                        ]
+                    ]
                 ),
                 'expected'   => null,
                 'message'    => 'no range for time should match everything'
-            ),
-            array(
+            ],
+            [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
-                    array(
+                    [
                         'lowerBound' => $baseData[1],
                         'dateType' => 'time',
-                        'simpleQuery' => array(
-                            '>' => array(1)
-                        )
-                    )
+                        'simpleQuery' => [
+                            '>' => [1]
+                        ]
+                    ]
                 ),
-                'expected'   => array(1),
+                'expected'   => [1],
                 'message'    => 'start range for time should match'
-            ),
-            array(
+            ],
+            [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
-                    array(
+                    [
                         'upperBound' => $baseData[1],
                         'dateType' => 'time',
-                        'simpleQuery' => array(
-                            '<' => array(6)
-                        )
-                    )
+                        'simpleQuery' => [
+                            '<' => [6]
+                        ]
+                    ]
                 ),
-                'expected'   => array(6),
+                'expected'   => [6],
                 'message'    => 'end range for time should match'
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -215,18 +223,18 @@ class FromToDateTest extends FromToTestCase
      */
     protected function getMockedFromToDateRule($data, $ruleValues)
     {
-        $rule = $this->getMock(
-            'MetaModels\Filter\Rules\FromToDate',
-            array('executeRule'),
-            array($this->mockAttribute($this->mockMetaModel(), $data))
-        );
+        $rule = $this
+            ->getMockBuilder(FromToDate::class)
+            ->setMethods(['executeRule'])
+            ->setConstructorArgs([$this->mockAttribute($this->mockMetaModel(), $data)])
+            ->getMock();
 
         $that = $this;
 
-        $rule->expects($this->any())->method('executeRule')->will($this->returnCallback(
+        $rule->method('executeRule')->willReturnCallback(
             function ($executedRule) use ($that, $ruleValues, $rule) {
                 /** @var FromToDate $rule */
-                $simpleQuery = isset($ruleValues['simpleQuery']) ? array_filter($ruleValues['simpleQuery']) : null;
+                $simpleQuery = isset($ruleValues['simpleQuery']) ? \array_filter($ruleValues['simpleQuery']) : null;
                 $that->assertTrue(
                     empty($simpleQuery) || ($executedRule instanceof SimpleQuery),
                     'Rule must be a simple Query'
@@ -242,12 +250,12 @@ class FromToDateTest extends FromToTestCase
                     $queryString = $query->getValue($executedRule);
                     $parameters  = $params->getValue($executedRule);
 
-                    $that->assertEquals(1, count($parameters));
+                    $that->assertEquals(1, \count($parameters));
 
                     if ($rule->getUpperBound()) {
-                        if (strstr($queryString, '<')) {
+                        if (\strstr($queryString, '<')) {
                             $that->assertTrue(
-                                (bool) ($rule->isUpperInclusive() ^ !strstr($queryString, '>='))
+                                (bool) ($rule->isUpperInclusive() ^ !\strstr($queryString, '>='))
                             );
                         }
                     } else {
@@ -255,21 +263,21 @@ class FromToDateTest extends FromToTestCase
                     }
 
                     if ($rule->getLowerBound()) {
-                        if (strstr($queryString, '>')) {
+                        if (\strstr($queryString, '>')) {
                             $that->assertTrue(
-                                (bool) ($rule->isLowerInclusive() ^ !strstr($queryString, '<='))
+                                (bool) ($rule->isLowerInclusive() ^ !\strstr($queryString, '<='))
                             );
                         }
                     } else {
-                        $that->assertFalse(strstr($queryString, '>'), 'No lower bound defined, must not check for it.');
+                        $that->assertFalse(\strstr($queryString, '>'), 'No lower bound defined, must not check for it.');
                     }
 
-                    foreach (array('<=', '<') as $operator) {
-                        if (strstr($queryString, $operator)) {
+                    foreach (['<=', '<'] as $operator) {
+                        if (\strstr($queryString, $operator)) {
                             $that->assertArrayHasKey($operator, $simpleQuery, 'No value provided for operator');
                             $value = $simpleQuery[$operator];
                             $that->assertEquals(
-                                date('H:i:s', $rule->getUpperBound()),
+                                \date('H:i:s', $rule->getUpperBound()),
                                 $parameters[0],
                                 'parameter value should be as specified.'
                             );
@@ -277,12 +285,12 @@ class FromToDateTest extends FromToTestCase
                             return $value;
                         }
                     }
-                    foreach (array('>=', '>') as $operator) {
-                        if (strstr($queryString, $operator)) {
+                    foreach (['>=', '>'] as $operator) {
+                        if (\strstr($queryString, $operator)) {
                             $that->assertArrayHasKey($operator, $simpleQuery, 'No value provided for operator');
                             $value = $simpleQuery[$operator];
                             $that->assertEquals(
-                                date('H:i:s', $rule->getLowerBound()),
+                                \date('H:i:s', $rule->getLowerBound()),
                                 $parameters[0],
                                 'parameter value should be as specified.'
                             );
@@ -296,7 +304,7 @@ class FromToDateTest extends FromToTestCase
 
                 return $executedRule->getMatchingIds();
             }
-        ));
+        );
 
         return $rule;
     }

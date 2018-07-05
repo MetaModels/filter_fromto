@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2017 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,8 +14,9 @@
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
- * @copyright  2012-2017 The MetaModels team.
- * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
+ * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
@@ -37,7 +38,7 @@ abstract class AbstractFromTo extends Simple
      *
      * @param mixed $value The value to format.
      *
-     * @return string
+     * @return string|bool
      */
     abstract protected function formatValue($value);
 
@@ -55,7 +56,7 @@ abstract class AbstractFromTo extends Simple
      */
     public function getParameters()
     {
-        return ($strParamName = $this->getParamName()) ? array($strParamName) : array();
+        return ($strParamName = $this->getParamName()) ? [$strParamName] : [];
     }
 
     /**
@@ -64,7 +65,7 @@ abstract class AbstractFromTo extends Simple
     public function getParameterFilterNames()
     {
         if ($this->get('label')) {
-            return array($this->getParamName() => $this->get('label'));
+            return [$this->getParamName() => $this->get('label')];
         }
 
         return array(
@@ -83,11 +84,11 @@ abstract class AbstractFromTo extends Simple
     {
         $parameterName = $this->getParamName();
         if (isset($filterUrl[$parameterName]) && !empty($filterUrl[$parameterName])) {
-            if (is_array($filterUrl[$parameterName])) {
-                return array_values($filterUrl[$parameterName]);
+            if (\is_array($filterUrl[$parameterName])) {
+                return \array_values($filterUrl[$parameterName]);
             }
 
-            return array_values(explode('__', $filterUrl[$parameterName]));
+            return \array_values(\explode('__', $filterUrl[$parameterName]));
         }
 
         return null;
@@ -103,10 +104,10 @@ abstract class AbstractFromTo extends Simple
         $objAttribute = null;
         if (!($this->get('attr_id')
             && ($objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'))))) {
-            return array();
+            return [];
         }
 
-        return $objAttribute ? array($objAttribute->getColName()) : array();
+        return $objAttribute ? [$objAttribute->getColName()] : [];
     }
 
     /**
@@ -151,10 +152,10 @@ abstract class AbstractFromTo extends Simple
      */
     protected function prepareWidgetLabel($objAttribute)
     {
-        $arrLabel = array(
+        $arrLabel = [
             ($this->get('label') ? $this->get('label') : $objAttribute->getName()),
             'GET: ' . $this->getParamName()
-        );
+        ];
 
         if ($this->get('fromfield') && $this->get('tofield')) {
             $arrLabel[0] .= ' ' . $GLOBALS['TL_LANG']['metamodels_frontendfilter']['fromto'];
@@ -185,8 +186,8 @@ abstract class AbstractFromTo extends Simple
         // Remove empty values from list.
         foreach ($arrOptions as $mixKeyOption => $mixOption) {
             // Remove html/php tags.
-            $mixOption = strip_tags($mixOption);
-            $mixOption = trim($mixOption);
+            $mixOption = \strip_tags($mixOption);
+            $mixOption = \trim($mixOption);
 
             if ($mixOption === '' || $mixOption === null) {
                 unset($arrOptions[$mixKeyOption]);
@@ -212,26 +213,26 @@ abstract class AbstractFromTo extends Simple
 
         // If we have a value, we have to explode it by double underscore to have a valid value which the active checks
         // may cope with.
-        if (array_key_exists($parameterName, $arrFilterUrl) && !empty($arrFilterUrl[$parameterName])) {
-            if (is_array($arrFilterUrl[$parameterName])) {
+        if (\array_key_exists($parameterName, $arrFilterUrl) && !empty($arrFilterUrl[$parameterName])) {
+            if (\is_array($arrFilterUrl[$parameterName])) {
                 $parameterValue = $arrFilterUrl[$parameterName];
             } else {
-                $parameterValue = explode('__', $arrFilterUrl[$parameterName], 2);
+                $parameterValue = \explode('__', $arrFilterUrl[$parameterName], 2);
             }
 
             if ($parameterValue && ($parameterValue[0] || $parameterValue[1])) {
                 $privateFilterUrl[$parameterName] = $parameterValue;
 
-                return array($privateFilterUrl, $parameterValue);
+                return [$privateFilterUrl, $parameterValue];
             } else {
                 // No values given, clear the array.
                 $parameterValue = null;
 
-                return array($privateFilterUrl, $parameterValue);
+                return [$privateFilterUrl, $parameterValue];
             }
         }
 
-        return array($privateFilterUrl, $parameterValue);
+        return [$privateFilterUrl, $parameterValue];
     }
 
     /**
@@ -247,20 +248,20 @@ abstract class AbstractFromTo extends Simple
      */
     protected function getFilterWidgetParameters(IAttribute $attribute, $currentValue, $ids)
     {
-        return array(
+        return [
             'label'         => $this->prepareWidgetLabel($attribute),
             'inputType'     => 'multitext',
             'options'       => $this->prepareWidgetOptions($ids, $attribute),
-            'eval'          => array(
+            'eval'          => [
                 'multiple'  => true,
                 'size'      => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
                 'urlparam'  => $this->getParamName(),
                 'template'  => $this->get('template'),
                 'colname'   => $attribute->getColName(),
-            ),
+            ],
             // We need to implode to have it transported correctly in the frontend filter.
-            'urlvalue'      => !empty($currentValue) ? implode('__', $currentValue) : ''
-        );
+            'urlvalue'      => !empty($currentValue) ? \implode('__', $currentValue) : ''
+        ];
     }
 
     /**
@@ -274,21 +275,21 @@ abstract class AbstractFromTo extends Simple
     ) {
         $objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
         if (!$objAttribute) {
-            return array();
+            return [];
         }
 
         list($privateFilterUrl, $currentValue) = $this->prepareWidgetParamAndFilterUrl($arrFilterUrl);
 
         $this->registerFilterParameter();
 
-        return array(
+        return [
             $this->getParamName() => $this->prepareFrontendFilterWidget(
                 $this->getFilterWidgetParameters($objAttribute, $currentValue, $arrIds),
                 $privateFilterUrl,
                 $arrJumpTo,
                 $objFrontendFilterOptions
             )
-        );
+        ];
     }
 
     /**
@@ -321,38 +322,68 @@ abstract class AbstractFromTo extends Simple
             return;
         }
 
-        // Preinit some vars and than check the format.
-        $formattedValueZero = null;
-        $formattedValueOne  = null;
-
         // Two values, apply filtering for a value range if both fields are allowed.
-        if (count($value) == 2 && !($this->get('fromfield') && $this->get('tofield'))) {
-            throw new \LengthException('Only one value is allowed, please configure fromfield and tofield.');
-        } elseif (count($value) == 2) {
-            $formattedValueZero = $this->formatValue($value[0]);
-            $formattedValueOne  = $this->formatValue($value[1]);
-        } else {
-            $formattedValueZero = $this->formatValue($value[0]);
+        if (\count($value) == 2) {
+            if (!($this->get('fromfield') && $this->get('tofield'))) {
+                throw new \LengthException('Only one value is allowed, please configure fromfield and tofield.');
+            }
+
+            // Add rule to the filter.
+            $objFilter->addFilterRule(
+                $this->createFromToRule($attribute, $this->formatEmpty($value[0]), $this->formatEmpty($value[1]))
+            );
         }
 
+        // Add rule to the filter.
+        $objFilter->addFilterRule($this->createFromToRule($attribute, $this->formatEmpty($value[0]), null));
+    }
+
+    /**
+     * Format the value but return empty if it is empty.
+     *
+     * @param string $value The value to format.
+     *
+     * @return bool|string
+     */
+    private function formatEmpty($value)
+    {
+        if (empty($value = \trim($value))) {
+            return $value;
+        }
+
+        return $this->formatValue($value);
+    }
+
+    /**
+     * Create and populate a rule instance.
+     *
+     * @param IAttribute $attribute          The attribute to filter on.
+     * @param string     $formattedValueZero The formatted first value.
+     * @param string     $formattedValueOne  The formatted second value.
+     *
+     * @return FromTo|StaticIdList
+     */
+    private function createFromToRule(IAttribute $attribute, $formattedValueZero, $formattedValueOne)
+    {
         // If something went wrong return an empty list.
         if ($formattedValueZero === false || $formattedValueOne === false) {
-            $objFilter->addFilterRule(new StaticIdList([]));
-
-            return;
+            return new StaticIdList([]);
         }
 
         // Add rule to the filter.
         $rule = $this->buildFromToRule($attribute);
-        $objFilter->addFilterRule($rule);
 
-        if (count($value) == 2) {
+        if (null !== $formattedValueOne) {
             $rule->setLowerBound($formattedValueZero, $this->get('moreequal'))
-                 ->setUpperBound($formattedValueOne, $this->get('lessequal'));
-        } elseif ($this->get('fromfield')) {
-            $rule->setLowerBound($formattedValueZero, $this->get('moreequal'));
-        } else {
-            $rule->setUpperBound($formattedValueZero, $this->get('lessequal'));
+                ->setUpperBound($formattedValueOne, $this->get('lessequal'));
+            return $rule;
         }
+        if ($this->get('fromfield')) {
+            $rule->setLowerBound($formattedValueZero, $this->get('moreequal'));
+            return $rule;
+        }
+        $rule->setUpperBound($formattedValueZero, $this->get('lessequal'));
+
+        return $rule;
     }
 }

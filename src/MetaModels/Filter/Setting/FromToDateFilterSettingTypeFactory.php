@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2017 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,7 +14,8 @@
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
- * @copyright  2012-2017 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -36,7 +37,7 @@ class FromToDateFilterSettingTypeFactory extends AbstractFilterSettingTypeFactor
         $this
             ->setTypeName('fromtodate')
             ->setTypeIcon('system/modules/metamodelsfilter_fromto/html/filter_fromto.png')
-            ->setTypeClass('MetaModels\Filter\Setting\FromToDate')
+            ->setTypeClass(\MetaModels\Filter\Setting\FromToDate::class)
             ->allowAttributeTypes('numeric', 'decimal', 'timestamp');
     }
 }
