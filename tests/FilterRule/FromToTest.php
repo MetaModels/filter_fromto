@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2017 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,15 +14,16 @@
  * @subpackage FilterFromToBundle
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
- * @copyright  2012-2017 The MetaModels team.
- * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
+ * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
 namespace MetaModels\FilterFromToBundle\Test\FilterRule;
 
 use MetaModels\FilterFromToBundle\FilterRule\FromTo;
-use MetaModels\Test\Contao\Database;
 
 /**
  * Test the FromTo class.
@@ -36,72 +37,72 @@ class FromToTest extends FromToTestCase
      */
     public function provider()
     {
-        $baseData = array(
+        $baseData = [
             1 => '10',
             2 => '20',
             3 => '30',
             4 => '40',
             5 => '50',
             6 => '60',
-        );
+        ];
 
-        $ruleValues = array(
+        $ruleValues = [
             'lowerBound'     => null,
             'lowerInclusive' => null,
             'upperBound'     => null,
             'upperInclusive' => null,
-        );
+        ];
 
-        return array(
-            array(
+        return [
+            [
                 'data'       => $baseData,
                 'ruleValues' => null,
                 'expected'   => null,
                 'message'    => 'empty rule'
-            ),
-            array(
+            ],
+            [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive($ruleValues, array('lowerBound' => '30')),
-                'expected'   => array(4, 5, 6),
+                'ruleValues' => \array_replace_recursive($ruleValues, ['lowerBound' => '30']),
+                'expected'   => [4, 5, 6],
                 'message'    => 'start range 30 exclusive'
-            ),
-            array(
+            ],
+            [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
-                    array('lowerBound' => '30', 'lowerInclusive' => true)
+                    ['lowerBound' => '30', 'lowerInclusive' => true]
                 ),
-                'expected'   => array(3, 4, 5, 6),
+                'expected'   => [3, 4, 5, 6],
                 'message'    => 'start range 30 inclusive'
-            ),
-            array(
+            ],
+            [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive($ruleValues, array('upperBound' => '30')),
-                'expected'   => array(1, 2),
+                'ruleValues' => \array_replace_recursive($ruleValues, ['upperBound' => '30']),
+                'expected'   => [1, 2],
                 'message'    => 'end range 30 exclusive'
-            ),
-            array(
+            ],
+            [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
-                    array('upperBound' => '30', 'upperInclusive' => true)
+                    ['upperBound' => '30', 'upperInclusive' => true]
                 ),
-                'expected'   => array(1, 2, 3),
+                'expected'   => [1, 2, 3],
                 'message'    => 'end range 30 inclusive'
-            ),
-            array(
+            ],
+            [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive($ruleValues, array('upperBound' => '1')),
-                'expected'   => array(),
+                'ruleValues' => \array_replace_recursive($ruleValues, ['upperBound' => '1']),
+                'expected'   => [],
                 'message'    => 'end range 1 - should not match anything'
-            ),
-            array(
+            ],
+            [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive($ruleValues, array('lowerBound' => '100')),
-                'expected'   => array(),
+                'ruleValues' => \array_replace_recursive($ruleValues, ['lowerBound' => '100']),
+                'expected'   => [],
                 'message'    => 'start range 100 - should not match anything'
-            ),
-        );
+            ],
+        ];
     }
 
     /**

@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2017 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,7 +15,8 @@
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
- * @copyright  2012-2017 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -71,13 +72,13 @@ class FromToDate extends FromTo
         }
 
         return $this->executeRule(new SimpleQuery(
-            sprintf(
+            \sprintf(
                 'SELECT id FROM %s WHERE TIME(FROM_UNIXTIME(%s)) %s ?)',
                 $attribute->getMetaModel()->getTableName(),
                 $attribute->getColName(),
                 $operation
             ),
-            array($value)
+            [$value]
         ));
     }
 
@@ -91,11 +92,19 @@ class FromToDate extends FromTo
             if ($this->getLowerBound()) {
                 return $this->runSimpleQuery(
                     $this->isLowerInclusive() ? '>=' : '>',
-                    date('H:i:s', $this->getLowerBound())
+                    \date('H:i:s', $this->getLowerBound())
                 );
             }
 
             return null;
+        }
+
+        // Set the time to 0h 0m 0s.
+        if ($this->dateType == 'date') {
+            if ($this->getLowerBound()) {
+                $timestamp = $this->getLowerBound();
+                $this->setLowerBound(($timestamp - ($timestamp % 86400)), $this->isLowerInclusive());
+            }
         }
 
         return parent::evaluateLowerBound();
@@ -111,11 +120,19 @@ class FromToDate extends FromTo
             if ($this->getUpperBound()) {
                 return $this->runSimpleQuery(
                     $this->isUpperInclusive() ? '<=' : '<',
-                    date('H:i:s', $this->getUpperBound())
+                    \date('H:i:s', $this->getUpperBound())
                 );
             }
 
             return null;
+        }
+
+         // Set the time to 23h 59m 59s.
+        if ($this->dateType == 'date') {
+            if ($this->getUpperBound()) {
+                $timestamp = $this->getUpperBound();
+                $this->setUpperBound(($timestamp - (($timestamp % 86400) + (86400 - 1))), $this->isUpperInclusive());
+            }
         }
 
         return parent::evaluateUpperBound();
