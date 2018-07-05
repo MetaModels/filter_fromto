@@ -44,7 +44,7 @@ class AbstractFromToTest extends FromToTestCase
      */
     protected function mockAbstractFromTo($filterSetting, $data = [], $mockedMethods = [])
     {
-        $data = array_replace_recursive(
+        $data = \array_replace_recursive(
             [
                 'attr_id'   => 1,
                 'urlparam'  => 'urlParameter',
@@ -217,7 +217,7 @@ class AbstractFromToTest extends FromToTestCase
 
         $fromTo->expects($this->any())->method('prepareFrontendFilterWidget')->will($this->returnCallback(
             function ($arrWidget, $arrFilterUrl, $arrJumpTo) use ($that, $fromTo) {
-                $that->assertEquals(2, count($arrWidget['label']));
+                $that->assertEquals(2, \count($arrWidget['label']));
                 $that->assertArrayHasKey('options', $arrWidget);
                 $that->assertArrayHasKey('inputType', $arrWidget);
                 $that->assertArrayHasKey('eval', $arrWidget);
@@ -242,7 +242,7 @@ class AbstractFromToTest extends FromToTestCase
         );
 
         $this->assertArrayHasKey('urlParameter', $result);
-        $that->assertEquals(1, count($result));
+        $that->assertEquals(1, \count($result));
         $result = $result['urlParameter'];
 
         $this->assertEquals(

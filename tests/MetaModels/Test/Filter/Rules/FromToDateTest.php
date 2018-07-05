@@ -46,7 +46,7 @@ class FromToDateTest extends FromToTestCase
             ->setLowerBound(10, true)
             ->setUpperBound(20, true);
 
-        if (method_exists($this, 'expectException')) {
+        if (\method_exists($this, 'expectException')) {
             $this->expectException('RuntimeException');
             $this->expectExceptionMessage('Filtering for time ranges is only possible on simple attributes.');
         } else {
@@ -67,12 +67,12 @@ class FromToDateTest extends FromToTestCase
     public function provider()
     {
         $baseData = [
-            1 => strtotime('1985-01-01T11:00:00+00:00'),
-            2 => strtotime('1990-01-01T11:00:00+00:00'),
-            3 => strtotime('1995-01-01T11:00:00+00:00'),
-            4 => strtotime('2000-01-01T11:00:00+00:00'),
-            5 => strtotime('2010-01-01T01:00:00+00:00'),
-            6 => strtotime('2015-01-01T01:00:00+00:00'),
+            1 => \strtotime('1985-01-01T11:00:00+00:00'),
+            2 => \strtotime('1990-01-01T11:00:00+00:00'),
+            3 => \strtotime('1995-01-01T11:00:00+00:00'),
+            4 => \strtotime('2000-01-01T11:00:00+00:00'),
+            5 => \strtotime('2010-01-01T01:00:00+00:00'),
+            6 => \strtotime('2015-01-01T01:00:00+00:00'),
         ];
 
         $ruleValues = [
@@ -98,7 +98,7 @@ class FromToDateTest extends FromToTestCase
             ],
             [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
                     [
                         'lowerBound' => $baseData[3]
@@ -109,7 +109,7 @@ class FromToDateTest extends FromToTestCase
             ],
             [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
                     [
                         'lowerBound' => $baseData[3],
@@ -121,7 +121,7 @@ class FromToDateTest extends FromToTestCase
             ],
             [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
                     [
                         'upperBound' => $baseData[3]
@@ -132,7 +132,7 @@ class FromToDateTest extends FromToTestCase
             ],
             [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
                     [
                         'upperBound' => $baseData[3],
@@ -144,7 +144,7 @@ class FromToDateTest extends FromToTestCase
             ],
             [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
                     [
                         'upperBound' => 1
@@ -155,7 +155,7 @@ class FromToDateTest extends FromToTestCase
             ],
             [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
                     [
                         'lowerBound' => $baseData[6] + 4000
@@ -166,7 +166,7 @@ class FromToDateTest extends FromToTestCase
             ],
             [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
                     [
                         'lowerBound' => 0,
@@ -181,7 +181,7 @@ class FromToDateTest extends FromToTestCase
             ],
             [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
                     [
                         'lowerBound' => $baseData[1],
@@ -196,7 +196,7 @@ class FromToDateTest extends FromToTestCase
             ],
             [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
                     [
                         'upperBound' => $baseData[1],
@@ -234,7 +234,7 @@ class FromToDateTest extends FromToTestCase
         $rule->method('executeRule')->willReturnCallback(
             function ($executedRule) use ($that, $ruleValues, $rule) {
                 /** @var FromToDate $rule */
-                $simpleQuery = isset($ruleValues['simpleQuery']) ? array_filter($ruleValues['simpleQuery']) : null;
+                $simpleQuery = isset($ruleValues['simpleQuery']) ? \array_filter($ruleValues['simpleQuery']) : null;
                 $that->assertTrue(
                     empty($simpleQuery) || ($executedRule instanceof SimpleQuery),
                     'Rule must be a simple Query'
@@ -250,12 +250,12 @@ class FromToDateTest extends FromToTestCase
                     $queryString = $query->getValue($executedRule);
                     $parameters  = $params->getValue($executedRule);
 
-                    $that->assertEquals(1, count($parameters));
+                    $that->assertEquals(1, \count($parameters));
 
                     if ($rule->getUpperBound()) {
-                        if (strstr($queryString, '<')) {
+                        if (\strstr($queryString, '<')) {
                             $that->assertTrue(
-                                (bool) ($rule->isUpperInclusive() ^ !strstr($queryString, '>='))
+                                (bool) ($rule->isUpperInclusive() ^ !\strstr($queryString, '>='))
                             );
                         }
                     } else {
@@ -263,21 +263,21 @@ class FromToDateTest extends FromToTestCase
                     }
 
                     if ($rule->getLowerBound()) {
-                        if (strstr($queryString, '>')) {
+                        if (\strstr($queryString, '>')) {
                             $that->assertTrue(
-                                (bool) ($rule->isLowerInclusive() ^ !strstr($queryString, '<='))
+                                (bool) ($rule->isLowerInclusive() ^ !\strstr($queryString, '<='))
                             );
                         }
                     } else {
-                        $that->assertFalse(strstr($queryString, '>'), 'No lower bound defined, must not check for it.');
+                        $that->assertFalse(\strstr($queryString, '>'), 'No lower bound defined, must not check for it.');
                     }
 
                     foreach (['<=', '<'] as $operator) {
-                        if (strstr($queryString, $operator)) {
+                        if (\strstr($queryString, $operator)) {
                             $that->assertArrayHasKey($operator, $simpleQuery, 'No value provided for operator');
                             $value = $simpleQuery[$operator];
                             $that->assertEquals(
-                                date('H:i:s', $rule->getUpperBound()),
+                                \date('H:i:s', $rule->getUpperBound()),
                                 $parameters[0],
                                 'parameter value should be as specified.'
                             );
@@ -286,11 +286,11 @@ class FromToDateTest extends FromToTestCase
                         }
                     }
                     foreach (['>=', '>'] as $operator) {
-                        if (strstr($queryString, $operator)) {
+                        if (\strstr($queryString, $operator)) {
                             $that->assertArrayHasKey($operator, $simpleQuery, 'No value provided for operator');
                             $value = $simpleQuery[$operator];
                             $that->assertEquals(
-                                date('H:i:s', $rule->getLowerBound()),
+                                \date('H:i:s', $rule->getLowerBound()),
                                 $parameters[0],
                                 'parameter value should be as specified.'
                             );

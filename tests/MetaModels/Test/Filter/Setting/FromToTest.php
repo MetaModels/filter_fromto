@@ -65,7 +65,7 @@ class FromToTest extends FromToTestCase
                 'message'       => 'filtering with exclusive'
             ],
             2 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'lessequal' => 1,
@@ -77,7 +77,7 @@ class FromToTest extends FromToTestCase
                 'message'       => 'filtering with end of range inclusive.'
             ],
             3 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'moreequal' => 1,
@@ -89,7 +89,7 @@ class FromToTest extends FromToTestCase
                 'message'       => 'filtering with start of range inclusive.'
             ],
             4 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'moreequal' => 1,
@@ -109,7 +109,7 @@ class FromToTest extends FromToTestCase
                 'message'       => 'filtering two fields with exclusive but only one value given'
             ],
             6 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'tofield' => 0,
@@ -121,7 +121,7 @@ class FromToTest extends FromToTestCase
                 'message'       => 'filtering only start field with exclusive and one value given'
             ],
             7 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'fromfield' => 0,
@@ -133,7 +133,7 @@ class FromToTest extends FromToTestCase
                 'message'       => 'filtering only end field with exclusive and one value given'
             ],
             8 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'fromfield' => 0,
@@ -145,7 +145,7 @@ class FromToTest extends FromToTestCase
                 'message'       => 'filtering only end field with exclusive and two values given'
             ],
             9 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'attr_id' => 'invalid',
@@ -157,7 +157,7 @@ class FromToTest extends FromToTestCase
                 'message'       => 'ignore filtering with invalid attribute'
             ],
             10 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'fromfield' => 0,
@@ -198,7 +198,7 @@ class FromToTest extends FromToTestCase
                 'message'       => 'filtering only start passed - https://github.com/MetaModels/filter_fromto/issues/13'
             ],
             15 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'moreequal' => 1,
@@ -219,7 +219,7 @@ class FromToTest extends FromToTestCase
                 'message'       => 'filtering decimal - https://github.com/MetaModels/filter_fromto/issues/12'
             ],
             16 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'moreequal' => 1,
@@ -270,7 +270,7 @@ class FromToTest extends FromToTestCase
 
         $filter = $metaModel->getEmptyFilter();
 
-        if (!is_string($expected)) {
+        if (!\is_string($expected)) {
             $filterSetting->prepareRules($filter, $filterValues);
             $this->assertEquals(
                 $expected,

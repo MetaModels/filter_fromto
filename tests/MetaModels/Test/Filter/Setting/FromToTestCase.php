@@ -71,7 +71,7 @@ class FromToTestCase extends \PHPUnit\Framework\TestCase
         $attributeData = [],
         $values = []
     ) {
-        $attributeData = array_replace_recursive(
+        $attributeData = \array_replace_recursive(
             [
                 'id'      => 1,
                 'colname' => 'testAttribute',

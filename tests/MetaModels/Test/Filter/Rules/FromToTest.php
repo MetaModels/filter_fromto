@@ -61,13 +61,13 @@ class FromToTest extends FromToTestCase
             ],
             [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive($ruleValues, ['lowerBound' => '30']),
+                'ruleValues' => \array_replace_recursive($ruleValues, ['lowerBound' => '30']),
                 'expected'   => [4, 5, 6],
                 'message'    => 'start range 30 exclusive'
             ],
             [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
                     ['lowerBound' => '30', 'lowerInclusive' => true]
                 ),
@@ -76,13 +76,13 @@ class FromToTest extends FromToTestCase
             ],
             [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive($ruleValues, ['upperBound' => '30']),
+                'ruleValues' => \array_replace_recursive($ruleValues, ['upperBound' => '30']),
                 'expected'   => [1, 2],
                 'message'    => 'end range 30 exclusive'
             ],
             [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive(
+                'ruleValues' => \array_replace_recursive(
                     $ruleValues,
                     ['upperBound' => '30', 'upperInclusive' => true]
                 ),
@@ -91,13 +91,13 @@ class FromToTest extends FromToTestCase
             ],
             [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive($ruleValues, ['upperBound' => '1']),
+                'ruleValues' => \array_replace_recursive($ruleValues, ['upperBound' => '1']),
                 'expected'   => [],
                 'message'    => 'end range 1 - should not match anything'
             ],
             [
                 'data'       => $baseData,
-                'ruleValues' => array_replace_recursive($ruleValues, ['lowerBound' => '100']),
+                'ruleValues' => \array_replace_recursive($ruleValues, ['lowerBound' => '100']),
                 'expected'   => [],
                 'message'    => 'start range 100 - should not match anything'
             ],

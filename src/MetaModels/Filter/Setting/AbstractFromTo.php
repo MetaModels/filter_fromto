@@ -84,11 +84,11 @@ abstract class AbstractFromTo extends Simple
     {
         $parameterName = $this->getParamName();
         if (isset($filterUrl[$parameterName]) && !empty($filterUrl[$parameterName])) {
-            if (is_array($filterUrl[$parameterName])) {
-                return array_values($filterUrl[$parameterName]);
+            if (\is_array($filterUrl[$parameterName])) {
+                return \array_values($filterUrl[$parameterName]);
             }
 
-            return array_values(explode('__', $filterUrl[$parameterName]));
+            return \array_values(\explode('__', $filterUrl[$parameterName]));
         }
 
         return null;
@@ -186,8 +186,8 @@ abstract class AbstractFromTo extends Simple
         // Remove empty values from list.
         foreach ($arrOptions as $mixKeyOption => $mixOption) {
             // Remove html/php tags.
-            $mixOption = strip_tags($mixOption);
-            $mixOption = trim($mixOption);
+            $mixOption = \strip_tags($mixOption);
+            $mixOption = \trim($mixOption);
 
             if ($mixOption === '' || $mixOption === null) {
                 unset($arrOptions[$mixKeyOption]);
@@ -213,11 +213,11 @@ abstract class AbstractFromTo extends Simple
 
         // If we have a value, we have to explode it by double underscore to have a valid value which the active checks
         // may cope with.
-        if (array_key_exists($parameterName, $arrFilterUrl) && !empty($arrFilterUrl[$parameterName])) {
-            if (is_array($arrFilterUrl[$parameterName])) {
+        if (\array_key_exists($parameterName, $arrFilterUrl) && !empty($arrFilterUrl[$parameterName])) {
+            if (\is_array($arrFilterUrl[$parameterName])) {
                 $parameterValue = $arrFilterUrl[$parameterName];
             } else {
-                $parameterValue = explode('__', $arrFilterUrl[$parameterName], 2);
+                $parameterValue = \explode('__', $arrFilterUrl[$parameterName], 2);
             }
 
             if ($parameterValue && ($parameterValue[0] || $parameterValue[1])) {
@@ -260,7 +260,7 @@ abstract class AbstractFromTo extends Simple
                 'colname'   => $attribute->getColName(),
             ],
             // We need to implode to have it transported correctly in the frontend filter.
-            'urlvalue'      => !empty($currentValue) ? implode('__', $currentValue) : ''
+            'urlvalue'      => !empty($currentValue) ? \implode('__', $currentValue) : ''
         ];
     }
 
@@ -323,7 +323,7 @@ abstract class AbstractFromTo extends Simple
         }
 
         // Two values, apply filtering for a value range if both fields are allowed.
-        if (count($value) == 2) {
+        if (\count($value) == 2) {
             if (!($this->get('fromfield') && $this->get('tofield'))) {
                 throw new \LengthException('Only one value is allowed, please configure fromfield and tofield.');
             }
@@ -347,7 +347,7 @@ abstract class AbstractFromTo extends Simple
      */
     private function formatEmpty($value)
     {
-        if (empty($value = trim($value))) {
+        if (empty($value = \trim($value))) {
             return $value;
         }
 

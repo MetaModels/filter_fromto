@@ -70,7 +70,7 @@ class FromToDate extends FromTo
         }
 
         return $this->executeRule(new SimpleQuery(
-            sprintf(
+            \sprintf(
                 'SELECT id FROM %s WHERE TIME(FROM_UNIXTIME(%s)) %s ?)',
                 $attribute->getMetaModel()->getTableName(),
                 $attribute->getColName(),
@@ -90,7 +90,7 @@ class FromToDate extends FromTo
             if ($this->getLowerBound()) {
                 return $this->runSimpleQuery(
                     $this->isLowerInclusive() ? '>=' : '>',
-                    date('H:i:s', $this->getLowerBound())
+                    \date('H:i:s', $this->getLowerBound())
                 );
             }
 
@@ -118,7 +118,7 @@ class FromToDate extends FromTo
             if ($this->getUpperBound()) {
                 return $this->runSimpleQuery(
                     $this->isUpperInclusive() ? '<=' : '<',
-                    date('H:i:s', $this->getUpperBound())
+                    \date('H:i:s', $this->getUpperBound())
                 );
             }
 

@@ -51,18 +51,18 @@ class FromToDateTest extends FromToTestCase
         ];
 
         $baseData = [
-            1 => strtotime('1985-01-01T11:00:00+00:00'),
-            2 => strtotime('1990-01-01T11:00:00+00:00'),
-            3 => strtotime('1995-01-01T11:00:00+00:00'),
-            4 => strtotime('2000-01-01T11:00:00+00:00'),
-            5 => strtotime('2010-01-01T01:00:00+00:00'),
-            6 => strtotime('2015-01-01T01:00:00+00:00'),
+            1 => \strtotime('1985-01-01T11:00:00+00:00'),
+            2 => \strtotime('1990-01-01T11:00:00+00:00'),
+            3 => \strtotime('1995-01-01T11:00:00+00:00'),
+            4 => \strtotime('2000-01-01T11:00:00+00:00'),
+            5 => \strtotime('2010-01-01T01:00:00+00:00'),
+            6 => \strtotime('2015-01-01T01:00:00+00:00'),
         ];
 
         $generateUrlValue = function ($start, $end = null) use ($baseSettings) {
-            $value = is_int($start) ? date($baseSettings['dateformat'], $start) : $start;
+            $value = \is_int($start) ? \date($baseSettings['dateformat'], $start) : $start;
             if ($end) {
-                $value .= '__' . (is_int($end) ? date($baseSettings['dateformat'], $end) : $end);
+                $value .= '__' . (\is_int($end) ? \date($baseSettings['dateformat'], $end) : $end);
             }
 
             return $value;
@@ -77,7 +77,7 @@ class FromToDateTest extends FromToTestCase
                 'message'       => 'filtering with exclusive'
             ],
             2 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'lessequal' => 1,
@@ -89,7 +89,7 @@ class FromToDateTest extends FromToTestCase
                 'message'       => 'filtering with end of range inclusive.'
             ],
             3 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'moreequal' => 1,
@@ -101,7 +101,7 @@ class FromToDateTest extends FromToTestCase
                 'message'       => 'filtering with start of range inclusive.'
             ],
             4 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'moreequal' => 1,
@@ -121,7 +121,7 @@ class FromToDateTest extends FromToTestCase
                 'message'       => 'filtering two fields with exclusive but only one value given'
             ],
             6 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'tofield' => 0,
@@ -133,7 +133,7 @@ class FromToDateTest extends FromToTestCase
                 'message'       => 'filtering only start field with exclusive and one value given'
             ],
             7 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'fromfield' => 0,
@@ -145,7 +145,7 @@ class FromToDateTest extends FromToTestCase
                 'message'       => 'filtering only end field with exclusive and one value given'
             ],
             8 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'fromfield' => 0,
@@ -157,7 +157,7 @@ class FromToDateTest extends FromToTestCase
                 'message'       => 'filtering only end field with exclusive and two values given'
             ],
             9 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'attr_id' => 'invalid',
@@ -169,7 +169,7 @@ class FromToDateTest extends FromToTestCase
                 'message'       => 'ignore filtering with invalid attribute'
             ],
             10 => [
-                'filterSetting' => array_replace_recursive(
+                'filterSetting' => \array_replace_recursive(
                     $baseSettings,
                     [
                         'fromfield' => 0,
@@ -259,7 +259,7 @@ class FromToDateTest extends FromToTestCase
 
         $filter = $metaModel->getEmptyFilter();
 
-        if (!is_string($expected)) {
+        if (!\is_string($expected)) {
             $filterSetting->prepareRules($filter, $filterValues);
             $this->assertEquals(
                 $expected,
@@ -287,7 +287,7 @@ class FromToDateTest extends FromToTestCase
     {
         $that          = $this;
         $filterSetting = $this->mockFilterSetting();
-        $urlParameter  = date('Y-m-d-H-i-s', 473425200) . '__' . date('Y-m-d-H-i-s', 1420074000);
+        $urlParameter  = \date('Y-m-d-H-i-s', 473425200) . '__' . \date('Y-m-d-H-i-s', 1420074000);
         $fromTo        = $this
             ->getMockBuilder(FromToDate::class)
             ->setMethods(['prepareFrontendFilterWidget'])
@@ -313,7 +313,7 @@ class FromToDateTest extends FromToTestCase
         $fromTo->expects($this->any())->method('prepareFrontendFilterWidget')->will($this->returnCallback(
             function ($arrWidget, $arrFilterUrl, $arrJumpTo) use ($that, $fromTo, $urlParameter) {
                 /** @var FromToDate $fromTo */
-                $that->assertEquals(2, count($arrWidget['label']));
+                $that->assertEquals(2, \count($arrWidget['label']));
                 $that->assertArrayHasKey('timetype', $arrWidget);
                 $that->assertEquals($arrWidget['timetype'], $fromTo->get('timetype'));
                 $that->assertArrayHasKey('dateformat', $arrWidget);
@@ -340,11 +340,11 @@ class FromToDateTest extends FromToTestCase
         );
 
         $this->assertArrayHasKey('urlParameter', $result);
-        $that->assertEquals(1, count($result));
+        $that->assertEquals(1, \count($result));
         $result = $result['urlParameter'];
 
         $this->assertEquals(
-            ['urlParameter' => explode('__', $urlParameter)],
+            ['urlParameter' => \explode('__', $urlParameter)],
             $result['filterUrl']
         );
     }

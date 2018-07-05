@@ -228,8 +228,8 @@ class FromTo implements IFilterRule
             return null;
         }
 
-        if (is_array($upper) && is_array($lower)) {
-            return array_values(array_intersect($lower, $upper));
+        if (\is_array($upper) && \is_array($lower)) {
+            return \array_values(\array_intersect($lower, $upper));
         }
 
         // Return the non null array otherwise.
