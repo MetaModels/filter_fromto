@@ -14,6 +14,7 @@
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @author     Sven Baumann <baumann.sv@gmail.com>
  * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
@@ -67,15 +68,15 @@ class FromToTestCase extends \PHPUnit\Framework\TestCase
      */
     protected function mockAttribute(
         $metaModel,
-        $attributeData = array(),
-        $values = array()
+        $attributeData = [],
+        $values = []
     ) {
         $attributeData = array_replace_recursive(
-            array(
+            [
                 'id'      => 1,
                 'colname' => 'testAttribute',
                 'name'    => 'Test Attribute'
-            ),
+            ],
             $attributeData
         );
 
@@ -95,7 +96,7 @@ class FromToTestCase extends \PHPUnit\Framework\TestCase
             ->will(
                 $this->returnCallback(
                     function ($testValue, $inclusive = false) use ($values) {
-                        $ids = array();
+                        $ids = [];
                         foreach ($values as $itemId => $value) {
                             if ($inclusive) {
                                 if ($value >= $testValue) {
@@ -116,7 +117,7 @@ class FromToTestCase extends \PHPUnit\Framework\TestCase
             ->will(
                 $this->returnCallback(
                     function ($testValue, $inclusive = false) use ($values) {
-                        $ids = array();
+                        $ids = [];
                         foreach ($values as $itemId => $value) {
                             if ($inclusive) {
                                 if ($value <= $testValue) {

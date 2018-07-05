@@ -14,6 +14,7 @@
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @author     Sven Baumann <baumann.sv@gmail.com>
  * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
@@ -41,10 +42,10 @@ class AbstractFromToTest extends FromToTestCase
      *
      * @return AbstractFromTo
      */
-    protected function mockAbstractFromTo($filterSetting, $data = array(), $mockedMethods = array())
+    protected function mockAbstractFromTo($filterSetting, $data = [], $mockedMethods = [])
     {
         $data = array_replace_recursive(
-            array(
+            [
                 'attr_id'   => 1,
                 'urlparam'  => 'urlParameter',
                 'label'     => 'Test filter',
@@ -53,13 +54,13 @@ class AbstractFromToTest extends FromToTestCase
                 'lessequal' => 1,
                 'fromfield' => 1,
                 'tofield'   => 1,
-            ),
+            ],
             $data
         );
 
         return $this->getMockForAbstractClass(
             'MetaModels\Filter\Setting\AbstractFromTo',
-            array($filterSetting, $data),
+            [$filterSetting, $data],
             '',
             true,
             true,
@@ -81,7 +82,7 @@ class AbstractFromToTest extends FromToTestCase
         $fromTo = $this->mockAbstractFromTo($filterSetting);
 
         $this->assertEquals(
-            array('urlParameter'),
+            ['urlParameter'],
             $fromTo->getParameters()
         );
     }
@@ -96,10 +97,10 @@ class AbstractFromToTest extends FromToTestCase
         $filterSetting = $this->mockFilterSetting();
         $attribute     = $this->mockAttribute($filterSetting->getMetaModel());
 
-        $fromTo = $this->mockAbstractFromTo($filterSetting, array('urlparam'  => ''));
+        $fromTo = $this->mockAbstractFromTo($filterSetting, ['urlparam' => '']);
 
         $this->assertEquals(
-            array($attribute->getColName()),
+            [$attribute->getColName()],
             $fromTo->getParameters()
         );
     }
@@ -113,10 +114,10 @@ class AbstractFromToTest extends FromToTestCase
     {
         $filterSetting = $this->mockFilterSetting();
 
-        $fromTo = $this->mockAbstractFromTo($filterSetting, array('urlparam'  => ''));
+        $fromTo = $this->mockAbstractFromTo($filterSetting, ['urlparam' => '']);
 
         $this->assertEquals(
-            array(),
+            [],
             $fromTo->getParameters()
         );
     }
@@ -129,17 +130,17 @@ class AbstractFromToTest extends FromToTestCase
     public function testGetParameterFilterNames()
     {
         $filterSetting = $this->mockFilterSetting();
-        $this->mockAttribute($filterSetting->getMetaModel(), array('id' => 1, 'colname' => 'attributeColumn'));
+        $this->mockAttribute($filterSetting->getMetaModel(), ['id' => 1, 'colname' => 'attributeColumn']);
 
         $fromTo = $this->mockAbstractFromTo($filterSetting);
 
         $this->assertEquals(
-            array('urlParameter'),
+            ['urlParameter'],
             $fromTo->getParameters()
         );
 
         $this->assertEquals(
-            array('urlParameter' => 'Test filter'),
+            ['urlParameter' => 'Test filter'],
             $fromTo->getParameterFilterNames()
         );
     }
@@ -154,15 +155,15 @@ class AbstractFromToTest extends FromToTestCase
         $filterSetting = $this->mockFilterSetting();
         $this->mockAttribute($filterSetting->getMetaModel());
 
-        $fromTo = $this->mockAbstractFromTo($filterSetting, array('label'     => ''));
+        $fromTo = $this->mockAbstractFromTo($filterSetting, ['label' => '']);
 
         $this->assertEquals(
-            array('urlParameter'),
+            ['urlParameter'],
             $fromTo->getParameters()
         );
 
         $this->assertEquals(
-            array('urlParameter' => 'Test Attribute'),
+            ['urlParameter' => 'Test Attribute'],
             $fromTo->getParameterFilterNames()
         );
     }
@@ -179,7 +180,7 @@ class AbstractFromToTest extends FromToTestCase
         $fromTo        = $this->mockAbstractFromTo($filterSetting);
 
         $this->assertEquals(
-            array($attribute->getColName()),
+            [$attribute->getColName()],
             $fromTo->getReferencedAttributes()
         );
     }
@@ -194,10 +195,10 @@ class AbstractFromToTest extends FromToTestCase
         $filterSetting = $this->mockFilterSetting();
         $attribute     = $this->mockAttribute($filterSetting->getMetaModel());
 
-        $fromTo = $this->mockAbstractFromTo($filterSetting, array('attr_id'   => ($attribute->get('id') + 1)));
+        $fromTo = $this->mockAbstractFromTo($filterSetting, ['attr_id' => ($attribute->get('id') + 1)]);
 
         $this->assertEquals(
-            array(),
+            [],
             $fromTo->getReferencedAttributes()
         );
     }
@@ -211,7 +212,7 @@ class AbstractFromToTest extends FromToTestCase
     {
         $that          = $this;
         $filterSetting = $this->mockFilterSetting();
-        $fromTo        = $this->mockAbstractFromTo($filterSetting, array(), array('prepareFrontendFilterWidget'));
+        $fromTo        = $this->mockAbstractFromTo($filterSetting, [], ['prepareFrontendFilterWidget']);
         $this->mockAttribute($filterSetting->getMetaModel());
 
         $fromTo->expects($this->any())->method('prepareFrontendFilterWidget')->will($this->returnCallback(
@@ -223,20 +224,20 @@ class AbstractFromToTest extends FromToTestCase
                 $that->assertArrayHasKey('urlparam', $arrWidget['eval']);
                 $that->assertEquals($arrWidget['urlvalue'], '01__20');
 
-                return array(
+                return [
                     'widget' => $arrWidget,
                     'filterUrl' => $arrFilterUrl,
                     'jumpTo' => $arrJumpTo,
-                );
+                ];
             }
         ));
 
         include_once __DIR__ . '/../../../../../contao/languages/en/default.php';
 
         $result = $fromTo->getParameterFilterWidgets(
-            array(),
-            array('urlParameter' => '01__20'),
-            array('Test jump to'),
+            [],
+            ['urlParameter' => '01__20'],
+            ['Test jump to'],
             new FrontendFilterOptions()
         );
 
@@ -245,11 +246,11 @@ class AbstractFromToTest extends FromToTestCase
         $result = $result['urlParameter'];
 
         $this->assertEquals(
-            array('Test jump to'),
+            ['Test jump to'],
             $result['jumpTo']
         );
         $this->assertEquals(
-            array('urlParameter' => array('01', '20')),
+            ['urlParameter' => ['01', '20']],
             $result['filterUrl']
         );
     }
@@ -264,13 +265,13 @@ class AbstractFromToTest extends FromToTestCase
         $filterSetting = $this->mockFilterSetting();
         $attribute     = $this->mockAttribute($filterSetting->getMetaModel());
 
-        $fromTo = $this->mockAbstractFromTo($filterSetting, array('attr_id'   => ($attribute->get('id') + 1)));
+        $fromTo = $this->mockAbstractFromTo($filterSetting, ['attr_id' => ($attribute->get('id') + 1)]);
 
         include_once __DIR__ . '/../../../../../contao/languages/en/default.php';
 
         $this->assertEquals(
-            array(),
-            $fromTo->getParameterFilterWidgets(array(), array(), array(), new FrontendFilterOptions())
+            [],
+            $fromTo->getParameterFilterWidgets([], [], [], new FrontendFilterOptions())
         );
     }
 }

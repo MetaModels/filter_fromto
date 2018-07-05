@@ -14,6 +14,7 @@
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
+ * @author     Sven Baumann <baumann.sv@gmail.com>
  * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
@@ -55,7 +56,7 @@ abstract class AbstractFromTo extends Simple
      */
     public function getParameters()
     {
-        return ($strParamName = $this->getParamName()) ? array($strParamName) : array();
+        return ($strParamName = $this->getParamName()) ? [$strParamName] : [];
     }
 
     /**
@@ -64,7 +65,7 @@ abstract class AbstractFromTo extends Simple
     public function getParameterFilterNames()
     {
         if ($this->get('label')) {
-            return array($this->getParamName() => $this->get('label'));
+            return [$this->getParamName() => $this->get('label')];
         }
 
         return array(
@@ -103,10 +104,10 @@ abstract class AbstractFromTo extends Simple
         $objAttribute = null;
         if (!($this->get('attr_id')
             && ($objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'))))) {
-            return array();
+            return [];
         }
 
-        return $objAttribute ? array($objAttribute->getColName()) : array();
+        return $objAttribute ? [$objAttribute->getColName()] : [];
     }
 
     /**
@@ -151,10 +152,10 @@ abstract class AbstractFromTo extends Simple
      */
     protected function prepareWidgetLabel($objAttribute)
     {
-        $arrLabel = array(
+        $arrLabel = [
             ($this->get('label') ? $this->get('label') : $objAttribute->getName()),
             'GET: ' . $this->getParamName()
-        );
+        ];
 
         if ($this->get('fromfield') && $this->get('tofield')) {
             $arrLabel[0] .= ' ' . $GLOBALS['TL_LANG']['metamodels_frontendfilter']['fromto'];
@@ -222,16 +223,16 @@ abstract class AbstractFromTo extends Simple
             if ($parameterValue && ($parameterValue[0] || $parameterValue[1])) {
                 $privateFilterUrl[$parameterName] = $parameterValue;
 
-                return array($privateFilterUrl, $parameterValue);
+                return [$privateFilterUrl, $parameterValue];
             } else {
                 // No values given, clear the array.
                 $parameterValue = null;
 
-                return array($privateFilterUrl, $parameterValue);
+                return [$privateFilterUrl, $parameterValue];
             }
         }
 
-        return array($privateFilterUrl, $parameterValue);
+        return [$privateFilterUrl, $parameterValue];
     }
 
     /**
@@ -247,20 +248,20 @@ abstract class AbstractFromTo extends Simple
      */
     protected function getFilterWidgetParameters(IAttribute $attribute, $currentValue, $ids)
     {
-        return array(
+        return [
             'label'         => $this->prepareWidgetLabel($attribute),
             'inputType'     => 'multitext',
             'options'       => $this->prepareWidgetOptions($ids, $attribute),
-            'eval'          => array(
+            'eval'          => [
                 'multiple'  => true,
                 'size'      => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
                 'urlparam'  => $this->getParamName(),
                 'template'  => $this->get('template'),
                 'colname'   => $attribute->getColName(),
-            ),
+            ],
             // We need to implode to have it transported correctly in the frontend filter.
             'urlvalue'      => !empty($currentValue) ? implode('__', $currentValue) : ''
-        );
+        ];
     }
 
     /**
@@ -274,21 +275,21 @@ abstract class AbstractFromTo extends Simple
     ) {
         $objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
         if (!$objAttribute) {
-            return array();
+            return [];
         }
 
         list($privateFilterUrl, $currentValue) = $this->prepareWidgetParamAndFilterUrl($arrFilterUrl);
 
         $this->registerFilterParameter();
 
-        return array(
+        return [
             $this->getParamName() => $this->prepareFrontendFilterWidget(
                 $this->getFilterWidgetParameters($objAttribute, $currentValue, $arrIds),
                 $privateFilterUrl,
                 $arrJumpTo,
                 $objFrontendFilterOptions
             )
-        );
+        ];
     }
 
     /**

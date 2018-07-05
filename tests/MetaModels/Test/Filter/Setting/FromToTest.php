@@ -14,6 +14,7 @@
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @author     Sven Baumann <baumann.sv@gmail.com>
  * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
@@ -35,7 +36,7 @@ class FromToTest extends FromToTestCase
      */
     public function provider()
     {
-        $baseSettings = array(
+        $baseSettings = [
             'attr_id'   => 1,
             'urlparam'  => 'urlParameter',
             'label'     => 'Test',
@@ -44,167 +45,167 @@ class FromToTest extends FromToTestCase
             'lessequal' => 0,
             'fromfield' => 1,
             'tofield'   => 1,
-        );
+        ];
 
-        $baseData = array(
+        $baseData = [
             1 => '10',
             2 => '20',
             3 => '30',
             4 => '40',
             5 => '50',
             6 => '60',
-        );
+        ];
 
-        return array(
-            1 => array(
+        return [
+            1 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => '10__40'),
-                'expected'      => array(2, 3),
+                'filterValues'  => ['urlParameter' => '10__40'],
+                'expected'      => [2, 3],
                 'message'       => 'filtering with exclusive'
-            ),
-            2 => array(
+            ],
+            2 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'lessequal' => 1,
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => '10__30'),
-                'expected'      => array(2, 3),
+                'filterValues'  => ['urlParameter' => '10__30'],
+                'expected'      => [2, 3],
                 'message'       => 'filtering with end of range inclusive.'
-            ),
-            3 => array(
+            ],
+            3 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'moreequal' => 1,
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => '10__40'),
-                'expected'      => array(1, 2, 3),
+                'filterValues'  => ['urlParameter' => '10__40'],
+                'expected'      => [1, 2, 3],
                 'message'       => 'filtering with start of range inclusive.'
-            ),
-            4 => array(
+            ],
+            4 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'moreequal' => 1,
                         'lessequal' => 1,
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => '10__15'),
-                'expected'      => array(1),
+                'filterValues'  => ['urlParameter' => '10__15'],
+                'expected'      => [1],
                 'message'       => 'filtering with start and end of range inclusive.'
-            ),
-            5 => array(
+            ],
+            5 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => '40'),
-                'expected'      => array(5, 6),
+                'filterValues'  => ['urlParameter' => '40'],
+                'expected'      => [5, 6],
                 'message'       => 'filtering two fields with exclusive but only one value given'
-            ),
-            6 => array(
+            ],
+            6 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'tofield' => 0,
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => '40'),
-                'expected'      => array(5, 6),
+                'filterValues'  => ['urlParameter' => '40'],
+                'expected'      => [5, 6],
                 'message'       => 'filtering only start field with exclusive and one value given'
-            ),
-            7 => array(
+            ],
+            7 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'fromfield' => 0,
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => '40'),
-                'expected'      => array(1, 2, 3),
+                'filterValues'  => ['urlParameter' => '40'],
+                'expected'      => [1, 2, 3],
                 'message'       => 'filtering only end field with exclusive and one value given'
-            ),
-            8 => array(
+            ],
+            8 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'fromfield' => 0,
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => '100__400'),
+                'filterValues'  => ['urlParameter' => '100__400'],
                 'expected'      => '\LengthException',
                 'message'       => 'filtering only end field with exclusive and two values given'
-            ),
-            9 => array(
+            ],
+            9 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'attr_id' => 'invalid',
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => '1'),
+                'filterValues'  => ['urlParameter' => '1'],
                 'expected'      => null,
                 'message'       => 'ignore filtering with invalid attribute'
-            ),
-            10 => array(
+            ],
+            10 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'fromfield' => 0,
                         'tofield'   => 0,
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => '1'),
+                'filterValues'  => ['urlParameter' => '1'],
                 'expected'      => null,
                 'message'       => 'ignore filtering when neither start nor end are checked.'
-            ),
-            11 => array(
+            ],
+            11 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => null),
+                'filterValues'  => ['urlParameter' => null],
                 'expected'      => null,
                 'message'       => 'ignore filtering when nothing provided in the url.'
-            ),
-            12 => array(
+            ],
+            12 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => array('10', '40')),
-                'expected'      => array(2, 3),
+                'filterValues'  => ['urlParameter' => ['10', '40']],
+                'expected'      => [2, 3],
                 'message'       => 'filtering exclusive with array values'
-            ),
-            13 => array(
+            ],
+            13 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => '__40'),
-                'expected'      => array(1, 2, 3),
+                'filterValues'  => ['urlParameter' => '__40'],
+                'expected'      => [1, 2, 3],
                 'message'       => 'filtering only end passed - https://github.com/MetaModels/filter_fromto/issues/13'
-            ),
-            14 => array(
+            ],
+            14 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => '40__'),
-                'expected'      => array(5, 6),
+                'filterValues'  => ['urlParameter' => '40__'],
+                'expected'      => [5, 6],
                 'message'       => 'filtering only start passed - https://github.com/MetaModels/filter_fromto/issues/13'
-            ),
-            15 => array(
+            ],
+            15 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'moreequal' => 1,
                         'lessequal' => 1,
-                    )
+                    ]
                 ),
-                'data'          => array(
+                'data'          => [
                     1 => '1.1',
                     2 => '1.1',
                     3 => '1.2',
@@ -212,20 +213,20 @@ class FromToTest extends FromToTestCase
                     5 => '1',
                     6 => '1.4',
                     7 => '0',
-                ),
-                'filterValues'  => array('urlParameter' => '1.0__1.2'),
-                'expected'      => array(1, 2, 3, 5),
+                ],
+                'filterValues'  => ['urlParameter' => '1.0__1.2'],
+                'expected'      => [1, 2, 3, 5],
                 'message'       => 'filtering decimal - https://github.com/MetaModels/filter_fromto/issues/12'
-            ),
-            16 => array(
+            ],
+            16 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'moreequal' => 1,
                         'lessequal' => 1,
-                    )
+                    ]
                 ),
-                'data'          => array(
+                'data'          => [
                     1 => 1.1,
                     2 => 1.1,
                     3 => 1.2,
@@ -233,12 +234,12 @@ class FromToTest extends FromToTestCase
                     5 => 1,
                     6 => 1.4,
                     7 => 0,
-                ),
-                'filterValues'  => array('urlParameter' => '1.0__1.2'),
-                'expected'      => array(1, 2, 3, 5),
+                ],
+                'filterValues'  => ['urlParameter' => '1.0__1.2'],
+                'expected'      => [1, 2, 3, 5],
                 'message'       => 'filtering decimal - https://github.com/MetaModels/filter_fromto/issues/12'
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -263,7 +264,7 @@ class FromToTest extends FromToTestCase
         $filterSetting = $this->mockFilterSetting();
         $metaModel     = $filterSetting->getMetaModel();
 
-        $this->mockAttribute($metaModel, array(), $data);
+        $this->mockAttribute($metaModel, [], $data);
 
         $filterSetting = new FromTo($filterSetting, $filterSettingData);
 

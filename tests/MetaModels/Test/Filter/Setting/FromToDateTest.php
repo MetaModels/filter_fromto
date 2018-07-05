@@ -14,6 +14,7 @@
  * @subpackage FilterFromTo
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @author     Sven Baumann <baumann.sv@gmail.com>
  * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
@@ -36,7 +37,7 @@ class FromToDateTest extends FromToTestCase
      */
     public function provider()
     {
-        $baseSettings = array(
+        $baseSettings = [
             'attr_id'    => 1,
             'urlparam'   => 'urlParameter',
             'label'      => 'Test',
@@ -47,16 +48,16 @@ class FromToDateTest extends FromToTestCase
             'tofield'    => 1,
             'dateformat' => 'Y-m-d-H-i-s',
             'timetype'   => 'datim'
-        );
+        ];
 
-        $baseData = array(
+        $baseData = [
             1 => strtotime('1985-01-01T11:00:00+00:00'),
             2 => strtotime('1990-01-01T11:00:00+00:00'),
             3 => strtotime('1995-01-01T11:00:00+00:00'),
             4 => strtotime('2000-01-01T11:00:00+00:00'),
             5 => strtotime('2010-01-01T01:00:00+00:00'),
             6 => strtotime('2015-01-01T01:00:00+00:00'),
-        );
+        ];
 
         $generateUrlValue = function ($start, $end = null) use ($baseSettings) {
             $value = is_int($start) ? date($baseSettings['dateformat'], $start) : $start;
@@ -67,167 +68,167 @@ class FromToDateTest extends FromToTestCase
             return $value;
         };
 
-        return array(
-            1 => array(
+        return [
+            1 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[1], $baseData[4])),
-                'expected'      => array(2, 3),
+                'filterValues'  => ['urlParameter' => $generateUrlValue($baseData[1], $baseData[4])],
+                'expected'      => [2, 3],
                 'message'       => 'filtering with exclusive'
-            ),
-            2 => array(
+            ],
+            2 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'lessequal' => 1,
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[1], $baseData[3])),
-                'expected'      => array(2, 3),
+                'filterValues'  => ['urlParameter' => $generateUrlValue($baseData[1], $baseData[3])],
+                'expected'      => [2, 3],
                 'message'       => 'filtering with end of range inclusive.'
-            ),
-            3 => array(
+            ],
+            3 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'moreequal' => 1,
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[1], $baseData[4])),
-                'expected'      => array(1, 2, 3),
+                'filterValues'  => ['urlParameter' => $generateUrlValue($baseData[1], $baseData[4])],
+                'expected'      => [1, 2, 3],
                 'message'       => 'filtering with start of range inclusive.'
-            ),
-            4 => array(
+            ],
+            4 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'moreequal' => 1,
                         'lessequal' => 1,
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[1], $baseData[2])),
-                'expected'      => array(1, 2),
+                'filterValues'  => ['urlParameter' => $generateUrlValue($baseData[1], $baseData[2])],
+                'expected'      => [1, 2],
                 'message'       => 'filtering with start and end of range inclusive.'
-            ),
-            5 => array(
+            ],
+            5 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[4])),
-                'expected'      => array(5, 6),
+                'filterValues'  => ['urlParameter' => $generateUrlValue($baseData[4])],
+                'expected'      => [5, 6],
                 'message'       => 'filtering two fields with exclusive but only one value given'
-            ),
-            6 => array(
+            ],
+            6 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'tofield' => 0,
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[4])),
-                'expected'      => array(5, 6),
+                'filterValues'  => ['urlParameter' => $generateUrlValue($baseData[4])],
+                'expected'      => [5, 6],
                 'message'       => 'filtering only start field with exclusive and one value given'
-            ),
-            7 => array(
+            ],
+            7 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'fromfield' => 0,
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[4])),
-                'expected'      => array(1, 2, 3),
+                'filterValues'  => ['urlParameter' => $generateUrlValue($baseData[4])],
+                'expected'      => [1, 2, 3],
                 'message'       => 'filtering only end field with exclusive and one value given'
-            ),
-            8 => array(
+            ],
+            8 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'fromfield' => 0,
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[1], $baseData[2])),
+                'filterValues'  => ['urlParameter' => $generateUrlValue($baseData[1], $baseData[2])],
                 'expected'      => '\LengthException',
                 'message'       => 'filtering only end field with exclusive and two values given'
-            ),
-            9 => array(
+            ],
+            9 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'attr_id' => 'invalid',
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[1])),
+                'filterValues'  => ['urlParameter' => $generateUrlValue($baseData[1])],
                 'expected'      => null,
                 'message'       => 'ignore filtering with invalid attribute'
-            ),
-            10 => array(
+            ],
+            10 => [
                 'filterSetting' => array_replace_recursive(
                     $baseSettings,
-                    array(
+                    [
                         'fromfield' => 0,
                         'tofield'   => 0,
-                    )
+                    ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[1])),
+                'filterValues'  => ['urlParameter' => $generateUrlValue($baseData[1])],
                 'expected'      => null,
                 'message'       => 'ignore filtering when neither start nor end are checked.'
-            ),
-            11 => array(
+            ],
+            11 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => null),
+                'filterValues'  => ['urlParameter' => null],
                 'expected'      => null,
                 'message'       => 'ignore filtering when nothing provided in the url.'
-            ),
-            12 => array(
+            ],
+            12 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array(
-                    'urlParameter' => array(
+                'filterValues'  => [
+                    'urlParameter' => [
                         $generateUrlValue($baseData[1]),
                         $generateUrlValue($baseData[4])
-                    )
-                ),
-                'expected'      => array(2, 3),
+                    ]
+                ],
+                'expected'      => [2, 3],
                 'message'       => 'filtering exclusive with array values'
-            ),
-            13 => array(
+            ],
+            13 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue('broken', $baseData[4])),
-                'expected'      => array(),
+                'filterValues'  => ['urlParameter' => $generateUrlValue('broken', $baseData[4])],
+                'expected'      => [],
                 'message'       => 'filtering exclusive with broken start but valid end.'
-            ),
-            14 => array(
+            ],
+            14 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[4], 'broken')),
-                'expected'      => array(),
+                'filterValues'  => ['urlParameter' => $generateUrlValue($baseData[4], 'broken')],
+                'expected'      => [],
                 'message'       => 'filtering exclusive with valid start but broken end.'
-            ),
-            16 => array(
+            ],
+            16 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue('', $baseData[4])),
-                'expected'      => array(1, 2, 3),
+                'filterValues'  => ['urlParameter' => $generateUrlValue('', $baseData[4])],
+                'expected'      => [1, 2, 3],
                 'message'       => 'filtering exclusive with empty start but valid end.'
-            ),
-            17 => array(
+            ],
+            17 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => array('urlParameter' => $generateUrlValue($baseData[4], '')),
-                'expected'      => array(5, 6),
+                'filterValues'  => ['urlParameter' => $generateUrlValue($baseData[4], '')],
+                'expected'      => [5, 6],
                 'message'       => 'filtering exclusive with valid start but empty end.'
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -252,7 +253,7 @@ class FromToDateTest extends FromToTestCase
         $filterSetting = $this->mockFilterSetting();
         $metaModel     = $filterSetting->getMetaModel();
 
-        $this->mockAttribute($metaModel, array(), $data);
+        $this->mockAttribute($metaModel, [], $data);
 
         $filterSetting = new FromToDate($filterSetting, $filterSettingData);
 
@@ -319,11 +320,11 @@ class FromToDateTest extends FromToTestCase
                 $that->assertEquals($arrWidget['dateformat'], $fromTo->get('dateformat'));
                 $that->assertEquals($arrWidget['urlvalue'], $urlParameter);
 
-                return array(
+                return [
                     'widget' => $arrWidget,
                     'filterUrl' => $arrFilterUrl,
                     'jumpTo' => $arrJumpTo,
-                );
+                ];
             }
         ));
 
@@ -332,9 +333,9 @@ class FromToDateTest extends FromToTestCase
         include_once __DIR__ . '/../../../../../contao/languages/en/default.php';
 
         $result = $fromTo->getParameterFilterWidgets(
-            array(),
-            array('urlParameter' => $urlParameter),
-            array('Test jump to'),
+            [],
+            ['urlParameter' => $urlParameter],
+            ['Test jump to'],
             new FrontendFilterOptions()
         );
 
@@ -343,7 +344,7 @@ class FromToDateTest extends FromToTestCase
         $result = $result['urlParameter'];
 
         $this->assertEquals(
-            array('urlParameter' => explode('__', $urlParameter)),
+            ['urlParameter' => explode('__', $urlParameter)],
             $result['filterUrl']
         );
     }
