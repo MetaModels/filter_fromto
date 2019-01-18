@@ -3,22 +3,20 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2017 The MetaModels team.
+ * (c) 2012-2019 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * This project is provided in good faith and hope to be usable by anyone.
  *
- * @package    MetaModels
- * @subpackage FilterFromToBundle
+ * @package    MetaModels/filter_fromto
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
- * @copyright  2012-2017 The MetaModels team.
- * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
+ * @copyright  2012-2019 The MetaModels team.
+ * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
-
-// This hack is to load the "old locations" of the classes.
 
 use MetaModels\FilterFromToBundle\FilterRule\FromTo as FromToRule;
 use MetaModels\FilterFromToBundle\FilterRule\FromToDate as FromToDateRule;
@@ -28,6 +26,7 @@ use MetaModels\FilterFromToBundle\FilterSetting\FromToDate as FromToDateSetting;
 use MetaModels\FilterFromToBundle\FilterSetting\FromToDateFilterSettingTypeFactory;
 use MetaModels\FilterFromToBundle\FilterSetting\FromToFilterSettingTypeFactory;
 
+// This hack is to load the "old locations" of the classes.
 spl_autoload_register(
     function ($class) {
         static $classes = [

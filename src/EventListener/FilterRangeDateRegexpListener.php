@@ -20,7 +20,6 @@
  * @filesource
  */
 
-
 namespace MetaModels\FilterFromToBundle\EventListener;
 
 use Contao\Date;
@@ -41,8 +40,6 @@ class FilterRangeDateRegexpListener
      * @param Widget $widget The widget to process.
      *
      * @return void
-     *
-     * @throws \Exception
      *
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
