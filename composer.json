@@ -50,7 +50,7 @@
     ]
   },
   "autoload-dev": {
-    "psr-0": {
+    "psr-4": {
       "MetaModels\\FilterFromToBundle\\Test\\": "tests"
     }
   },
