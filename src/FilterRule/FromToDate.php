@@ -22,6 +22,9 @@
 
 namespace MetaModels\FilterFromToBundle\FilterRule;
 
+use Contao\System;
+use Doctrine\DBAL\Connection;
+use MetaModels\Attribute\IAttribute;
 use MetaModels\Attribute\ISimple;
 use MetaModels\Filter\Rules\SimpleQuery;
 
@@ -31,11 +34,41 @@ use MetaModels\Filter\Rules\SimpleQuery;
 class FromToDate extends FromTo
 {
     /**
+     * The database connection.
+     *
+     * @var Connection
+     */
+    private $connection;
+
+    /**
      * The date time format to apply.
      *
      * @var string
      */
     private $dateType;
+
+    /**
+     * Create a new instance.
+     *
+     * @param IAttribute $attribute  The attribute to perform filtering on.
+     * @param Connection $connection The database connection.
+     */
+    public function __construct($attribute, Connection $connection = null)
+    {
+        parent::__construct($attribute);
+
+        if (null === $connection) {
+            // @codingStandardsIgnoreStart
+            @trigger_error(
+                'Connection is missing. It has to be passed in the constructor. Fallback will be dropped.',
+                E_USER_DEPRECATED
+            );
+            // @codingStandardsIgnoreEnd
+            $connection = System::getContainer()->get('database_connection');
+        }
+
+        $this->connection = $connection;
+    }
 
     /**
      * Set the date format to use.
@@ -77,7 +110,9 @@ class FromToDate extends FromTo
                 $attribute->getColName(),
                 $operation
             ),
-            [$value]
+            [$value],
+            'id',
+            $this->connection
         ));
     }
 

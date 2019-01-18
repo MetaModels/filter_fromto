@@ -31,6 +31,25 @@ use MetaModels\FrontendIntegration\FrontendFilterOptions;
 class FromToDateTest extends FromToTestCase
 {
     /**
+     * {@inheritDoc}
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $GLOBALS['TL_LANG'] = [
+            'metamodels_frontendfilter' => [
+                'fromto' => '',
+                'from'   => '',
+                'to'     => '',
+            ]
+        ];
+    }
+
+    /**
      * Provide test data.
      *
      * @return array
@@ -153,7 +172,7 @@ class FromToDateTest extends FromToTestCase
                 ),
                 'data'          => $baseData,
                 'filterValues'  => ['urlParameter' => $generateUrlValue($baseData[1], $baseData[2])],
-                'expected'      => '\LengthException',
+                'expected'      => \LengthException::class,
                 'message'       => 'filtering only end field with exclusive and two values given'
             ],
             9 => [
@@ -234,15 +253,11 @@ class FromToDateTest extends FromToTestCase
     /**
      * Test the functionality.
      *
-     * @param array  $filterSettingData The initialization data for the filter setting.
-     *
-     * @param array  $data              The data for the attribute.
-     *
-     * @param array  $filterValues      The url values.
-     *
-     * @param array  $expected          The expected ids.
-     *
-     * @param string $message           The assert message.
+     * @param array             $filterSettingData The initialization data for the filter setting.
+     * @param array             $data              The data for the attribute.
+     * @param array             $filterValues      The url values.
+     * @param array|string|null $expected          The expected ids or the class name of the expected exception.
+     * @param string            $message           The assert message.
      *
      * @return void
      *
@@ -255,7 +270,7 @@ class FromToDateTest extends FromToTestCase
 
         $this->mockAttribute($metaModel, [], $data);
 
-        $filterSetting = new FromToDate($filterSetting, $filterSettingData);
+        $filterSetting = new FromToDate($filterSetting, $filterSettingData, $this->mockConnection());
 
         $filter = $metaModel->getEmptyFilter();
 
@@ -267,14 +282,9 @@ class FromToDateTest extends FromToTestCase
                 $message
             );
         } else {
-            try {
-                $filterSetting->prepareRules($filter, $filterValues);
-            } catch (\Exception $exception) {
-                $this->assertInstanceOf($expected, $exception, $message);
-                return;
-            }
+            $this->expectException($expected);
 
-            $this->fail('Expected exception of type: ' . $expected);
+            $filterSetting->prepareRules($filter, $filterValues);
         }
     }
 
@@ -304,16 +314,17 @@ class FromToDateTest extends FromToTestCase
                     'tofield'   => 1,
                     'dateformat' => 'Y-m-d-H-i-s',
                     'timetype'   => 'datim'
-                ]
+                ],
+                $this->mockConnection()
             ])
             ->getMock();
 
         $this->mockAttribute($filterSetting->getMetaModel());
 
-        $fromTo->expects($this->any())->method('prepareFrontendFilterWidget')->will($this->returnCallback(
+        $fromTo->method('prepareFrontendFilterWidget')->willReturnCallback(
             function ($arrWidget, $arrFilterUrl, $arrJumpTo) use ($that, $fromTo, $urlParameter) {
                 /** @var FromToDate $fromTo */
-                $that->assertEquals(2, \count($arrWidget['label']));
+                $that->assertCount(2, $arrWidget['label']);
                 $that->assertArrayHasKey('timetype', $arrWidget);
                 $that->assertEquals($arrWidget['timetype'], $fromTo->get('timetype'));
                 $that->assertArrayHasKey('dateformat', $arrWidget);
@@ -326,11 +337,9 @@ class FromToDateTest extends FromToTestCase
                     'jumpTo' => $arrJumpTo,
                 ];
             }
-        ));
+        );
 
         /** @var FromToDate $fromTo */
-
-        include_once __DIR__ . '/../../../../../contao/languages/en/default.php';
 
         $result = $fromTo->getParameterFilterWidgets(
             [],

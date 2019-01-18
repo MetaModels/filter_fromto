@@ -22,8 +22,9 @@
 
 namespace MetaModels\FilterFromToBundle\Test\FilterSetting;
 
-use MetaModels\Attribute\Base;
+use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\IAttribute;
+use MetaModels\Attribute\ISimple;
 use MetaModels\Filter\Filter;
 use MetaModels\Filter\Setting\ICollection;
 use MetaModels\IMetaModel;
@@ -81,9 +82,8 @@ class FromToTestCase extends \PHPUnit\Framework\TestCase
         );
 
         $attribute = $this
-            ->getMockBuilder(Base::class)
-            ->setMethods(['filterGreaterThan', 'filterLessThan', 'get'])
-            ->setConstructorArgs([$metaModel, $attributeData])
+            ->getMockBuilder(ISimple::class)
+            ->setMethods(['filterGreaterThan', 'filterLessThan', 'get', 'getName', 'getColName', 'getMetaModel'])
             ->getMockForAbstractClass();
 
         $attribute
@@ -133,6 +133,18 @@ class FromToTestCase extends \PHPUnit\Framework\TestCase
                     }
                 )
             );
+
+        $attribute
+            ->method('getMetaModel')
+            ->willReturn($metaModel);
+
+        $attribute
+            ->method('getColName')
+            ->willReturn($attributeData['colname']);
+
+        $attribute
+            ->method('getName')
+            ->willReturn($attributeData['name']);
 
         /** @var \MetaModels\Attribute\ISimple $attribute */
         $metaModel->addAttribute(
@@ -202,5 +214,18 @@ class FromToTestCase extends \PHPUnit\Framework\TestCase
             });
 
         return $metaModel;
+    }
+
+    /**
+     * Mock a database connection.
+     *
+     * @return Connection
+     */
+    protected function mockConnection()
+    {
+        return $this
+            ->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 }

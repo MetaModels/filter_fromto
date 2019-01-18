@@ -32,6 +32,25 @@ use MetaModels\Filter\Rules\SimpleQuery;
 class FromToDateTest extends FromToTestCase
 {
     /**
+     * {@inheritDoc}
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $GLOBALS['TL_LANG'] = [
+            'metamodels_frontendfilter' => [
+                'fromto' => '',
+                'from'   => '',
+                'to'     => '',
+            ]
+        ];
+    }
+
+    /**
      * Test that an exception is thrown when the attribute does not implement ISimple but we want to filter on time.
      *
      * @return void
@@ -46,22 +65,15 @@ class FromToDateTest extends FromToTestCase
             )
         );
 
-        $rule = new FromToDate($attribute);
+        $rule = new FromToDate($attribute, $this->mockConnection());
         $rule
             ->setDateType('time')
             ->setLowerBound(10, true)
             ->setUpperBound(20, true);
 
-        if (\method_exists($this, 'expectException')) {
-            $this->expectException('RuntimeException');
-            $this->expectExceptionMessage('Filtering for time ranges is only possible on simple attributes.');
-        } else {
-            // PHP 5.6 & PHPUnit 4.8 fallback.
-            $this->setExpectedException(
-                'RuntimeException',
-                'Filtering for time ranges is only possible on simple attributes.'
-            );
-        }
+        $this->expectException('RuntimeException');
+        $this->expectExceptionMessage('Filtering for time ranges is only possible on simple attributes.');
+
         $rule->getMatchingIds();
     }
 
@@ -232,7 +244,7 @@ class FromToDateTest extends FromToTestCase
         $rule = $this
             ->getMockBuilder(FromToDate::class)
             ->setMethods(['executeRule'])
-            ->setConstructorArgs([$this->mockAttribute($this->mockMetaModel(), $data)])
+            ->setConstructorArgs([$this->mockAttribute($this->mockMetaModel(), $data), $this->mockConnection()])
             ->getMock();
 
         $that = $this;
@@ -248,8 +260,8 @@ class FromToDateTest extends FromToTestCase
 
                 if ($executedRule instanceof SimpleQuery) {
                     // Now examine the query.
-                    $params = new \ReflectionProperty($executedRule, 'arrParams');
-                    $query  = new \ReflectionProperty($executedRule, 'strQueryString');
+                    $params = new \ReflectionProperty($executedRule, 'params');
+                    $query  = new \ReflectionProperty($executedRule, 'queryString');
                     $params->setAccessible(true);
                     $query->setAccessible(true);
 

@@ -22,36 +22,16 @@
 
 namespace MetaModels\FilterFromToBundle\Test\FilterRule;
 
-use MetaModels\Attribute\BaseSimple;
+use Doctrine\DBAL\Connection;
+use MetaModels\Attribute\ISimple;
 use MetaModels\IMetaModel;
-use MetaModels\IMetaModelsServiceContainer;
-use MetaModels\MetaModel;
-use MetaModels\MetaModelsServiceContainer;
-use MetaModels\Test\Contao\Database;
-use MetaModels\Test\TestCase;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test the FromTo class.
  */
 class FromToTestCase extends TestCase
 {
-    /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
-     *
-     * @return void
-     *
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-        $GLOBALS['container']['metamodels-service-container'] =
-            $this->getMockForAbstractClass(IMetaModelsServiceContainer::class);
-    }
-
     /**
      * Mock a MetaModel.
      *
@@ -61,25 +41,13 @@ class FromToTestCase extends TestCase
      */
     protected function mockMetaModel($tableName = 'mm_unittest')
     {
-        $metaModel = $this->getMock(
-            MetaModel::class,
-            array('getTableName', 'getServiceContainer'),
-            array(array())
-        );
-
-        $serviceContainer = new MetaModelsServiceContainer();
-        $serviceContainer
-            ->setDatabase(Database::getNewTestInstance())
-            ->setEventDispatcher(new EventDispatcher());
-
+        $metaModel = $this->getMockForAbstractClass(IMetaModel::class);
         $metaModel
-            ->expects($this->any())
             ->method('getTableName')
-            ->will($this->returnValue($tableName));
+            ->willReturn($tableName);
         $metaModel
             ->expects($this->never())
             ->method('getServiceContainer');
-
         return $metaModel;
     }
 
@@ -101,16 +69,13 @@ class FromToTestCase extends TestCase
         ];
 
         $attribute = $this
-            ->getMockBuilder(BaseSimple::class)
-            ->setMethods(['getColName', 'filterGreaterThan', 'filterLessThan', 'get'])
-            ->setConstructorArgs([$metaModel, $attributeData])
-            ->getMock();
+            ->getMockBuilder(ISimple::class)
+            ->setMethods(['getColName', 'filterGreaterThan', 'filterLessThan', 'get', 'getMetaModel'])
+            ->getMockForAbstractClass();
         $attribute
-            ->expects($this->any())
             ->method('getColName')
-            ->will($this->returnValue($attributeData['colname']));
+            ->willReturn($attributeData['colname']);
         $attribute
-            ->expects($this->any())
             ->method('filterGreaterThan')
             ->willReturnCallback(
                 function ($testValue, $inclusive = false) use ($values) {
@@ -129,7 +94,6 @@ class FromToTestCase extends TestCase
                 }
             );
         $attribute
-            ->expects($this->any())
             ->method('filterLessThan')
             ->willReturnCallback(
                 function ($testValue, $inclusive = false) use ($values) {
@@ -148,9 +112,26 @@ class FromToTestCase extends TestCase
                 }
             );
 
+        $attribute
+            ->method('getMetaModel')
+            ->willReturn($metaModel);
+
         /** @var \MetaModels\Attribute\ISimple $attribute */
         $metaModel->addAttribute($attribute);
 
         return $attribute;
+    }
+
+    /**
+     * Mock a database connection.
+     *
+     * @return Connection
+     */
+    protected function mockConnection()
+    {
+        return $this
+            ->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 }

@@ -24,7 +24,10 @@
 namespace MetaModels\FilterFromToBundle\FilterSetting;
 
 use Contao\Date;
+use Contao\System;
+use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\IAttribute;
+use MetaModels\Filter\Setting\ICollection;
 use MetaModels\FilterFromToBundle\FilterRule\FromToDate as FromToRule;
 
 /**
@@ -32,6 +35,37 @@ use MetaModels\FilterFromToBundle\FilterRule\FromToDate as FromToRule;
  */
 class FromToDate extends AbstractFromTo
 {
+    /**
+     * The database connection.
+     *
+     * @var Connection
+     */
+    private $connection;
+
+    /**
+     * Create a new instance.
+     *
+     * @param ICollection $collection The parenting filter settings object.
+     * @param array       $data       The attributes for this filter setting.
+     * @param Connection  $connection The database connection.
+     */
+    public function __construct(ICollection $collection, array $data, Connection $connection = null)
+    {
+        parent::__construct($collection, $data);
+
+        if (null === $connection) {
+            // @codingStandardsIgnoreStart
+            @trigger_error(
+                'Connection is missing. It has to be passed in the constructor. Fallback will be dropped.',
+                E_USER_DEPRECATED
+            );
+            // @codingStandardsIgnoreEnd
+            $connection = System::getContainer()->get('database_connection');
+        }
+
+        $this->connection = $connection;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -69,7 +103,7 @@ class FromToDate extends AbstractFromTo
      */
     protected function buildFromToRule($attribute)
     {
-        $rule = new FromToRule($attribute);
+        $rule = new FromToRule($attribute, $this->connection);
         $rule->setDateType($this->get('timetype'));
 
         return $rule;

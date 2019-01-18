@@ -5,6 +5,8 @@ services:
           - { name: metamodels.filter_factory }
     metamodels.filter_fromtodate.factory:
         class: MetaModels\FilterFromToBundle\FilterSetting\FromToDateFilterSettingTypeFactory
+        arguments:
+          - '@database_connection'
         tags:
           - { name: metamodels.filter_factory }
     metamodels.filter_fromto.listener.add_custom_regexp:

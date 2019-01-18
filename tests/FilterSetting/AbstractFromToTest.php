@@ -32,6 +32,25 @@ use MetaModels\FrontendIntegration\FrontendFilterOptions;
 class AbstractFromToTest extends FromToTestCase
 {
     /**
+     * {@inheritDoc}
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $GLOBALS['TL_LANG'] = [
+            'metamodels_frontendfilter' => [
+                'fromto' => '',
+                'from'   => '',
+                'to'     => '',
+            ]
+        ];
+    }
+
+    /**
      * Mock the abstractFromTo class.
      *
      * @param ICollection $filterSetting The filter setting collection to be used.
@@ -232,8 +251,6 @@ class AbstractFromToTest extends FromToTestCase
             }
         ));
 
-        include_once __DIR__ . '/../../../../../contao/languages/en/default.php';
-
         $result = $fromTo->getParameterFilterWidgets(
             [],
             ['urlParameter' => '01__20'],
@@ -266,8 +283,6 @@ class AbstractFromToTest extends FromToTestCase
         $attribute     = $this->mockAttribute($filterSetting->getMetaModel());
 
         $fromTo = $this->mockAbstractFromTo($filterSetting, ['attr_id' => ($attribute->get('id') + 1)]);
-
-        include_once __DIR__ . '/../../../../../contao/languages/en/default.php';
 
         $this->assertEquals(
             [],
