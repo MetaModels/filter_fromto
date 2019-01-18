@@ -3,26 +3,25 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2018 The MetaModels team.
+ * (c) 2012-2019 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * This project is provided in good faith and hope to be usable by anyone.
  *
- * @package    MetaModels
- * @subpackage FilterFromTo
+ * @package    MetaModels/filter_fromto
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2018 The MetaModels team.
+ * @copyright  2012-2019 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
 namespace MetaModels\Test\Filter\Setting;
 
-use MetaModels\Attribute\BaseSimple;
+use MetaModels\Attribute\Base;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\Filter\Filter;
 use MetaModels\Filter\Setting\ICollection;
@@ -64,7 +63,7 @@ class FromToTestCase extends \PHPUnit\Framework\TestCase
      *
      * @param array      $values        The test values.
      *
-     * @return \MetaModels\Attribute\ISimple
+     * @return \MetaModels\Attribute\IAttribute
      */
     protected function mockAttribute(
         $metaModel,
@@ -81,17 +80,19 @@ class FromToTestCase extends \PHPUnit\Framework\TestCase
         );
 
         $attribute = $this
-            ->getMockBuilder(BaseSimple::class)
+            ->getMockBuilder(Base::class)
             ->setMethods(['filterGreaterThan', 'filterLessThan', 'get'])
             ->setConstructorArgs([$metaModel, $attributeData])
-            ->getMock();
+            ->getMockForAbstractClass();
 
         $attribute
-            ->expects($this->any())
+            ->method('getFilterOptions')
+            ->willReturn([]);
+
+        $attribute
             ->method('get')
             ->will($this->createReturnCallback($attributeData));
         $attribute
-            ->expects($this->any())
             ->method('filterGreaterThan')
             ->will(
                 $this->returnCallback(
@@ -112,7 +113,6 @@ class FromToTestCase extends \PHPUnit\Framework\TestCase
                 )
             );
         $attribute
-            ->expects($this->any())
             ->method('filterLessThan')
             ->will(
                 $this->returnCallback(
@@ -153,9 +153,8 @@ class FromToTestCase extends \PHPUnit\Framework\TestCase
         $filterSetting = $this->getMockForAbstractClass(ICollection::class);
 
         $filterSetting
-            ->expects($this->any())
             ->method('getMetaModel')
-            ->will($this->returnValue($this->mockMetaModel($tableName)));
+            ->willReturn($this->mockMetaModel($tableName));
 
         return $filterSetting;
     }
@@ -173,10 +172,10 @@ class FromToTestCase extends \PHPUnit\Framework\TestCase
 
         $metaModel
             ->method('getTableName')
-            ->will($this->returnValue($tableName));
+            ->willReturn($tableName);
         $metaModel
             ->method('getEmptyFilter')
-            ->will($this->returnValue(new Filter($metaModel)));
+            ->willReturn(new Filter($metaModel));
         $metaModel
             ->expects($this->never())
             ->method('getServiceContainer');
