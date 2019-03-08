@@ -270,7 +270,12 @@ class FromToDateTest extends FromToTestCase
 
         $this->mockAttribute($metaModel, [], $data);
 
-        $filterSetting = new FromToDate($filterSetting, $filterSettingData, $this->mockConnection());
+        $filterSetting = new FromToDate(
+            $filterSetting,
+            $filterSettingData,
+            $this->mockConnection(),
+            $this->mockDispatcher(),
+            $this->mockUrlBuilder());
 
         $filter = $metaModel->getEmptyFilter();
 
@@ -315,7 +320,9 @@ class FromToDateTest extends FromToTestCase
                     'dateformat' => 'Y-m-d-H-i-s',
                     'timetype'   => 'datim'
                 ],
-                $this->mockConnection()
+                $this->mockConnection(),
+                $this->mockDispatcher(),
+                $this->mockUrlBuilder()
             ])
             ->getMock();
 

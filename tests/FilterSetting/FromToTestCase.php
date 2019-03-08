@@ -26,8 +26,10 @@ use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\Attribute\ISimple;
 use MetaModels\Filter\Filter;
+use MetaModels\Filter\FilterUrlBuilder;
 use MetaModels\Filter\Setting\ICollection;
 use MetaModels\IMetaModel;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Some base methods for easy mocking of objects.
@@ -227,5 +229,25 @@ class FromToTestCase extends \PHPUnit\Framework\TestCase
             ->getMockBuilder(Connection::class)
             ->disableOriginalConstructor()
             ->getMock();
+    }
+
+    /**
+     * Mock an event dispatcher.
+     *
+     * @return EventDispatcherInterface
+     */
+    protected function mockDispatcher()
+    {
+        return $this->getMockForAbstractClass(EventDispatcherInterface::class);
+    }
+
+    /**
+     * Mock an url builder.
+     *
+     * @return FilterUrlBuilder
+     */
+    protected function mockUrlBuilder()
+    {
+        return $this->getMockBuilder(FilterUrlBuilder::class)->disableOriginalConstructor()->getMock();
     }
 }

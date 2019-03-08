@@ -27,8 +27,10 @@ use Contao\Date;
 use Contao\System;
 use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\IAttribute;
+use MetaModels\Filter\FilterUrlBuilder;
 use MetaModels\Filter\Setting\ICollection;
 use MetaModels\FilterFromToBundle\FilterRule\FromToDate as FromToRule;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Filter "value from x to y" for FE-filtering, regarding date and time representations.
@@ -45,13 +47,20 @@ class FromToDate extends AbstractFromTo
     /**
      * Create a new instance.
      *
-     * @param ICollection $collection The parenting filter settings object.
-     * @param array       $data       The attributes for this filter setting.
-     * @param Connection  $connection The database connection.
+     * @param ICollection                   $collection       The parenting filter settings object.
+     * @param array                         $data             The attributes for this filter setting.
+     * @param Connection                    $connection       The database connection.
+     * @param EventDispatcherInterface|null $eventDispatcher  The event dispatcher.
+     * @param FilterUrlBuilder|null         $filterUrlBuilder The filter URL builder.
      */
-    public function __construct(ICollection $collection, array $data, Connection $connection = null)
-    {
-        parent::__construct($collection, $data);
+    public function __construct(
+        ICollection $collection,
+        array $data,
+        Connection $connection = null,
+        EventDispatcherInterface $eventDispatcher = null,
+        FilterUrlBuilder $filterUrlBuilder = null
+    ) {
+        parent::__construct($collection, $data, $eventDispatcher, $filterUrlBuilder);
 
         if (null === $connection) {
             // @codingStandardsIgnoreStart

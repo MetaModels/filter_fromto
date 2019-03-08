@@ -22,9 +22,11 @@
 
 namespace MetaModels\FilterFromToBundle\Test\FilterSetting;
 
+use MetaModels\Filter\FilterUrlBuilder;
 use MetaModels\Filter\Setting\ICollection;
 use MetaModels\FilterFromToBundle\FilterSetting\AbstractFromTo;
 use MetaModels\FrontendIntegration\FrontendFilterOptions;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Test the FromTo class.
@@ -79,7 +81,7 @@ class AbstractFromToTest extends FromToTestCase
 
         return $this->getMockForAbstractClass(
             AbstractFromTo::class,
-            [$filterSetting, $data],
+            [$filterSetting, $data, $this->mockDispatcher(), $this->mockUrlBuilder()],
             '',
             true,
             true,

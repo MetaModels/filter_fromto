@@ -23,7 +23,9 @@
 namespace MetaModels\FilterFromToBundle\FilterSetting;
 
 use Doctrine\DBAL\Connection;
+use MetaModels\Filter\FilterUrlBuilder;
 use MetaModels\Filter\Setting\IFilterSettingTypeFactory;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Attribute type factory for from-to filter settings.
@@ -38,6 +40,20 @@ class FromToDateFilterSettingTypeFactory implements IFilterSettingTypeFactory
     private $connection;
 
     /**
+     * The event dispatcher.
+     *
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    /**
+     * The filter URL builder.
+     *
+     * @var FilterUrlBuilder
+     */
+    private $filterUrlBuilder;
+
+    /**
      * List of valid attribute types that can be filtered with this filter.
      *
      * @var string[]
@@ -47,16 +63,24 @@ class FromToDateFilterSettingTypeFactory implements IFilterSettingTypeFactory
     /**
      * {@inheritDoc}
      *
-     * @param Connection $connection The database connection.
+     * @param Connection               $connection       The database connection.
+     * @param EventDispatcherInterface $dispatcher       The event dispatcher.
+     * @param FilterUrlBuilder         $filterUrlBuilder The filter URL builder.
      */
-    public function __construct(Connection $connection = null)
-    {
+    public function __construct(
+        Connection $connection,
+        EventDispatcherInterface $dispatcher,
+        FilterUrlBuilder $filterUrlBuilder
+    ) {
         $this->connection     = $connection;
         $this->attributeTypes = [
             'numeric'   => 'numeric',
             'decimal'   => 'decimal',
             'timestamp' => 'timestamp'
         ];
+
+        $this->dispatcher       = $dispatcher;
+        $this->filterUrlBuilder = $filterUrlBuilder;
     }
 
     /**
@@ -80,7 +104,13 @@ class FromToDateFilterSettingTypeFactory implements IFilterSettingTypeFactory
      */
     public function createInstance($information, $filterSettings)
     {
-        return new FromToDate($filterSettings, $information, $this->connection);
+        return new FromToDate(
+            $filterSettings,
+            $information,
+            $this->connection,
+            $this->dispatcher,
+            $this->filterUrlBuilder
+        );
     }
 
     /**
