@@ -1,6 +1,9 @@
 services:
     metamodels.filter_fromto.factory:
         class: MetaModels\FilterFromToBundle\FilterSetting\FromToFilterSettingTypeFactory
+        arguments:
+          - '@event_dispatcher'
+          - '@MetaModels\Filter\FilterUrlBuilder'
         tags:
           - { name: metamodels.filter_factory }
     metamodels.filter_fromtodate.factory:
