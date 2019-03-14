@@ -47,7 +47,7 @@ abstract class AbstractFromTo extends Simple
      *
      * @param IAttribute $attribute The attribute to filter on.
      *
-     * @return FromTo
+     * @return \MetaModels\FilterFromToBundle\FilterRule\FromTo
      */
     abstract protected function buildFromToRule($attribute);
 
@@ -88,7 +88,7 @@ abstract class AbstractFromTo extends Simple
                 return \array_values($filterUrl[$parameterName]);
             }
 
-            return \array_values(\explode('__', $filterUrl[$parameterName]));
+            return \array_values(\explode(',', $filterUrl[$parameterName]));
         }
 
         return null;
@@ -217,7 +217,7 @@ abstract class AbstractFromTo extends Simple
             if (\is_array($arrFilterUrl[$parameterName])) {
                 $parameterValue = $arrFilterUrl[$parameterName];
             } else {
-                $parameterValue = \explode('__', $arrFilterUrl[$parameterName], 2);
+                $parameterValue = \explode(',', $arrFilterUrl[$parameterName], 2);
             }
 
             if ($parameterValue && ($parameterValue[0] || $parameterValue[1])) {
@@ -260,7 +260,7 @@ abstract class AbstractFromTo extends Simple
                 'colname'   => $attribute->getColName(),
             ],
             // We need to implode to have it transported correctly in the frontend filter.
-            'urlvalue'      => !empty($currentValue) ? \implode('__', $currentValue) : ''
+            'urlvalue'      => !empty($currentValue) ? \implode(',', $currentValue) : ''
         ];
     }
 
@@ -361,7 +361,7 @@ abstract class AbstractFromTo extends Simple
      * @param string     $formattedValueZero The formatted first value.
      * @param string     $formattedValueOne  The formatted second value.
      *
-     * @return FromTo|StaticIdList
+     * @return \MetaModels\FilterFromToBundle\FilterRule\FromTo|StaticIdList
      */
     private function createFromToRule(IAttribute $attribute, $formattedValueZero, $formattedValueOne)
     {
