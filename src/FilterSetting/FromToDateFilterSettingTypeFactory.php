@@ -74,8 +74,6 @@ class FromToDateFilterSettingTypeFactory implements IFilterSettingTypeFactory
     ) {
         $this->connection     = $connection;
         $this->attributeTypes = [
-            'numeric'   => 'numeric',
-            'decimal'   => 'decimal',
             'timestamp' => 'timestamp'
         ];
 
