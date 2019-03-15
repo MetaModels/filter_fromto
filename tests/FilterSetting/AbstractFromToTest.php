@@ -22,11 +22,9 @@
 
 namespace MetaModels\FilterFromToBundle\Test\FilterSetting;
 
-use MetaModels\Filter\FilterUrlBuilder;
 use MetaModels\Filter\Setting\ICollection;
 use MetaModels\FilterFromToBundle\FilterSetting\AbstractFromTo;
 use MetaModels\FrontendIntegration\FrontendFilterOptions;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Test the FromTo class.
@@ -243,7 +241,7 @@ class AbstractFromToTest extends FromToTestCase
                 $that->assertArrayHasKey('inputType', $arrWidget);
                 $that->assertArrayHasKey('eval', $arrWidget);
                 $that->assertArrayHasKey('urlparam', $arrWidget['eval']);
-                $that->assertEquals($arrWidget['urlvalue'], '01__20');
+                $that->assertEquals('01,20', $arrWidget['urlvalue']);
 
                 return [
                     'widget' => $arrWidget,
@@ -255,7 +253,7 @@ class AbstractFromToTest extends FromToTestCase
 
         $result = $fromTo->getParameterFilterWidgets(
             [],
-            ['urlParameter' => '01__20'],
+            ['urlParameter' => '01,20'],
             ['Test jump to'],
             new FrontendFilterOptions()
         );

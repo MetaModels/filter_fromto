@@ -81,7 +81,7 @@ class FromToDateTest extends FromToTestCase
         $generateUrlValue = function ($start, $end = null) use ($baseSettings) {
             $value = \is_int($start) ? \date($baseSettings['dateformat'], $start) : $start;
             if ($end) {
-                $value .= '__' . (\is_int($end) ? \date($baseSettings['dateformat'], $end) : $end);
+                $value .= ',' . (\is_int($end) ? \date($baseSettings['dateformat'], $end) : $end);
             }
 
             return $value;
@@ -302,7 +302,7 @@ class FromToDateTest extends FromToTestCase
     {
         $that          = $this;
         $filterSetting = $this->mockFilterSetting();
-        $urlParameter  = \date('Y-m-d-H-i-s', 473425200) . '__' . \date('Y-m-d-H-i-s', 1420074000);
+        $urlParameter  = \date('Y-m-d-H-i-s', 473425200) . ',' . \date('Y-m-d-H-i-s', 1420074000);
         $fromTo        = $this
             ->getMockBuilder(FromToDate::class)
             ->setMethods(['prepareFrontendFilterWidget'])
@@ -360,7 +360,7 @@ class FromToDateTest extends FromToTestCase
         $result = $result['urlParameter'];
 
         $this->assertEquals(
-            ['urlParameter' => \explode('__', $urlParameter)],
+            ['urlParameter' => \explode(',', $urlParameter)],
             $result['filterUrl']
         );
     }

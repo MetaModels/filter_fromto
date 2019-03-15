@@ -60,7 +60,7 @@ class FromToTest extends FromToTestCase
             1 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => ['urlParameter' => '10__40'],
+                'filterValues'  => ['urlParameter' => '10,40'],
                 'expected'      => [2, 3],
                 'message'       => 'filtering with exclusive'
             ],
@@ -72,7 +72,7 @@ class FromToTest extends FromToTestCase
                     ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => ['urlParameter' => '10__30'],
+                'filterValues'  => ['urlParameter' => '10,30'],
                 'expected'      => [2, 3],
                 'message'       => 'filtering with end of range inclusive.'
             ],
@@ -84,7 +84,7 @@ class FromToTest extends FromToTestCase
                     ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => ['urlParameter' => '10__40'],
+                'filterValues'  => ['urlParameter' => '10,40'],
                 'expected'      => [1, 2, 3],
                 'message'       => 'filtering with start of range inclusive.'
             ],
@@ -97,7 +97,7 @@ class FromToTest extends FromToTestCase
                     ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => ['urlParameter' => '10__15'],
+                'filterValues'  => ['urlParameter' => '10,15'],
                 'expected'      => [1],
                 'message'       => 'filtering with start and end of range inclusive.'
             ],
@@ -140,7 +140,7 @@ class FromToTest extends FromToTestCase
                     ]
                 ),
                 'data'          => $baseData,
-                'filterValues'  => ['urlParameter' => '100__400'],
+                'filterValues'  => ['urlParameter' => '100,400'],
                 'expected'      => '\LengthException',
                 'message'       => 'filtering only end field with exclusive and two values given'
             ],
@@ -186,14 +186,14 @@ class FromToTest extends FromToTestCase
             13 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => ['urlParameter' => '__40'],
+                'filterValues'  => ['urlParameter' => ',40'],
                 'expected'      => [1, 2, 3],
                 'message'       => 'filtering only end passed - https://github.com/MetaModels/filter_fromto/issues/13'
             ],
             14 => [
                 'filterSetting' => $baseSettings,
                 'data'          => $baseData,
-                'filterValues'  => ['urlParameter' => '40__'],
+                'filterValues'  => ['urlParameter' => '40,'],
                 'expected'      => [5, 6],
                 'message'       => 'filtering only start passed - https://github.com/MetaModels/filter_fromto/issues/13'
             ],
@@ -214,7 +214,7 @@ class FromToTest extends FromToTestCase
                     6 => '1.4',
                     7 => '0',
                 ],
-                'filterValues'  => ['urlParameter' => '1.0__1.2'],
+                'filterValues'  => ['urlParameter' => '1.0,1.2'],
                 'expected'      => [1, 2, 3, 5],
                 'message'       => 'filtering decimal - https://github.com/MetaModels/filter_fromto/issues/12'
             ],
@@ -235,7 +235,7 @@ class FromToTest extends FromToTestCase
                     6 => 1.4,
                     7 => 0,
                 ],
-                'filterValues'  => ['urlParameter' => '1.0__1.2'],
+                'filterValues'  => ['urlParameter' => '1.0,1.2'],
                 'expected'      => [1, 2, 3, 5],
                 'message'       => 'filtering decimal - https://github.com/MetaModels/filter_fromto/issues/12'
             ],
