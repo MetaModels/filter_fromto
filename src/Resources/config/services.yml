@@ -1,0 +1,33 @@
+services:
+    metamodels.filter_fromto.factory:
+        class: MetaModels\FilterFromToBundle\FilterSetting\FromToFilterSettingTypeFactory
+        arguments:
+          - '@event_dispatcher'
+          - '@MetaModels\Filter\FilterUrlBuilder'
+        tags:
+          - { name: metamodels.filter_factory }
+    metamodels.filter_fromtodate.factory:
+        class: MetaModels\FilterFromToBundle\FilterSetting\FromToDateFilterSettingTypeFactory
+        arguments:
+          - '@database_connection'
+          - '@event_dispatcher'
+          - '@MetaModels\Filter\FilterUrlBuilder'
+        tags:
+          - { name: metamodels.filter_factory }
+    metamodels.filter_fromto.listener.add_custom_regexp:
+        class: MetaModels\FilterFromToBundle\EventListener\FilterRangeDateRegexpListener
+        tags:
+          - { name: 'contao.hook', hook: 'addCustomRegexp', method: 'onAddCustomRegexp' }
+    metamodels.filter_fromto.listener.filter_setting_renderer:
+        class: MetaModels\FilterFromToBundle\EventListener\FromToFilterSettingTypeRendererListener
+        arguments:
+          - "@metamodels.filter_setting_factory"
+          - "@event_dispatcher"
+          - "@metamodels.assets.icon_builder"
+          - "@cca.dc-general.scope-matcher"
+        tags:
+          - {
+              name: kernel.event_listener,
+              event: 'dc-general.view.contao2backend.model-to-label',
+              method: modelToLabel
+            }
