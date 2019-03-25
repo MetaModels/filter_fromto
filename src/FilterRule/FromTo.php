@@ -15,6 +15,7 @@
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @author     Ingolf Steinhardt <info@e-spin.de>
  * @copyright  2012-2019 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
@@ -115,9 +116,9 @@ class FromTo implements IFilterRule
     }
 
     /**
-     * Mark the lower bound of the range to search.
+     * Mark the upper bound of the range to search.
      *
-     * @param mixed $value     The value to use for the lower bound.
+     * @param mixed $value     The value to use for the upper bound.
      *
      * @param bool  $inclusive Flag if the value shall also be included in the result.
      *
@@ -190,7 +191,7 @@ class FromTo implements IFilterRule
     }
 
     /**
-     * Evaluate the lower bounding of the range.
+     * Evaluate the upper bounding of the range.
      *
      * @return null|\string[]
      */
