@@ -15,6 +15,7 @@
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @author     Ingolf Steinhardt <info@e-spin.de>
  * @copyright  2012-2019 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
@@ -136,8 +137,9 @@ class FromToDate extends FromTo
         // Set the time to 0h 0m 0s.
         if ($this->dateType == 'date') {
             if ($this->getLowerBound()) {
-                $timestamp = $this->getLowerBound();
-                $this->setLowerBound(($timestamp - ($timestamp % 86400)), $this->isLowerInclusive());
+                $date = new \DateTime('@' . $this->getLowerBound());
+                $date->setTime(0, 0, 0);
+                $this->setLowerBound($date->getTimestamp(), $this->isLowerInclusive());
             }
         }
 
@@ -164,8 +166,9 @@ class FromToDate extends FromTo
          // Set the time to 23h 59m 59s.
         if ($this->dateType == 'date') {
             if ($this->getUpperBound()) {
-                $timestamp = $this->getUpperBound();
-                $this->setUpperBound(($timestamp - (($timestamp % 86400) + (86400 - 1))), $this->isUpperInclusive());
+                $date = new \DateTime('@' . $this->getUpperBound());
+                $date->setTime(23, 59, 59);
+                $this->setUpperBound($date->getTimestamp(), $this->isUpperInclusive());
             }
         }
 
