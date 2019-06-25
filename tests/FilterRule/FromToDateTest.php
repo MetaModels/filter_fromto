@@ -57,13 +57,7 @@ class FromToDateTest extends FromToTestCase
      */
     public function testTimeRaisesExceptionForNonSimpleAttribute()
     {
-        $attribute = $this->getMockForAbstractClass(
-            IAttribute::class,
-            array(
-                $this->mockMetaModel(),
-                array()
-            )
-        );
+        $attribute = $this->getMockForAbstractClass(IAttribute::class);
 
         $rule = new FromToDate($attribute, $this->mockConnection());
         $rule
