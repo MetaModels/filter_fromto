@@ -106,7 +106,7 @@ class FromToDate extends FromTo
 
         return $this->executeRule(new SimpleQuery(
             \sprintf(
-                'SELECT id FROM %s WHERE TIME(FROM_UNIXTIME(%s)) %s ?)',
+                'SELECT t.id FROM %s AS t WHERE TIME(FROM_UNIXTIME(t.%s)) %s ?)',
                 $attribute->getMetaModel()->getTableName(),
                 $attribute->getColName(),
                 $operation
