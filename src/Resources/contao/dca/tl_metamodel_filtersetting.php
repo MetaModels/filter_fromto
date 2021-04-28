@@ -24,6 +24,8 @@
  * @filesource
  */
 
+use Contao\Config;
+
 // From/To normal.
 $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromto extends _attribute_']['+fefilter'][] =
     'urlparam';
@@ -116,8 +118,10 @@ $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['fields']['dateformat'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['dateformat'],
     'exclude'   => true,
     'inputType' => 'text',
+    'default'   => Config::get('dateFormat'),
     'eval'      => [
-        'tl_class' => 'w50',
+        'mandatory' => true,
+        'tl_class'  => 'w50',
     ],
     'sql'       => "char(32) NOT NULL default ''",
 ];
@@ -128,9 +132,9 @@ $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['fields']['timetype'] = [
     'inputType' => 'select',
     'reference' => &$GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['timetypeOptions'],
     'options'   => [
-        'time',
         'date',
         'datim',
+        'time',
     ],
     'eval'      => [
         'doNotSaveEmpty' => true,
