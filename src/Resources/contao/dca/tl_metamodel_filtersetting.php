@@ -36,6 +36,8 @@ $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromto extends
 $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromto extends _attribute_']['+fefilter'][] =
     'template';
 $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromto extends _attribute_']['+fefilter'][] =
+    'placeholder';
+$GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromto extends _attribute_']['+fefilter'][] =
     'moreequal';
 $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromto extends _attribute_']['+fefilter'][] =
     'lessequal';
@@ -59,6 +61,8 @@ $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromtodate ext
     'hide_label';
 $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromtodate extends _attribute_']['+fefilter'][] =
     'template';
+$GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromtodate extends _attribute_']['+fefilter'][] =
+    'placeholder';
 $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromtodate extends _attribute_']['+fefilter'][] =
     'moreequal';
 $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['metapalettes']['fromtodate extends _attribute_']['+fefilter'][] =
@@ -141,4 +145,12 @@ $GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['fields']['timetype'] = [
         'tl_class'       => 'w50',
     ],
     'sql'       => "varchar(64) NOT NULL default ''",
+];
+
+$GLOBALS['TL_DCA']['tl_metamodel_filtersetting']['fields']['placeholder'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['placeholder'],
+    'exclude'   => true,
+    'inputType' => 'text',
+    'eval'      => ['tl_class' => 'clr w50'],
+    'sql'       => ['type' => 'string', 'length' => 255, 'default' => ''],
 ];
