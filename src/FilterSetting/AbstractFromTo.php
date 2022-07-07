@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2021 The MetaModels team.
+ * (c) 2012-2022 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,7 +16,7 @@
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2012-2021 The MetaModels team.
+ * @copyright  2012-2022 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -70,7 +70,7 @@ abstract class AbstractFromTo extends Simple
         }
 
         return [
-            $this->getParamName() => $this->getMetaModel()->getAttributeById($this->get('attr_id'))->getName()
+            $this->getParamName() => $this->getMetaModel()->getAttributeById((int) $this->get('attr_id'))->getName()
         ];
     }
 
@@ -104,7 +104,7 @@ abstract class AbstractFromTo extends Simple
     {
         $objAttribute = null;
         if (!($this->get('attr_id')
-              && ($objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'))))) {
+              && ($objAttribute = $this->getMetaModel()->getAttributeById((int) $this->get('attr_id'))))) {
             return [];
         }
 
@@ -120,7 +120,7 @@ abstract class AbstractFromTo extends Simple
             return $this->get('urlparam');
         }
 
-        $objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
+        $objAttribute = $this->getMetaModel()->getAttributeById((int) $this->get('attr_id'));
         if ($objAttribute) {
             return $objAttribute->getColName();
         }
@@ -275,7 +275,7 @@ abstract class AbstractFromTo extends Simple
         $arrJumpTo,
         FrontendFilterOptions $objFrontendFilterOptions
     ) {
-        $objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
+        $objAttribute = $this->getMetaModel()->getAttributeById((int) $this->get('attr_id'));
         if (!$objAttribute) {
             return [];
         }
@@ -309,7 +309,7 @@ abstract class AbstractFromTo extends Simple
         }
 
         // No attribute, get out.
-        $attribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
+        $attribute = $this->getMetaModel()->getAttributeById((int) $this->get('attr_id'));
         if (!($attribute)) {
             $objFilter->addFilterRule(new StaticIdList(null));
 
