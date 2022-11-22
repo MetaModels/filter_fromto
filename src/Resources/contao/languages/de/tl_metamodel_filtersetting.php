@@ -1,15 +1,25 @@
 <?php
 /**
- * Translations are managed using Transifex. To create a new translation
+ * This file is part of MetaModels/filter_fromto.
+ *
+ * (c) 2012-2022 The MetaModels team.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * This project is provided in good faith and hope to be usable by anyone.
+ *
+ * Translations are managed automatically using Transifex. To create a new translation
  * or to help to maintain an existing one, please register at transifex.com.
  *
- * @link http://help.transifex.com/intro/translating.html
- * @link https://www.transifex.com/projects/p/metamodels/language/de/
+ * Last-updated: 2022-11-19T17:20:11+01:00
  *
- * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
- *
- * last-updated: 2015-09-18T12:15:39+02:00
+ * @copyright 2012-2022 The MetaModels team.
+ * @license   https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
+ * @link      https://www.transifex.com/metamodels/public/
+ * @link      https://www.transifex.com/signup/?join_project=metamodels
  */
+
 
 $GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['dateformat']['0']          = 'Datumsformat';
 $GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['dateformat']['1']          = 'Sie können eine Formatierung für das Datum hinzufügen. Mit PHP-Funktionen ist es möglich, aus einem Unix-Zeitstempel eine Datumsausgabe umzuwandeln.';
@@ -19,6 +29,8 @@ $GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['lessequal']['0']           = 
 $GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['lessequal']['1']           = 'Standard: Wert nicht eingeschlossen.';
 $GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['moreequal']['0']           = 'Wert 1 einbeziehen';
 $GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['moreequal']['1']           = 'Standard: Wert nicht eingeschlossen.';
+$GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['placeholder']['0']         = 'Platzhalter';
+$GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['placeholder']['1']         = 'Zeigen Sie diesen Platzhaltertext an, solange das Feld leer ist.';
 $GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['timetype']['0']            = 'Schema';
 $GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['timetype']['1']            = 'Hier können die das gewünschte Schema auswählen.';
 $GLOBALS['TL_LANG']['tl_metamodel_filtersetting']['timetypeOptions']['date']  = 'Datum';
