@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2019 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,7 +16,7 @@
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2012-2019 The MetaModels team.
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -38,35 +38,35 @@ class FromTo implements IFilterRule
      *
      * @var mixed
      */
-    private $lowerBound;
+    private mixed $lowerBound = null;
 
     /**
      * Flag if the start is inclusive or exclusive.
      *
      * @var bool
      */
-    private $lowerInclusive;
+    private bool $lowerInclusive = false;
 
     /**
      * The start value.
      *
      * @var mixed
      */
-    private $upperBound;
+    private mixed $upperBound = null;
 
     /**
      * Flag if the start is inclusive or exclusive.
      *
      * @var bool
      */
-    private $upperInclusive;
+    private bool $upperInclusive = false;
 
     /**
      * The attribute to filter on.
      *
      * @var IAttribute
      */
-    private $attribute;
+    private IAttribute $attribute;
 
     /**
      * Create a new instance.
@@ -82,7 +82,6 @@ class FromTo implements IFilterRule
      * Mark the lower bound of the range to search.
      *
      * @param mixed $value     The value to use for the lower bound.
-     *
      * @param bool  $inclusive Flag if the value shall also be included in the result.
      *
      * @return FromTo
@@ -90,7 +89,7 @@ class FromTo implements IFilterRule
     public function setLowerBound($value, $inclusive)
     {
         $this->lowerBound     = $value;
-        $this->lowerInclusive = (bool) $inclusive;
+        $this->lowerInclusive = $inclusive;
 
         return $this;
     }
@@ -119,7 +118,6 @@ class FromTo implements IFilterRule
      * Mark the upper bound of the range to search.
      *
      * @param mixed $value     The value to use for the upper bound.
-     *
      * @param bool  $inclusive Flag if the value shall also be included in the result.
      *
      * @return FromTo
@@ -127,7 +125,7 @@ class FromTo implements IFilterRule
     public function setUpperBound($value, $inclusive)
     {
         $this->upperBound     = $value;
-        $this->upperInclusive = (bool) $inclusive;
+        $this->upperInclusive = $inclusive;
 
         return $this;
     }
@@ -233,7 +231,7 @@ class FromTo implements IFilterRule
             return \array_values(\array_intersect($lower, $upper));
         }
 
-        // Return the non null array otherwise.
+        // Return the non-null array otherwise.
         if ($lower === null) {
             return $upper;
         }

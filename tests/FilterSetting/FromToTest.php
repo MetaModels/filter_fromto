@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2022 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,7 +15,7 @@
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2022 The MetaModels team.
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -35,6 +35,8 @@ class FromToTest extends FromToTestCase
      * Provide test data.
      *
      * @return array
+     *
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function provider()
     {
@@ -248,13 +250,9 @@ class FromToTest extends FromToTestCase
      * Test the functionality.
      *
      * @param array  $filterSettingData The initialization data for the filter setting.
-     *
      * @param array  $data              The data for the attribute.
-     *
      * @param array  $filterValues      The url values.
-     *
      * @param array  $expected          The expected ids.
-     *
      * @param string $message           The assert message.
      *
      * @return void
