@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2019 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,7 +16,8 @@
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2019 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -42,14 +43,14 @@ class FromToDate extends AbstractFromTo
      *
      * @var Connection
      */
-    private $connection;
+    private Connection $connection;
 
     /**
      * Create a new instance.
      *
      * @param ICollection                   $collection       The parenting filter settings object.
      * @param array                         $data             The attributes for this filter setting.
-     * @param Connection                    $connection       The database connection.
+     * @param Connection|null               $connection       The database connection.
      * @param EventDispatcherInterface|null $eventDispatcher  The event dispatcher.
      * @param FilterUrlBuilder|null         $filterUrlBuilder The filter URL builder.
      */
@@ -70,8 +71,8 @@ class FromToDate extends AbstractFromTo
             );
             // @codingStandardsIgnoreEnd
             $connection = System::getContainer()->get('database_connection');
+            assert($connection instanceof Connection);
         }
-
         $this->connection = $connection;
     }
 
@@ -98,13 +99,13 @@ class FromToDate extends AbstractFromTo
         // Try to make a date from a string.
         $date = \DateTime::createFromFormat($this->determineDateFormat(), $value);
 
-        // Check if we have a date, if not return a empty string.
+        // Check if we have a date, if not return false to indicate error.
         if ($date === false) {
             return false;
         }
 
         // Make a unix timestamp from the string.
-        return $date->getTimestamp();
+        return (string) $date->getTimestamp();
     }
 
     /**

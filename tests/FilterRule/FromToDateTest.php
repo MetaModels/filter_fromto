@@ -77,6 +77,8 @@ class FromToDateTest extends FromToTestCase
      * Provide test data.
      *
      * @return array
+     *
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function provider()
     {
@@ -230,10 +232,11 @@ class FromToDateTest extends FromToTestCase
      * Mock the from to date rule to get hold of the simple queries.
      *
      * @param array $data       The data for the attribute.
-     *
      * @param array $ruleValues The url values.
      *
      * @return FromToDate
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function getMockedFromToDateRule($data, $ruleValues)
     {
@@ -273,7 +276,10 @@ class FromToDateTest extends FromToTestCase
                             );
                         }
                     } else {
-                        $that->assertFalse(strstr($queryString, '<'), 'No upper bound defined, must not check for it.');
+                        $that->assertFalse(
+                            \strstr($queryString, '<'),
+                            'No upper bound defined, must not check for it.'
+                        );
                     }
 
                     if ($rule->getLowerBound()) {
@@ -283,7 +289,10 @@ class FromToDateTest extends FromToTestCase
                             );
                         }
                     } else {
-                        $that->assertFalse(\strstr($queryString, '>'), 'No lower bound defined, must not check for it.');
+                        $that->assertFalse(
+                            \strstr($queryString, '>'),
+                            'No lower bound defined, must not check for it.'
+                        );
                     }
 
                     foreach (['<=', '<'] as $operator) {

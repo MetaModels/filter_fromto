@@ -110,11 +110,8 @@ class FromToTest extends FromToTestCase
      * Test the functionality.
      *
      * @param array  $data       The data for the attribute.
-     *
      * @param array  $ruleValues The url values.
-     *
      * @param array  $expected   The expected ids.
-     *
      * @param string $message    The assert message.
      *
      * @return void

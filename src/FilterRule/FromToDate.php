@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2020 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,7 +16,7 @@
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2012-2020 The MetaModels team.
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -39,20 +39,20 @@ class FromToDate extends FromTo
      *
      * @var Connection
      */
-    private $connection;
+    private Connection $connection;
 
     /**
      * The date time format to apply.
      *
      * @var string
      */
-    private $dateType;
+    private string $dateType = '';
 
     /**
      * Create a new instance.
      *
-     * @param IAttribute $attribute  The attribute to perform filtering on.
-     * @param Connection $connection The database connection.
+     * @param IAttribute      $attribute  The attribute to perform filtering on.
+     * @param Connection|null $connection The database connection.
      */
     public function __construct($attribute, Connection $connection = null)
     {
@@ -66,8 +66,8 @@ class FromToDate extends FromTo
             );
             // @codingStandardsIgnoreEnd
             $connection = System::getContainer()->get('database_connection');
+            assert($connection instanceof Connection);
         }
-
         $this->connection = $connection;
     }
 
@@ -89,7 +89,6 @@ class FromToDate extends FromTo
      * Run a simple query against the attribute when using time only filtering.
      *
      * @param string $operation The mathematical operation to use for evaluating.
-     *
      * @param string $value     The value to match against.
      *
      * @return array|null
@@ -123,7 +122,7 @@ class FromToDate extends FromTo
     protected function evaluateLowerBound()
     {
         // If we are using time filtering, we have to handle it differently.
-        if ($this->dateType == 'time') {
+        if ($this->dateType === 'time') {
             if ($this->getLowerBound()) {
                 return $this->runSimpleQuery(
                     $this->isLowerInclusive() ? '>=' : '>',
@@ -135,7 +134,7 @@ class FromToDate extends FromTo
         }
 
         // Set the time to 0h 0m 0s.
-        if ($this->dateType == 'date') {
+        if ($this->dateType === 'date') {
             if ($this->getLowerBound()) {
                 $date = new \DateTime('@' . $this->getLowerBound());
                 $date->setTime(0, 0, 0);
@@ -152,7 +151,7 @@ class FromToDate extends FromTo
     protected function evaluateUpperBound()
     {
         // If we are using time filtering, we have to handle it differently.
-        if ($this->dateType == 'time') {
+        if ($this->dateType === 'time') {
             if ($this->getUpperBound()) {
                 return $this->runSimpleQuery(
                     $this->isUpperInclusive() ? '<=' : '<',
@@ -164,7 +163,7 @@ class FromToDate extends FromTo
         }
 
          // Set the time to 23h 59m 59s.
-        if ($this->dateType == 'date') {
+        if ($this->dateType === 'date') {
             if ($this->getUpperBound()) {
                 $date = new \DateTime('@' . $this->getUpperBound());
                 $date->setTime(23, 59, 59);
