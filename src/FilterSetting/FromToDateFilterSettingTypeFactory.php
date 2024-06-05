@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2019 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,7 +15,8 @@
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2019 The MetaModels team.
+ * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -37,26 +38,26 @@ class FromToDateFilterSettingTypeFactory implements IFilterSettingTypeFactory
      *
      * @var Connection
      */
-    private $connection;
+    private Connection $connection;
 
     /**
      * The event dispatcher.
      *
      * @var EventDispatcherInterface
      */
-    private $dispatcher;
+    private EventDispatcherInterface $dispatcher;
 
     /**
      * The filter URL builder.
      *
      * @var FilterUrlBuilder
      */
-    private $filterUrlBuilder;
+    private FilterUrlBuilder $filterUrlBuilder;
 
     /**
      * List of valid attribute types that can be filtered with this filter.
      *
-     * @var string[]
+     * @var list<string>
      */
     private $attributeTypes;
 
@@ -72,11 +73,8 @@ class FromToDateFilterSettingTypeFactory implements IFilterSettingTypeFactory
         EventDispatcherInterface $dispatcher,
         FilterUrlBuilder $filterUrlBuilder
     ) {
-        $this->connection     = $connection;
-        $this->attributeTypes = [
-            'timestamp' => 'timestamp'
-        ];
-
+        $this->connection       = $connection;
+        $this->attributeTypes   = ['timestamp'];
         $this->dispatcher       = $dispatcher;
         $this->filterUrlBuilder = $filterUrlBuilder;
     }
@@ -140,7 +138,7 @@ class FromToDateFilterSettingTypeFactory implements IFilterSettingTypeFactory
      */
     public function addKnownAttributeType($typeName)
     {
-        $this->attributeTypes[$typeName] = $typeName;
+        $this->attributeTypes[] = $typeName;
 
         return $this;
     }

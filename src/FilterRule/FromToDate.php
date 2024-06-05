@@ -91,7 +91,7 @@ class FromToDate extends FromTo
      * @param string $operation The mathematical operation to use for evaluating.
      * @param string $value     The value to match against.
      *
-     * @return array|null
+     * @return list<string>|null
      *
      * @throws \RuntimeException When the attribute is not a simple one.
      */
