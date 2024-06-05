@@ -165,7 +165,7 @@ class FromTo implements IFilterRule
      *
      * @param IFilterRule $rule The filter rule to execute.
      *
-     * @return null|\string[]
+     * @return list<string>|null
      */
     protected function executeRule($rule)
     {
@@ -175,7 +175,7 @@ class FromTo implements IFilterRule
     /**
      * Evaluate the lower bounding of the range.
      *
-     * @return null|\string[]
+     * @return list<string>|null
      */
     protected function evaluateLowerBound()
     {
@@ -191,7 +191,7 @@ class FromTo implements IFilterRule
     /**
      * Evaluate the upper bounding of the range.
      *
-     * @return null|\string[]
+     * @return list<string>|null
      */
     protected function evaluateUpperBound()
     {
