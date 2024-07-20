@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="src/Resources/translations/tl_metamodel_filtersetting.en.xlf">
+    <body>
+      <trans-unit id="typenames.fromto" resname="typenames.fromto">
+        <source>Value from/to (one attribute)</source>
+      </trans-unit>
+      <trans-unit id="typenames.fromtodate" resname="typenames.fromtodate">
+        <source>Value from/to for date (one attribute)</source>
+      </trans-unit>
+      <trans-unit id="dateformat.label" resname="dateformat.label">
+        <source>Dateformate</source>
+      </trans-unit>
+      <trans-unit id="dateformat.description" resname="dateformat.description">
+        <source>Here you can add the date format. PHP need this information for the transforming from a string to a unix timestamp.</source>
+      </trans-unit>
+      <trans-unit id="moreequal.label" resname="moreequal.label">
+        <source>Value 1 included</source>
+      </trans-unit>
+      <trans-unit id="moreequal.description" resname="moreequal.description">
+        <source>Include first value in comparison; Standard: excluded.</source>
+      </trans-unit>
+      <trans-unit id="lessequal.label" resname="lessequal.label">
+        <source>Value 2 included</source>
+      </trans-unit>
+      <trans-unit id="lessequal.description" resname="lessequal.description">
+        <source>Include second value in comparison; Standard: excluded.</source>
+      </trans-unit>
+      <trans-unit id="fromfield.label" resname="fromfield.label">
+        <source>Field for value 1</source>
+      </trans-unit>
+      <trans-unit id="fromfield.description" resname="fromfield.description">
+        <source>Show FE field for value no 1.</source>
+      </trans-unit>
+      <trans-unit id="tofield.label" resname="tofield.label">
+        <source>Field for value 2</source>
+      </trans-unit>
+      <trans-unit id="tofield.description" resname="tofield.description">
+        <source>Show FE field for value no 2.</source>
+      </trans-unit>
+      <trans-unit id="timetype.label" resname="timetype.label">
+        <source>Schema for date or time</source>
+      </trans-unit>
+      <trans-unit id="timetype.description" resname="timetype.description">
+        <source>Here you can select the desired scheme for date or time.</source>
+      </trans-unit>
+      <trans-unit id="placeholder.label" resname="placeholder.label">
+        <source>Placeholder</source>
+      </trans-unit>
+      <trans-unit id="placeholder.description" resname="placeholder.description">
+        <source>Show this text as long as the field is empty.</source>
+      </trans-unit>
+      <trans-unit id="timetypeOptions.time" resname="timetypeOptions.time">
+        <source>Time</source>
+      </trans-unit>
+      <trans-unit id="timetypeOptions.date" resname="timetypeOptions.date">
+        <source>Date</source>
+      </trans-unit>
+      <trans-unit id="timetypeOptions.datim" resname="timetypeOptions.datim">
+        <source>Date and time</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
