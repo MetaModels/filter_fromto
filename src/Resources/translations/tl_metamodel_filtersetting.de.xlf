@@ -1,0 +1,82 @@
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="src/Resources/translations/tl_metamodel_filtersetting.en.xlf" target-language="de">
+    <body>
+      <trans-unit id="typenames.fromto" resname="typenames.fromto">
+        <source>Value from/to (one attribute)</source>
+        <target>Wert von/bis für ein Attribut</target>
+      </trans-unit>
+      <trans-unit id="typenames.fromtodate" resname="typenames.fromtodate">
+        <source>Value from/to for date (one attribute)</source>
+        <target>Wert von/bis für ein Datumsattribut</target>
+      </trans-unit>
+      <trans-unit id="dateformat.label" resname="dateformat.label">
+        <source>Dateformate</source>
+        <target>Datumsformat</target>
+      </trans-unit>
+      <trans-unit id="dateformat.description" resname="dateformat.description">
+        <source>Here you can add the date format. PHP need this information for the transforming from a string to a unix timestamp.</source>
+        <target>Sie können eine Formatierung für das Datum hinzufügen. Mit PHP-Funktionen ist es möglich, aus einem Unix-Zeitstempel eine Datumsausgabe umzuwandeln.</target>
+      </trans-unit>
+      <trans-unit id="moreequal.label" resname="moreequal.label">
+        <source>Value 1 included</source>
+        <target>Wert 1 einbeziehen</target>
+      </trans-unit>
+      <trans-unit id="moreequal.description" resname="moreequal.description">
+        <source>Include first value in comparison; Standard: excluded.</source>
+        <target>Den ersten Wert in den Vergleich einbeziehen; Standard: ausgeschlossen.</target>
+      </trans-unit>
+      <trans-unit id="lessequal.label" resname="lessequal.label">
+        <source>Value 2 included</source>
+        <target>Wert 2 einbeziehen</target>
+      </trans-unit>
+      <trans-unit id="lessequal.description" resname="lessequal.description">
+        <source>Include second value in comparison; Standard: excluded.</source>
+        <target>Den zweiten Wert in den Vergleich einbeziehen; Standard: ausgeschlossen.</target>
+      </trans-unit>
+      <trans-unit id="fromfield.label" resname="fromfield.label">
+        <source>Field for value 1</source>
+        <target>Feld für Wert 1</target>
+      </trans-unit>
+      <trans-unit id="fromfield.description" resname="fromfield.description">
+        <source>Show FE field for value no 1.</source>
+        <target>Zeige Frontend-Feld für Wert 1.</target>
+      </trans-unit>
+      <trans-unit id="tofield.label" resname="tofield.label">
+        <source>Field for value 2</source>
+        <target>Feld für Wert 2</target>
+      </trans-unit>
+      <trans-unit id="tofield.description" resname="tofield.description">
+        <source>Show FE field for value no 2.</source>
+        <target>Zeige Frontend-Feld für Wert 2.</target>
+      </trans-unit>
+      <trans-unit id="timetype.label" resname="timetype.label">
+        <source>Schema for date or time</source>
+        <target>Schema für Datum oder Zeit</target>
+      </trans-unit>
+      <trans-unit id="timetype.description" resname="timetype.description">
+        <source>Here you can select the desired scheme for date or time.</source>
+        <target>Hier können die das gewünschte Schema für Datum oder Zeit auswählen.</target>
+      </trans-unit>
+      <trans-unit id="placeholder.label" resname="placeholder.label">
+        <source>Placeholder</source>
+        <target>Platzhalter</target>
+      </trans-unit>
+      <trans-unit id="placeholder.description" resname="placeholder.description">
+        <source>Show this text as long as the field is empty.</source>
+        <target>Zeigen Sie diesen Platzhaltertext an, solange das Feld leer ist.</target>
+      </trans-unit>
+      <trans-unit id="timetypeOptions.time" resname="timetypeOptions.time">
+        <source>Time</source>
+        <target>Zeit</target>
+      </trans-unit>
+      <trans-unit id="timetypeOptions.date" resname="timetypeOptions.date">
+        <source>Date</source>
+        <target>Datum</target>
+      </trans-unit>
+      <trans-unit id="timetypeOptions.datim" resname="timetypeOptions.datim">
+        <source>Date and time</source>
+        <target>Datum und Uhrzeit</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
