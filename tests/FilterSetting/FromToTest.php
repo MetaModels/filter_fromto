@@ -270,7 +270,8 @@ class FromToTest extends FromToTestCase
             $filterSetting,
             $filterSettingData,
             $this->mockDispatcher(),
-            $this->mockUrlBuilder()
+            $this->mockUrlBuilder(),
+            $this->mockTranslator(),
         );
 
         $filter = $metaModel->getEmptyFilter();

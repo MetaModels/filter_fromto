@@ -279,7 +279,8 @@ class FromToDateTest extends FromToTestCase
             $filterSettingData,
             $this->mockConnection(),
             $this->mockDispatcher(),
-            $this->mockUrlBuilder()
+            $this->mockUrlBuilder(),
+            $this->mockTranslator(),
         );
 
         $filter = $metaModel->getEmptyFilter();
@@ -327,7 +328,8 @@ class FromToDateTest extends FromToTestCase
                 ],
                 $this->mockConnection(),
                 $this->mockDispatcher(),
-                $this->mockUrlBuilder()
+                $this->mockUrlBuilder(),
+                $this->mockTranslator(),
             ])
             ->getMock();
 
