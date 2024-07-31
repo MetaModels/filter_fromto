@@ -32,6 +32,7 @@ use MetaModels\Filter\FilterUrlBuilder;
 use MetaModels\Filter\Setting\ICollection;
 use MetaModels\FilterFromToBundle\FilterRule\FromToDate as FromToRule;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Filter "value from x to y" for FE-filtering, regarding date and time representations.
@@ -53,15 +54,17 @@ class FromToDate extends AbstractFromTo
      * @param Connection|null               $connection       The database connection.
      * @param EventDispatcherInterface|null $eventDispatcher  The event dispatcher.
      * @param FilterUrlBuilder|null         $filterUrlBuilder The filter URL builder.
+     * @param TranslatorInterface|null      $translator       The translator.
      */
     public function __construct(
         ICollection $collection,
         array $data,
         Connection $connection = null,
         EventDispatcherInterface $eventDispatcher = null,
-        FilterUrlBuilder $filterUrlBuilder = null
+        FilterUrlBuilder $filterUrlBuilder = null,
+        TranslatorInterface $translator = null
     ) {
-        parent::__construct($collection, $data, $eventDispatcher, $filterUrlBuilder);
+        parent::__construct($collection, $data, $eventDispatcher, $filterUrlBuilder, $translator);
 
         if (null === $connection) {
             // @codingStandardsIgnoreStart

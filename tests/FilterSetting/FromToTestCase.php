@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2022 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,7 +15,7 @@
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2022 The MetaModels team.
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -31,6 +31,7 @@ use MetaModels\Filter\Setting\ICollection;
 use MetaModels\IMetaModel;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Some base methods for easy mocking of objects.
@@ -252,5 +253,10 @@ class FromToTestCase extends TestCase
     protected function mockUrlBuilder()
     {
         return $this->getMockBuilder(FilterUrlBuilder::class)->disableOriginalConstructor()->getMock();
+    }
+
+    protected function mockTranslator(): TranslatorInterface
+    {
+        return $this->getMockForAbstractClass(TranslatorInterface::class);
     }
 }
