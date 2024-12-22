@@ -23,6 +23,7 @@
 
 namespace MetaModels\FilterFromToBundle\FilterSetting;
 
+use Contao\StringUtil;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\Filter\IFilter;
 use MetaModels\Filter\Rules\StaticIdList;
@@ -266,17 +267,21 @@ abstract class AbstractFromTo extends Simple
      */
     protected function getFilterWidgetParameters(IAttribute $attribute, $currentValue, $ids)
     {
+        $cssID = StringUtil::deserialize($this->get('cssID'), true);
+
         return [
             'label'     => $this->prepareWidgetLabel($attribute),
             'inputType' => 'multitext',
             'options'   => $this->prepareWidgetOptions($ids, $attribute),
             'eval'      => [
-                'multiple'     => true,
-                'size'         => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
-                'urlparam'     => $this->getParamName(),
-                'template'     => $this->get('template'),
-                'colname'      => $attribute->getColName(),
-                'placeholder'  => $this->get('placeholder')
+                'multiple'    => true,
+                'size'        => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
+                'urlparam'    => $this->getParamName(),
+                'template'    => $this->get('template'),
+                'colname'     => $attribute->getColName(),
+                'placeholder' => $this->get('placeholder'),
+                'cssID'       => !empty($cssID[0]) ? ' id="' . $cssID[0] . '"' : '',
+                'class'       => !empty($cssID[1]) ? ' ' . $cssID[1] : '',
             ],
             // We need to implode to have it transported correctly in the frontend filter.
             'urlvalue'  => !empty($currentValue) ? \implode(',', $currentValue) : ''
