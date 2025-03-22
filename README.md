@@ -6,4 +6,4 @@
 FromTo filter
 =============
 
-MetaModels from-to filter.
+MetaModels from-to filter - work with value from/to one field.

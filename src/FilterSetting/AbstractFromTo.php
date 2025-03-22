@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/filter_fromto.
  *
- * (c) 2012-2021 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,13 +16,14 @@
  * @author     Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2012-2021 The MetaModels team.
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/filter_fromto/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
 namespace MetaModels\FilterFromToBundle\FilterSetting;
 
+use Contao\StringUtil;
 use MetaModels\Attribute\IAttribute;
 use MetaModels\Filter\IFilter;
 use MetaModels\Filter\Rules\StaticIdList;
@@ -30,7 +31,9 @@ use MetaModels\Filter\Setting\Simple;
 use MetaModels\FrontendIntegration\FrontendFilterOptions;
 
 /**
- * Filter "value from x to y" for FE-filtering, based on filters by the meta models team.
+ * Filter "value from x to y" for FE-filtering, based on filters by the MetaModels team.
+ *
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 abstract class AbstractFromTo extends Simple
 {
@@ -39,7 +42,7 @@ abstract class AbstractFromTo extends Simple
      *
      * @param mixed $value The value to format.
      *
-     * @return string|bool
+     * @return string|false
      */
     abstract protected function formatValue($value);
 
@@ -57,7 +60,12 @@ abstract class AbstractFromTo extends Simple
      */
     public function getParameters()
     {
-        return ($strParamName = $this->getParamName()) ? [$strParamName] : [];
+        $paramName = $this->getParamName();
+        if (null === $paramName || '' === $paramName) {
+            return [];
+        }
+
+        return [$paramName];
     }
 
     /**
@@ -65,12 +73,17 @@ abstract class AbstractFromTo extends Simple
      */
     public function getParameterFilterNames()
     {
+        $parameterName = $this->getParamName();
+        assert(\is_string($parameterName));
+
         if ($this->get('label')) {
-            return [$this->getParamName() => $this->get('label')];
+            return [$parameterName => $this->get('label')];
         }
 
+        $attribute = $this->getMetaModel()->getAttributeById((int) $this->get('attr_id'));
+        assert($attribute instanceof IAttribute);
         return [
-            $this->getParamName() => $this->getMetaModel()->getAttributeById($this->get('attr_id'))->getName()
+            $parameterName => $attribute->getName()
         ];
     }
 
@@ -79,17 +92,19 @@ abstract class AbstractFromTo extends Simple
      *
      * @param array $filterUrl The filter url from which to extract the parameter.
      *
-     * @return null|string|array
+     * @return array|null
      */
     protected function getParameterValue($filterUrl)
     {
         $parameterName = $this->getParamName();
-        if (isset($filterUrl[$parameterName]) && !empty($filterUrl[$parameterName])) {
+        assert(\is_string($parameterName));
+
+        if (!empty($filterUrl[$parameterName])) {
             if (\is_array($filterUrl[$parameterName])) {
                 return \array_values($filterUrl[$parameterName]);
             }
 
-            return \array_values(\explode(',', $filterUrl[$parameterName]));
+            return \explode(',', $filterUrl[$parameterName]);
         }
 
         return null;
@@ -98,21 +113,25 @@ abstract class AbstractFromTo extends Simple
     /**
      * Retrieve the attribute name that is referenced in this filter setting.
      *
-     * @return array
+     * @return list<string>
      */
     public function getReferencedAttributes()
     {
-        $objAttribute = null;
-        if (!($this->get('attr_id')
-              && ($objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'))))) {
+        if (0 === ($attrId = (int) $this->get('attr_id'))) {
             return [];
         }
 
-        return $objAttribute ? [$objAttribute->getColName()] : [];
+        if (null === ($attribute = $this->getMetaModel()->getAttributeById($attrId))) {
+            return [];
+        }
+
+        return [$attribute->getColName()];
     }
 
     /**
-     * {@inheritdoc}
+     * Retrieve the filter parameter name to react on.
+     *
+     * @return string|null
      */
     protected function getParamName()
     {
@@ -120,7 +139,7 @@ abstract class AbstractFromTo extends Simple
             return $this->get('urlparam');
         }
 
-        $objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
+        $objAttribute = $this->getMetaModel()->getAttributeById((int) $this->get('attr_id'));
         if ($objAttribute) {
             return $objAttribute->getColName();
         }
@@ -154,8 +173,8 @@ abstract class AbstractFromTo extends Simple
     protected function prepareWidgetLabel($objAttribute)
     {
         $arrLabel = [
-            ($this->get('label') ? $this->get('label') : $objAttribute->getName()),
-            'GET: ' . $this->getParamName()
+            ($this->get('label') ?: $objAttribute->getName()),
+            'GET: ' . ($this->getParamName() ?? '')
         ];
 
         if ($this->get('fromfield') && $this->get('tofield')) {
@@ -172,8 +191,8 @@ abstract class AbstractFromTo extends Simple
     /**
      * Prepare options for the widget.
      *
-     * @param array      $arrIds       List of ids.
-     * @param IAttribute $objAttribute The metamodel attribute.
+     * @param list<string>|null $arrIds       List of ids.
+     * @param IAttribute        $objAttribute The metamodel attribute.
      *
      * @return array
      */
@@ -190,7 +209,7 @@ abstract class AbstractFromTo extends Simple
             $mixOption = \strip_tags($mixOption);
             $mixOption = \trim($mixOption);
 
-            if ($mixOption === '' || $mixOption === null) {
+            if ($mixOption === '') {
                 unset($arrOptions[$mixKeyOption]);
             }
         }
@@ -208,7 +227,8 @@ abstract class AbstractFromTo extends Simple
     protected function prepareWidgetParamAndFilterUrl($arrFilterUrl)
     {
         // Split up our param so the widgets can use it again.
-        $parameterName    = $this->getParamName();
+        $parameterName = $this->getParamName();
+        assert(\is_string($parameterName));
         $privateFilterUrl = $arrFilterUrl;
         $parameterValue   = null;
 
@@ -239,27 +259,29 @@ abstract class AbstractFromTo extends Simple
     /**
      * Get the parameter array for configuring the widget.
      *
-     * @param IAttribute $attribute    The attribute.
-     *
-     * @param array      $currentValue The current value.
-     *
-     * @param string[]   $ids          The list of ids.
+     * @param IAttribute        $attribute    The attribute.
+     * @param array             $currentValue The current value.
+     * @param list<string>|null $ids          The list of ids.
      *
      * @return array
      */
     protected function getFilterWidgetParameters(IAttribute $attribute, $currentValue, $ids)
     {
+        $cssID = StringUtil::deserialize($this->get('cssID'), true);
+
         return [
             'label'     => $this->prepareWidgetLabel($attribute),
             'inputType' => 'multitext',
             'options'   => $this->prepareWidgetOptions($ids, $attribute),
             'eval'      => [
-                'multiple'     => true,
-                'size'         => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
-                'urlparam'     => $this->getParamName(),
-                'template'     => $this->get('template'),
-                'colname'      => $attribute->getColName(),
-                'placeholder'  => $this->get('placeholder')
+                'multiple'    => true,
+                'size'        => ($this->get('fromfield') && $this->get('tofield') ? 2 : 1),
+                'urlparam'    => $this->getParamName(),
+                'template'    => $this->get('template'),
+                'colname'     => $attribute->getColName(),
+                'placeholder' => $this->get('placeholder'),
+                'cssID'       => !empty($cssID[0]) ? ' id="' . $cssID[0] . '"' : '',
+                'class'       => !empty($cssID[1]) ? ' ' . $cssID[1] : '',
             ],
             // We need to implode to have it transported correctly in the frontend filter.
             'urlvalue'  => !empty($currentValue) ? \implode(',', $currentValue) : ''
@@ -268,6 +290,8 @@ abstract class AbstractFromTo extends Simple
 
     /**
      * {@inheritdoc}
+     *
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function getParameterFilterWidgets(
         $arrIds,
@@ -275,7 +299,7 @@ abstract class AbstractFromTo extends Simple
         $arrJumpTo,
         FrontendFilterOptions $objFrontendFilterOptions
     ) {
-        $objAttribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
+        $objAttribute = $this->getMetaModel()->getAttributeById((int) $this->get('attr_id'));
         if (!$objAttribute) {
             return [];
         }
@@ -284,8 +308,11 @@ abstract class AbstractFromTo extends Simple
 
         $this->registerFilterParameter();
 
+        $paramName = $this->getParamName();
+        assert(\is_string($paramName));
+
         return [
-            $this->getParamName() => $this->prepareFrontendFilterWidget(
+            $paramName => $this->prepareFrontendFilterWidget(
                 $this->getFilterWidgetParameters($objAttribute, $currentValue, $arrIds),
                 $privateFilterUrl,
                 $arrJumpTo,
@@ -309,7 +336,7 @@ abstract class AbstractFromTo extends Simple
         }
 
         // No attribute, get out.
-        $attribute = $this->getMetaModel()->getAttributeById($this->get('attr_id'));
+        $attribute = $this->getMetaModel()->getAttributeById((int) $this->get('attr_id'));
         if (!($attribute)) {
             $objFilter->addFilterRule(new StaticIdList(null));
 
@@ -318,14 +345,14 @@ abstract class AbstractFromTo extends Simple
 
         // No filter values, get out.
         $value = $this->getParameterValue($arrFilterUrl);
-        if (empty($value)) {
+        if (null === $value) {
             $objFilter->addFilterRule(new StaticIdList(null));
 
             return;
         }
 
         // Two values, apply filtering for a value range if both fields are allowed.
-        if (\count($value) == 2) {
+        if (\count($value) === 2) {
             if (!($this->get('fromfield') && $this->get('tofield'))) {
                 throw new \LengthException('Only one value is allowed, please configure fromfield and tofield.');
             }
@@ -345,30 +372,39 @@ abstract class AbstractFromTo extends Simple
     /**
      * Format the value but return empty if it is empty.
      *
+     * Returns false on error.
+     *
      * @param string $value The value to format.
      *
-     * @return bool|string
+     * @return false|string
      */
-    private function formatEmpty($value)
+    private function formatEmpty(string $value): string|bool
     {
-        if (empty($value = \trim($value))) {
-            return $value;
+        if ('' === $value = \trim($value)) {
+            return '';
         }
 
-        return $this->formatValue($value);
+        if (false === $formatted = $this->formatValue($value)) {
+            return false;
+        }
+
+        return $formatted;
     }
 
     /**
      * Create and populate a rule instance.
      *
-     * @param IAttribute $attribute          The attribute to filter on.
-     * @param string     $formattedValueZero The formatted first value.
-     * @param string     $formattedValueOne  The formatted second value.
+     * @param IAttribute        $attribute          The attribute to filter on.
+     * @param string|false      $formattedValueZero The formatted first value.
+     * @param string|null|false $formattedValueOne  The formatted second value.
      *
      * @return \MetaModels\FilterFromToBundle\FilterRule\FromTo|StaticIdList
      */
-    private function createFromToRule(IAttribute $attribute, $formattedValueZero, $formattedValueOne)
-    {
+    private function createFromToRule(
+        IAttribute $attribute,
+        string|bool $formattedValueZero,
+        string|null|bool $formattedValueOne
+    ): \MetaModels\FilterFromToBundle\FilterRule\FromTo|StaticIdList {
         // If something went wrong return an empty list.
         if ($formattedValueZero === false || $formattedValueOne === false) {
             return new StaticIdList([]);

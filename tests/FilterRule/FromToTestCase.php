@@ -50,6 +50,7 @@ class FromToTestCase extends TestCase
         $metaModel
             ->expects($this->never())
             ->method('getServiceContainer');
+
         return $metaModel;
     }
 
@@ -57,7 +58,6 @@ class FromToTestCase extends TestCase
      * Mock an attribute.
      *
      * @param IMetaModel $metaModel The metamodel.
-     *
      * @param array      $values    The test values.
      *
      * @return \MetaModels\Attribute\ISimple
